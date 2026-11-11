@@ -18,8 +18,8 @@
     "откат к EMA200 292.17 (+0.1%), наклон вверх — откат в восходящем тренде"
    ],
    "status": "открыт",
-   "current_pct": 0.0,
-   "last_price": 292.42,
+   "current_pct": -0.09,
+   "last_price": 292.15,
    "last_date": "2026-11-11",
    "days": 0
   },
@@ -41,8 +41,8 @@
     "пробой сопротивления 45.80 2026-11-09 на объёме ×7.0, был ретест уровня"
    ],
    "status": "открыт",
-   "current_pct": 0.0,
-   "last_price": 45.96,
+   "current_pct": -2.24,
+   "last_price": 44.93,
    "last_date": "2026-11-11",
    "days": 0
   },
@@ -85,8 +85,8 @@
     "на поддержке 23.85 (2 касания, до уровня 1.9%)"
    ],
    "status": "открыт",
-   "current_pct": 0.0,
-   "last_price": 24.305,
+   "current_pct": -1.25,
+   "last_price": 24.0,
    "last_date": "2026-11-11",
    "days": 0
   },
@@ -107,8 +107,8 @@
     "на поддержке 5059.50 (2 касания, до уровня 1.6%)"
    ],
    "status": "открыт",
-   "current_pct": 0.0,
-   "last_price": 5142.0,
+   "current_pct": -0.84,
+   "last_price": 5099.0,
    "last_date": "2026-11-11",
    "days": 0
   },
@@ -130,8 +130,8 @@
     "отскок вниз от EMA200 277.54 при нисходящем наклоне"
    ],
    "status": "открыт",
-   "current_pct": 0.0,
-   "last_price": 273.98,
+   "current_pct": 0.39,
+   "last_price": 272.9,
    "last_date": "2026-11-11",
    "days": 0
   },
@@ -153,8 +153,8 @@
     "пробой EMA200 701.35 вниз, 2 закрытия ниже"
    ],
    "status": "открыт",
-   "current_pct": 0.0,
-   "last_price": 687.0,
+   "current_pct": 0.61,
+   "last_price": 682.8,
    "last_date": "2026-11-11",
    "days": 0
   },
@@ -176,16 +176,147 @@
     "RSI вышел из перекупленности (76 → 67, 2026-11-10)"
    ],
    "status": "открыт",
+   "current_pct": 0.34,
+   "last_price": 42.455,
+   "last_date": "2026-11-11",
+   "days": 0
+  },
+  {
+   "id": "2026-11-11-MGNT-sell-ta",
+   "strategy": "ta",
+   "ticker": "MGNT",
+   "name": "Магнит ао",
+   "side": "sell",
+   "opened": "2026-11-11",
+   "entry": 1943.5,
+   "stop": 1982.63,
+   "target": 1720.5,
+   "stop_pct": -2.0,
+   "target_pct": 11.5,
+   "rating": "⭐⭐⭐",
+   "comment": "сопротивление + ниже EMA200 + разворот RSI + дивергенция RSI",
+   "signals": [
+    "у сопротивления 1963.00 (2 касания, до уровня 1.0%)",
+    "отскок вниз от EMA200 2013.00 при нисходящем наклоне",
+    "RSI вышел из перекупленности (73 → 62, 2026-11-11)",
+    "медвежья дивергенция (2026-10-28 → 2026-11-02)"
+   ],
+   "status": "открыт",
    "current_pct": 0.0,
-   "last_price": 42.6,
+   "last_price": 1943.5,
+   "last_date": "2026-11-11",
+   "days": 0
+  },
+  {
+   "id": "2026-11-11-CBOM-sell-ta",
+   "strategy": "ta",
+   "ticker": "CBOM",
+   "name": "МКБ ао",
+   "side": "sell",
+   "opened": "2026-11-11",
+   "entry": 10.559,
+   "stop": 10.7328,
+   "target": 7.253,
+   "stop_pct": -1.6,
+   "target_pct": 31.3,
+   "rating": "⭐⭐",
+   "comment": "сопротивление + разворот RSI",
+   "signals": [
+    "у сопротивления 10.63 (2 касания, до уровня 0.6%)",
+    "RSI вышел из перекупленности (74 → 70, 2026-11-09)"
+   ],
+   "status": "открыт",
+   "current_pct": 0.0,
+   "last_price": 10.559,
+   "last_date": "2026-11-11",
+   "days": 0
+  },
+  {
+   "id": "2026-11-11-MGKL-buy-ta",
+   "strategy": "ta",
+   "ticker": "MGKL",
+   "name": "МГКЛ",
+   "side": "buy",
+   "opened": "2026-11-11",
+   "entry": 0.4355,
+   "stop": 0.3995,
+   "target": 2.0293,
+   "stop_pct": -8.3,
+   "target_pct": 366.0,
+   "rating": "⭐",
+   "comment": "дивергенция RSI",
+   "signals": [
+    "бычья дивергенция (2026-11-06 → 2026-11-11)"
+   ],
+   "status": "открыт",
+   "current_pct": 0.0,
+   "last_price": 0.4355,
+   "last_date": "2026-11-11",
+   "days": 0
+  },
+  {
+   "id": "2026-11-11-MSNG-buy-ta",
+   "strategy": "ta",
+   "ticker": "MSNG",
+   "name": "+МосЭнерго",
+   "side": "buy",
+   "opened": "2026-11-11",
+   "entry": 1.3315,
+   "stop": 1.3026,
+   "target": 1.973,
+   "stop_pct": -2.2,
+   "target_pct": 48.2,
+   "rating": "⭐",
+   "comment": "поддержка",
+   "signals": [
+    "на поддержке 1.32 (2 касания, до уровня 1.2%)"
+   ],
+   "status": "открыт",
+   "current_pct": 0.0,
+   "last_price": 1.3315,
+   "last_date": "2026-11-11",
+   "days": 0
+  },
+  {
+   "id": "2026-11-11-SBERP-buy-ta",
+   "strategy": "ta",
+   "ticker": "SBERP",
+   "name": "Сбербанк-п",
+   "side": "buy",
+   "opened": "2026-11-11",
+   "entry": 292.1,
+   "stop": 286.8179,
+   "target": 320.255,
+   "stop_pct": -1.8,
+   "target_pct": 9.6,
+   "rating": "⭐",
+   "comment": "поддержка",
+   "signals": [
+    "на поддержке 289.72 (2 касания, до уровня 0.8%)"
+   ],
+   "status": "открыт",
+   "current_pct": 0.0,
+   "last_price": 292.1,
    "last_date": "2026-11-11",
    "days": 0
   }
  ],
  "stats": {
-  "total": 8,
-  "open": 8,
-  "closed": 0
+  "total": 13,
+  "open": 13,
+  "closed": 0,
+  "by_strategy": {
+   "ta": {
+    "total": 13,
+    "open": 13,
+    "closed": 0
+   },
+   "momentum": {
+    "total": 0,
+    "open": 0,
+    "closed": 0
+   }
+  }
  },
- "updated_utc": "2026-11-11 08:10"
+ "updated_utc": "2026-11-11 08:33"
 }

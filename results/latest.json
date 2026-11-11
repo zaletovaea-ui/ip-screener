@@ -1,6 +1,6 @@
 {
  "asof": "2026-11-11",
- "generated_utc": "2026-11-11 07:44",
+ "generated_utc": "2026-11-11 08:33",
  "source": "iss.moex.com",
  "universe": [
   "AFKS",
@@ -46,8 +46,117 @@
   "VKCO",
   "VTBR",
   "X5",
+  "YDEX",
+  "AKFB",
+  "AKGD",
+  "AKMB",
+  "AKMM",
+  "AKMP",
+  "AMFL",
+  "AMNR",
+  "AMNY",
+  "ASTR",
+  "BANEP",
+  "BAZA",
+  "BCSD",
+  "BELU",
+  "CASH",
+  "EQMX",
+  "ETLN",
+  "FEES",
+  "FESH",
+  "FIXR",
+  "FLOW",
+  "FMMM",
+  "GLRX",
+  "GOLD",
+  "HYDR",
+  "IVAT",
+  "LENT",
+  "LQDT",
+  "LSNGP",
+  "LSRG",
+  "MGKL",
+  "MGNT",
+  "MRKC",
+  "MRKV",
+  "MSNG",
+  "MTLR",
+  "MVID",
+  "NMTP",
+  "PRMD",
+  "RNFT",
+  "RTKMP",
+  "SAFE",
+  "SBFR",
+  "SBGD",
+  "SBMM",
+  "SBMX",
+  "SBRB",
+  "SECR",
+  "SELG",
+  "SFIN",
+  "SGZH",
+  "SIBN",
+  "SMLT",
+  "SOFL",
+  "SPBE",
+  "STME",
+  "TPAY",
+  "TRMK",
+  "UPRO",
+  "UWGN",
+  "VSEH",
+  "WUSH",
+  "XFMAIN"
+ ],
+ "index": [
+  "AFKS",
+  "AFLT",
+  "ALRS",
+  "BSPB",
+  "CBOM",
+  "CHMF",
+  "CNRU",
+  "DOMRF",
+  "ENPG",
+  "FLOT",
+  "GAZP",
+  "GMKN",
+  "HEAD",
+  "IRAO",
+  "LKOH",
+  "MAGN",
+  "MDMG",
+  "MOEX",
+  "MTSS",
+  "NLMK",
+  "NVTK",
+  "OZON",
+  "PHOR",
+  "PLZL",
+  "POSI",
+  "RAGR",
+  "RENI",
+  "ROSN",
+  "RTKM",
+  "RUAL",
+  "SBER",
+  "SBERP",
+  "SNGS",
+  "SNGSP",
+  "SVCB",
+  "T",
+  "TATN",
+  "TATNP",
+  "TRNFP",
+  "UGLD",
+  "VKCO",
+  "VTBR",
+  "X5",
   "YDEX"
  ],
+ "candidates": 510,
  "params": {
   "history_days": 560,
   "level_lookback": 250,
@@ -66,40 +175,166 @@
   "rsi_cross_recent": 3,
   "div_lookback": 60,
   "div_recent": 10,
+  "mom_change": 0.05,
+  "mom_quiet_days": 20,
+  "mom_volume_mult": 1.5,
+  "mom_rr": 2.0,
   "min_turnover_mln": 50
  },
  "market": {
   "date": "2026-11-11",
-  "close": 2437.1,
-  "ema200": 2447.17,
+  "close": 2425.29,
+  "ema200": 2447.05,
   "above": false,
-  "dist_pct": -0.4,
+  "dist_pct": -0.9,
   "slope_up": true
  },
  "results": [
+  {
+   "ticker": "MGNT",
+   "name": "Магнит ао",
+   "side": "sell",
+   "signals": [
+    "у сопротивления 1963.00 (2 касания, до уровня 1.0%)",
+    "отскок вниз от EMA200 2013.00 при нисходящем наклоне",
+    "RSI вышел из перекупленности (73 → 62, 2026-11-11)",
+    "медвежья дивергенция (2026-10-28 → 2026-11-02)"
+   ],
+   "count": 4,
+   "rating": "⭐⭐⭐",
+   "rating_label": "сильный сетап",
+   "date": "2026-11-11",
+   "close": 1943.5,
+   "entry": 1943.5,
+   "stop": 1982.63,
+   "target": 1720.5,
+   "stop_pct": -2.0,
+   "target_pct": 11.5,
+   "rr": 5.7,
+   "target_note": "",
+   "ema200": 2013.003,
+   "ema200_slope_up": false,
+   "rsi": 61.5,
+   "turnover_mln": 985.7,
+   "low_liquidity": false,
+   "supports": [
+    1521.25,
+    1720.5
+   ],
+   "resistances": [
+    1963.0
+   ],
+   "strategy": "ta",
+   "comment": "сопротивление + ниже EMA200 + разворот RSI + дивергенция RSI",
+   "conflict": true,
+   "top": true
+  },
+  {
+   "ticker": "RTKM",
+   "name": "Ростел -ао",
+   "side": "sell",
+   "signals": [
+    "у сопротивления 45.80 (2 касания, до уровня 1.9%)",
+    "отскок вниз от EMA200 45.69 при нисходящем наклоне",
+    "RSI вышел из перекупленности (71 → 67, 2026-11-10)",
+    "медвежья дивергенция (2026-10-28 → 2026-11-03)"
+   ],
+   "count": 4,
+   "rating": "⭐⭐⭐",
+   "rating_label": "сильный сетап",
+   "date": "2026-11-11",
+   "close": 44.93,
+   "entry": 44.93,
+   "stop": 46.253,
+   "target": 42.08,
+   "stop_pct": -2.9,
+   "target_pct": 6.3,
+   "rr": 2.15,
+   "target_note": "",
+   "ema200": 45.6933,
+   "ema200_slope_up": false,
+   "rsi": 56.0,
+   "turnover_mln": 369.5,
+   "low_liquidity": false,
+   "supports": [
+    39.66,
+    40.5,
+    42.08
+   ],
+   "resistances": [
+    45.8,
+    58.18
+   ],
+   "strategy": "ta",
+   "comment": "сопротивление + ниже EMA200 + разворот RSI + дивергенция RSI",
+   "conflict": false,
+   "top": true
+  },
+  {
+   "ticker": "RTKMP",
+   "name": "Ростел -ап",
+   "side": "sell",
+   "signals": [
+    "отскок вниз от EMA200 46.79 при нисходящем наклоне",
+    "RSI вышел из перекупленности (70 → 65, 2026-11-10)",
+    "медвежья дивергенция (2026-10-28 → 2026-11-03)"
+   ],
+   "count": 3,
+   "rating": "⭐⭐⭐",
+   "rating_label": "сильный сетап",
+   "date": "2026-11-11",
+   "close": 45.6,
+   "entry": 45.6,
+   "stop": 47.47,
+   "target": 43.2,
+   "stop_pct": -4.1,
+   "target_pct": 5.3,
+   "rr": 1.28,
+   "target_note": "",
+   "ema200": 46.7938,
+   "ema200_slope_up": false,
+   "rsi": 54.3,
+   "turnover_mln": 54.2,
+   "low_liquidity": false,
+   "supports": [
+    39.92,
+    42.15,
+    43.2
+   ],
+   "resistances": [
+    47.0,
+    59.9
+   ],
+   "strategy": "ta",
+   "comment": "ниже EMA200 + разворот RSI + дивергенция RSI",
+   "conflict": false,
+   "top": false
+  },
   {
    "ticker": "HEAD",
    "name": "Хэдхантер",
    "side": "sell",
    "signals": [
-    "у сопротивления 2783.00 (2 касания, до уровня 1.5%)",
-    "пробой EMA200 2778.75 вниз, 2 закрытия ниже",
+    "у сопротивления 2783.00 (2 касания, до уровня 1.6%)",
+    "пробой EMA200 2778.71 вниз, 2 закрытия ниже",
     "пробой поддержки 2777.33 2026-11-10 на объёме ×1.7"
    ],
    "count": 3,
    "rating": "⭐⭐⭐",
    "rating_label": "сильный сетап",
    "date": "2026-11-11",
-   "close": 2742.0,
-   "entry": 2742.0,
+   "close": 2738.0,
+   "entry": 2738.0,
    "stop": 2810.83,
    "target": 2692.5,
-   "rr": 0.72,
+   "stop_pct": -2.7,
+   "target_pct": 1.7,
+   "rr": 0.62,
    "target_note": "",
-   "ema200": 2778.753,
+   "ema200": 2778.7132,
    "ema200_slope_up": false,
-   "rsi": 53.0,
-   "turnover_mln": 275.0,
+   "rsi": 52.2,
+   "turnover_mln": 275.5,
    "low_liquidity": false,
    "supports": [
     2605.0,
@@ -110,30 +345,36 @@
     2783.0,
     2848.0,
     2927.4
-   ]
+   ],
+   "strategy": "ta",
+   "comment": "сопротивление + ниже EMA200 + пробой поддержки",
+   "conflict": true,
+   "top": false
   },
   {
    "ticker": "CBOM",
    "name": "МКБ ао",
    "side": "sell",
    "signals": [
-    "у сопротивления 10.63 (2 касания, до уровня 0.3%)",
+    "у сопротивления 10.63 (2 касания, до уровня 0.6%)",
     "RSI вышел из перекупленности (74 → 70, 2026-11-09)"
    ],
    "count": 2,
    "rating": "⭐⭐",
    "rating_label": "интересно",
    "date": "2026-11-11",
-   "close": 10.59,
-   "entry": 10.59,
+   "close": 10.559,
+   "entry": 10.559,
    "stop": 10.7328,
    "target": 7.253,
-   "rr": 23.37,
+   "stop_pct": -1.6,
+   "target_pct": 31.3,
+   "rr": 19.03,
    "target_note": "",
-   "ema200": 9.0047,
+   "ema200": 9.0044,
    "ema200_slope_up": true,
-   "rsi": 52.4,
-   "turnover_mln": 58.5,
+   "rsi": 51.7,
+   "turnover_mln": 59.0,
    "low_liquidity": false,
    "supports": [
     6.04,
@@ -142,62 +383,106 @@
    ],
    "resistances": [
     10.63
-   ]
+   ],
+   "strategy": "ta",
+   "comment": "сопротивление + разворот RSI",
+   "conflict": false,
+   "top": true
   },
   {
-   "ticker": "RTKM",
-   "name": "Ростел -ао",
-   "side": "buy",
+   "ticker": "BAZA",
+   "name": "iБАЗИС",
+   "side": "sell",
    "signals": [
-    "откат к EMA200 45.70 (+0.6%), наклон вниз — слабее",
-    "пробой сопротивления 45.80 2026-11-09 на объёме ×7.0, был ретест уровня"
+    "RSI вышел из перекупленности (75 → 69, 2026-11-09)",
+    "медвежья дивергенция (2026-10-29 → 2026-11-02)"
    ],
    "count": 2,
    "rating": "⭐⭐",
    "rating_label": "интересно",
    "date": "2026-11-11",
-   "close": 45.96,
-   "entry": 45.96,
-   "stop": 45.337,
-   "target": 58.18,
-   "rr": 19.62,
+   "close": 149.8,
+   "entry": 149.8,
+   "stop": 154.7724,
+   "target": 112.65,
+   "stop_pct": -3.3,
+   "target_pct": 24.8,
+   "rr": 7.47,
    "target_note": "",
-   "ema200": 45.7035,
-   "ema200_slope_up": false,
-   "rsi": 62.3,
-   "turnover_mln": 364.3,
+   "ema200": 118.152,
+   "ema200_slope_up": true,
+   "rsi": 73.3,
+   "turnover_mln": 56.9,
    "low_liquidity": false,
    "supports": [
-    39.66,
-    40.5,
-    42.08
+    93.34,
+    104.48,
+    112.65
    ],
+   "resistances": [],
+   "strategy": "ta",
+   "comment": "разворот RSI + дивергенция RSI",
+   "conflict": false,
+   "top": false
+  },
+  {
+   "ticker": "SMLT",
+   "name": "Самолет ао",
+   "side": "sell",
+   "signals": [
+    "пробой поддержки 320.00 2026-11-10 на объёме ×2.4",
+    "RSI вышел из перекупленности (73 → 58, 2026-11-10)"
+   ],
+   "count": 2,
+   "rating": "⭐⭐",
+   "rating_label": "интересно",
+   "date": "2026-11-11",
+   "close": 304.5,
+   "entry": 304.5,
+   "stop": 323.2,
+   "target": 205.0,
+   "stop_pct": -6.1,
+   "target_pct": 32.7,
+   "rr": 5.32,
+   "target_note": "",
+   "ema200": 400.7179,
+   "ema200_slope_up": false,
+   "rsi": 59.8,
+   "turnover_mln": 3698.5,
+   "low_liquidity": false,
+   "supports": [],
    "resistances": [
-    58.18
-   ]
+    446.3
+   ],
+   "strategy": "ta",
+   "comment": "пробой поддержки + разворот RSI",
+   "conflict": false,
+   "top": false
   },
   {
    "ticker": "T",
    "name": "Т-Техно ао",
    "side": "sell",
    "signals": [
-    "у сопротивления 275.50 (3 касания, до уровня 0.6%), свеча разворота: падающая звезда",
-    "отскок вниз от EMA200 277.54 при нисходящем наклоне"
+    "у сопротивления 275.50 (3 касания, до уровня 0.9%)",
+    "отскок вниз от EMA200 277.53 при нисходящем наклоне"
    ],
    "count": 2,
    "rating": "⭐⭐",
    "rating_label": "интересно",
    "date": "2026-11-11",
-   "close": 273.98,
-   "entry": 273.98,
+   "close": 272.9,
+   "entry": 272.9,
    "stop": 278.255,
    "target": 247.46,
-   "rr": 6.2,
+   "stop_pct": -2.0,
+   "target_pct": 9.3,
+   "rr": 4.75,
    "target_note": "",
-   "ema200": 277.5375,
+   "ema200": 277.5267,
    "ema200_slope_up": false,
-   "rsi": 54.8,
-   "turnover_mln": 3142.9,
+   "rsi": 52.4,
+   "turnover_mln": 3161.7,
    "low_liquidity": false,
    "supports": [
     247.46
@@ -206,63 +491,150 @@
     275.5,
     306.48,
     328.72
-   ]
+   ],
+   "strategy": "ta",
+   "comment": "сопротивление + ниже EMA200",
+   "conflict": false,
+   "top": false
   },
   {
-   "ticker": "SBER",
-   "name": "Сбербанк",
-   "side": "buy",
+   "ticker": "ETLN",
+   "name": "ЭталонГруп",
+   "side": "sell",
    "signals": [
-    "на поддержке 289.70 (2 касания, до уровня 0.9%)",
-    "откат к EMA200 292.17 (+0.1%), наклон вверх — откат в восходящем тренде"
+    "пробой EMA200 24.77 вниз, 3 закрытия ниже",
+    "RSI вышел из перекупленности (73 → 70, 2026-11-09)"
    ],
    "count": 2,
    "rating": "⭐⭐",
    "rating_label": "интересно",
    "date": "2026-11-11",
-   "close": 292.42,
-   "entry": 292.42,
-   "stop": 286.803,
-   "target": 320.3775,
-   "rr": 4.98,
+   "close": 23.5,
+   "entry": 23.5,
+   "stop": 24.7787,
+   "target": 20.77,
+   "stop_pct": -5.4,
+   "target_pct": 11.6,
+   "rr": 2.14,
    "target_note": "",
-   "ema200": 292.1703,
-   "ema200_slope_up": true,
-   "rsi": 52.2,
-   "turnover_mln": 4517.3,
+   "ema200": 24.7714,
+   "ema200_slope_up": false,
+   "rsi": 59.0,
+   "turnover_mln": 99.2,
    "low_liquidity": false,
    "supports": [
-    266.78,
-    272.0,
-    289.7
+    19.25,
+    20.77
    ],
    "resistances": [
-    320.38,
-    327.11
-   ]
+    24.53,
+    28.16
+   ],
+   "strategy": "ta",
+   "comment": "ниже EMA200 + разворот RSI",
+   "conflict": false,
+   "top": false
+  },
+  {
+   "ticker": "SELG",
+   "name": "Селигдар",
+   "side": "sell",
+   "signals": [
+    "пробой EMA200 40.34 вниз, 5 закрытия ниже",
+    "медвежья дивергенция (2026-10-29 → 2026-11-05)"
+   ],
+   "count": 2,
+   "rating": "⭐⭐",
+   "rating_label": "интересно",
+   "date": "2026-11-11",
+   "close": 38.62,
+   "entry": 38.62,
+   "stop": 41.915,
+   "target": 32.195,
+   "stop_pct": -8.5,
+   "target_pct": 16.6,
+   "rr": 1.95,
+   "target_note": "",
+   "ema200": 40.3392,
+   "ema200_slope_up": true,
+   "rsi": 43.0,
+   "turnover_mln": 598.9,
+   "low_liquidity": false,
+   "supports": [
+    32.2
+   ],
+   "resistances": [
+    41.5,
+    44.83,
+    48.14
+   ],
+   "strategy": "ta",
+   "comment": "ниже EMA200 + дивергенция RSI",
+   "conflict": false,
+   "top": false
+  },
+  {
+   "ticker": "UPRO",
+   "name": "Юнипро ао",
+   "side": "sell",
+   "signals": [
+    "пробой EMA200 1.15 вниз, 2 закрытия ниже",
+    "медвежья дивергенция (2026-10-13 → 2026-11-02)"
+   ],
+   "count": 2,
+   "rating": "⭐⭐",
+   "rating_label": "интересно",
+   "date": "2026-11-11",
+   "close": 1.137,
+   "entry": 1.137,
+   "stop": 1.2489,
+   "target": 0.9622,
+   "stop_pct": -9.8,
+   "target_pct": 15.4,
+   "rr": 1.56,
+   "target_note": "",
+   "ema200": 1.149,
+   "ema200_slope_up": true,
+   "rsi": 49.0,
+   "turnover_mln": 230.2,
+   "low_liquidity": false,
+   "supports": [
+    0.96
+   ],
+   "resistances": [
+    1.24,
+    1.43,
+    1.46
+   ],
+   "strategy": "ta",
+   "comment": "ниже EMA200 + дивергенция RSI",
+   "conflict": false,
+   "top": false
   },
   {
    "ticker": "SNGSP",
    "name": "Сургнфгз-п",
    "side": "sell",
    "signals": [
-    "у сопротивления 42.98 (6 касаний, до уровня 0.9%)",
+    "у сопротивления 42.98 (6 касаний, до уровня 1.2%)",
     "RSI вышел из перекупленности (76 → 67, 2026-11-10)"
    ],
    "count": 2,
    "rating": "⭐⭐",
    "rating_label": "интересно",
    "date": "2026-11-11",
-   "close": 42.6,
-   "entry": 42.6,
+   "close": 42.455,
+   "entry": 42.455,
    "stop": 43.4123,
    "target": 41.0475,
-   "rr": 1.91,
+   "stop_pct": -2.3,
+   "target_pct": 3.3,
+   "rr": 1.47,
    "target_note": "",
-   "ema200": 41.3444,
+   "ema200": 41.3429,
    "ema200_slope_up": true,
-   "rsi": 61.4,
-   "turnover_mln": 651.2,
+   "rsi": 59.0,
+   "turnover_mln": 654.8,
    "low_liquidity": false,
    "supports": [
     39.45,
@@ -271,107 +643,11 @@
    ],
    "resistances": [
     42.98
-   ]
-  },
-  {
-   "ticker": "DOMRF",
-   "name": "ДОМ.РФ",
-   "side": "buy",
-   "signals": [
-    "на поддержке 2108.53 (3 касания, до уровня 0.8%)",
-    "откат к EMA200 2125.59 (+0.0%), наклон вниз — слабее"
    ],
-   "count": 2,
-   "rating": "⭐⭐",
-   "rating_label": "интересно",
-   "date": "2026-11-11",
-   "close": 2126.3,
-   "entry": 2126.3,
-   "stop": 2087.448,
-   "target": 2198.2667,
-   "rr": 1.85,
-   "target_note": "",
-   "ema200": 2125.5855,
-   "ema200_slope_up": false,
-   "rsi": 53.7,
-   "turnover_mln": 461.0,
-   "low_liquidity": false,
-   "supports": [
-    2035.73,
-    2076.0,
-    2108.53
-   ],
-   "resistances": [
-    2145.1,
-    2198.27,
-    2254.97
-   ]
-  },
-  {
-   "ticker": "CHMF",
-   "name": "СевСт-ао",
-   "side": "sell",
-   "signals": [
-    "у сопротивления 690.20 (2 касания, до уровня 0.5%)",
-    "пробой EMA200 701.35 вниз, 2 закрытия ниже"
-   ],
-   "count": 2,
-   "rating": "⭐⭐",
-   "rating_label": "интересно",
-   "date": "2026-11-11",
-   "close": 687.0,
-   "entry": 687.0,
-   "stop": 697.102,
-   "target": 669.3,
-   "rr": 1.75,
-   "target_note": "",
-   "ema200": 701.3521,
-   "ema200_slope_up": false,
-   "rsi": 46.7,
-   "turnover_mln": 754.2,
-   "low_liquidity": false,
-   "supports": [
-    583.4,
-    615.9,
-    669.3
-   ],
-   "resistances": [
-    690.2,
-    701.8,
-    768.5
-   ]
-  },
-  {
-   "ticker": "TATNP",
-   "name": "Татнфт 3ап",
-   "side": "sell",
-   "signals": [
-    "пробой EMA200 565.97 вниз, 2 закрытия ниже",
-    "пробой поддержки 581.00 2026-11-10 на объёме ×2.1"
-   ],
-   "count": 2,
-   "rating": "⭐⭐",
-   "rating_label": "интересно",
-   "date": "2026-11-11",
-   "close": 563.9,
-   "entry": 563.9,
-   "stop": 586.81,
-   "target": 530.5,
-   "rr": 1.46,
-   "target_note": "",
-   "ema200": 565.9653,
-   "ema200_slope_up": true,
-   "rsi": 27.6,
-   "turnover_mln": 322.9,
-   "low_liquidity": false,
-   "supports": [
-    530.5
-   ],
-   "resistances": [
-    581.45,
-    594.0,
-    615.05
-   ]
+   "strategy": "ta",
+   "comment": "сопротивление + разворот RSI",
+   "conflict": false,
+   "top": false
   },
   {
    "ticker": "ALRS",
@@ -385,23 +661,66 @@
    "rating": "⭐⭐",
    "rating_label": "интересно",
    "date": "2026-11-11",
-   "close": 22.99,
-   "entry": 22.99,
+   "close": 22.85,
+   "entry": 22.85,
    "stop": 25.0581,
    "target": 20.01,
-   "rr": 1.44,
+   "stop_pct": -9.7,
+   "target_pct": 12.4,
+   "rr": 1.29,
    "target_note": "",
-   "ema200": 23.8916,
+   "ema200": 23.8902,
    "ema200_slope_up": false,
-   "rsi": 60.1,
-   "turnover_mln": 1359.5,
+   "rsi": 58.9,
+   "turnover_mln": 1363.8,
    "low_liquidity": false,
    "supports": [
     18.03,
     18.76,
     20.01
    ],
-   "resistances": []
+   "resistances": [],
+   "strategy": "ta",
+   "comment": "ниже EMA200 + разворот RSI",
+   "conflict": false,
+   "top": false
+  },
+  {
+   "ticker": "SOFL",
+   "name": "iСофтлайн",
+   "side": "sell",
+   "signals": [
+    "у сопротивления 53.01 (2 касания, до уровня 1.3%)",
+    "RSI вышел из перекупленности (71 → 62, 2026-11-09)"
+   ],
+   "count": 2,
+   "rating": "⭐⭐",
+   "rating_label": "интересно",
+   "date": "2026-11-11",
+   "close": 52.34,
+   "entry": 52.34,
+   "stop": 53.5401,
+   "target": 51.0,
+   "stop_pct": -2.3,
+   "target_pct": 2.6,
+   "rr": 1.12,
+   "target_note": "",
+   "ema200": 56.2332,
+   "ema200_slope_up": false,
+   "rsi": 51.5,
+   "turnover_mln": 51.4,
+   "low_liquidity": false,
+   "supports": [
+    51.0
+   ],
+   "resistances": [
+    53.01,
+    66.56
+   ],
+   "strategy": "ta",
+   "comment": "сопротивление + разворот RSI",
+   "conflict": false,
+   "top": false
   },
   {
    "ticker": "MOEX",
@@ -415,16 +734,18 @@
    "rating": "⭐⭐",
    "rating_label": "интересно",
    "date": "2026-11-11",
-   "close": 159.65,
-   "entry": 159.65,
+   "close": 159.47,
+   "entry": 159.47,
    "stop": 165.4229,
    "target": 153.065,
-   "rr": 1.14,
+   "stop_pct": -3.7,
+   "target_pct": 4.0,
+   "rr": 1.08,
    "target_note": "",
-   "ema200": 160.6084,
+   "ema200": 160.6066,
    "ema200_slope_up": true,
-   "rsi": 48.6,
-   "turnover_mln": 651.7,
+   "rsi": 48.1,
+   "turnover_mln": 653.5,
    "low_liquidity": false,
    "supports": [
     146.09,
@@ -435,125 +756,376 @@
     163.78,
     172.89,
     177.14
-   ]
+   ],
+   "strategy": "ta",
+   "comment": "ниже EMA200 + дивергенция RSI",
+   "conflict": false,
+   "top": false
   },
   {
-   "ticker": "NLMK",
-   "name": "НЛМК ао",
+   "ticker": "TATNP",
+   "name": "Татнфт 3ап",
    "side": "sell",
    "signals": [
-    "у сопротивления 76.60 (2 касания, до уровня 2.0%)",
-    "пробой EMA200 77.56 вниз, 2 закрытия ниже"
+    "пробой EMA200 565.92 вниз, 2 закрытия ниже",
+    "пробой поддержки 581.00 2026-11-10 на объёме ×2.1"
    ],
    "count": 2,
    "rating": "⭐⭐",
    "rating_label": "интересно",
    "date": "2026-11-11",
-   "close": 75.08,
-   "entry": 75.08,
-   "stop": 77.366,
-   "target": 73.11,
-   "rr": 0.86,
+   "close": 559.3,
+   "entry": 559.3,
+   "stop": 586.81,
+   "target": 530.5,
+   "stop_pct": -4.9,
+   "target_pct": 5.1,
+   "rr": 1.05,
    "target_note": "",
-   "ema200": 77.5598,
-   "ema200_slope_up": false,
-   "rsi": 48.3,
-   "turnover_mln": 528.1,
+   "ema200": 565.9195,
+   "ema200_slope_up": true,
+   "rsi": 26.2,
+   "turnover_mln": 324.7,
    "low_liquidity": false,
    "supports": [
-    55.52,
-    73.11
+    530.5
    ],
    "resistances": [
-    76.6
-   ]
+    581.45,
+    594.0,
+    615.05
+   ],
+   "strategy": "ta",
+   "comment": "ниже EMA200 + пробой поддержки",
+   "conflict": false,
+   "top": false
   },
   {
-   "ticker": "RTKM",
-   "name": "Ростел -ао",
+   "ticker": "CHMF",
+   "name": "СевСт-ао",
    "side": "sell",
    "signals": [
-    "RSI вышел из перекупленности (71 → 67, 2026-11-10)",
-    "медвежья дивергенция (2026-10-28 → 2026-11-03)"
+    "у сопротивления 690.20 (2 касания, до уровня 1.1%)",
+    "пробой EMA200 701.31 вниз, 2 закрытия ниже"
    ],
    "count": 2,
    "rating": "⭐⭐",
    "rating_label": "интересно",
    "date": "2026-11-11",
-   "close": 45.96,
-   "entry": 45.96,
-   "stop": 58.7618,
-   "target": 42.08,
-   "rr": 0.3,
+   "close": 682.8,
+   "entry": 682.8,
+   "stop": 697.102,
+   "target": 669.3,
+   "stop_pct": -2.1,
+   "target_pct": 2.0,
+   "rr": 0.94,
    "target_note": "",
-   "ema200": 45.7035,
+   "ema200": 701.3103,
    "ema200_slope_up": false,
-   "rsi": 62.3,
-   "turnover_mln": 364.3,
+   "rsi": 45.0,
+   "turnover_mln": 757.2,
    "low_liquidity": false,
    "supports": [
-    39.66,
-    40.5,
-    42.08
+    583.4,
+    615.9,
+    669.3
    ],
    "resistances": [
-    58.18
-   ]
+    690.2,
+    701.8,
+    768.5
+   ],
+   "strategy": "ta",
+   "comment": "сопротивление + ниже EMA200",
+   "conflict": false,
+   "top": false
   },
   {
-   "ticker": "MTSS",
-   "name": "МТС-ао",
+   "ticker": "MVID",
+   "name": "М.видео",
+   "side": "sell",
+   "signals": [
+    "отскок вниз от EMA200 51.83 при нисходящем наклоне",
+    "RSI вышел из перекупленности (71 → 63, 2026-11-10)"
+   ],
+   "count": 2,
+   "rating": "⭐⭐",
+   "rating_label": "интересно",
+   "date": "2026-11-11",
+   "close": 51.1,
+   "entry": 51.1,
+   "stop": 65.246,
+   "target": 42.0333,
+   "stop_pct": -27.7,
+   "target_pct": 17.7,
+   "rr": 0.64,
+   "target_note": "",
+   "ema200": 51.8265,
+   "ema200_slope_up": false,
+   "rsi": 57.7,
+   "turnover_mln": 110.9,
+   "low_liquidity": false,
+   "supports": [
+    41.28,
+    42.03
+   ],
+   "resistances": [
+    64.6,
+    68.03,
+    69.2
+   ],
+   "strategy": "ta",
+   "comment": "ниже EMA200 + разворот RSI",
+   "conflict": false,
+   "top": false
+  },
+  {
+   "ticker": "SIBN",
+   "name": "Газпрнефть",
    "side": "buy",
    "signals": [
-    "на поддержке 175.18 (3 касания, до уровня 1.5%)"
+    "на поддержке 520.55 (3 касания, до уровня 0.0%)",
+    "откат к EMA200 519.42 (+0.3%), наклон вверх — откат в восходящем тренде"
+   ],
+   "count": 2,
+   "rating": "⭐⭐",
+   "rating_label": "интересно",
+   "date": "2026-11-11",
+   "close": 520.8,
+   "entry": 520.8,
+   "stop": 515.3445,
+   "target": 522.375,
+   "stop_pct": -1.0,
+   "target_pct": 0.3,
+   "rr": 0.29,
+   "target_note": "",
+   "ema200": 519.4162,
+   "ema200_slope_up": true,
+   "rsi": 28.2,
+   "turnover_mln": 495.5,
+   "low_liquidity": false,
+   "supports": [
+    453.43,
+    500.59,
+    520.55
+   ],
+   "resistances": [
+    522.38,
+    546.0,
+    567.5
+   ],
+   "strategy": "ta",
+   "comment": "поддержка + EMA200 ↑",
+   "conflict": true,
+   "top": false
+  },
+  {
+   "ticker": "DOMRF",
+   "name": "ДОМ.РФ",
+   "side": "sell",
+   "signals": [
+    "у сопротивления 2145.10 (2 касания, до уровня 1.2%)",
+    "отскок вниз от EMA200 2125.52 при нисходящем наклоне"
+   ],
+   "count": 2,
+   "rating": "⭐⭐",
+   "rating_label": "интересно",
+   "date": "2026-11-11",
+   "close": 2119.4,
+   "entry": 2119.4,
+   "stop": 2166.551,
+   "target": 2108.5333,
+   "stop_pct": -2.2,
+   "target_pct": 0.5,
+   "rr": 0.23,
+   "target_note": "",
+   "ema200": 2125.5168,
+   "ema200_slope_up": false,
+   "rsi": 51.5,
+   "turnover_mln": 461.4,
+   "low_liquidity": false,
+   "supports": [
+    2035.73,
+    2076.0,
+    2108.53
+   ],
+   "resistances": [
+    2145.1,
+    2198.27,
+    2254.97
+   ],
+   "strategy": "ta",
+   "comment": "сопротивление + ниже EMA200",
+   "conflict": true,
+   "top": false
+  },
+  {
+   "ticker": "SFIN",
+   "name": "ЭсЭфАй ао",
+   "side": "sell",
+   "signals": [
+    "RSI вышел из перекупленности (70 → 70, 2026-11-09)",
+    "медвежья дивергенция (2026-10-27 → 2026-11-06)"
+   ],
+   "count": 2,
+   "rating": "⭐⭐",
+   "rating_label": "интересно",
+   "date": "2026-11-11",
+   "close": 605.2,
+   "entry": 605.2,
+   "stop": 1043.33,
+   "target": 543.7,
+   "stop_pct": -72.4,
+   "target_pct": 10.2,
+   "rr": 0.14,
+   "target_note": "",
+   "ema200": 668.1918,
+   "ema200_slope_up": false,
+   "rsi": 48.5,
+   "turnover_mln": 265.9,
+   "low_liquidity": false,
+   "supports": [
+    524.5,
+    543.7
+   ],
+   "resistances": [
+    1033.0
+   ],
+   "strategy": "ta",
+   "comment": "разворот RSI + дивергенция RSI",
+   "conflict": false,
+   "top": false
+  },
+  {
+   "ticker": "MGKL",
+   "name": "МГКЛ",
+   "side": "buy",
+   "signals": [
+    "бычья дивергенция (2026-11-06 → 2026-11-11)"
    ],
    "count": 1,
    "rating": "⭐",
    "rating_label": "на радар",
    "date": "2026-11-11",
-   "close": 177.8,
-   "entry": 177.8,
-   "stop": 173.4315,
-   "target": 227.9625,
-   "rr": 11.48,
+   "close": 0.4355,
+   "entry": 0.4355,
+   "stop": 0.3995,
+   "target": 2.0293,
+   "stop_pct": -8.3,
+   "target_pct": 366.0,
+   "rr": 44.23,
    "target_note": "",
-   "ema200": 191.6821,
+   "ema200": 1.9941,
    "ema200_slope_up": false,
-   "rsi": 53.7,
-   "turnover_mln": 311.4,
+   "rsi": 10.5,
+   "turnover_mln": 104.5,
+   "low_liquidity": false,
+   "supports": [],
+   "resistances": [
+    2.03,
+    2.43,
+    2.64
+   ],
+   "strategy": "ta",
+   "comment": "дивергенция RSI",
+   "conflict": false,
+   "top": true
+  },
+  {
+   "ticker": "MSNG",
+   "name": "+МосЭнерго",
+   "side": "buy",
+   "signals": [
+    "на поддержке 1.32 (2 касания, до уровня 1.2%)"
+   ],
+   "count": 1,
+   "rating": "⭐",
+   "rating_label": "на радар",
+   "date": "2026-11-11",
+   "close": 1.3315,
+   "entry": 1.3315,
+   "stop": 1.3026,
+   "target": 1.973,
+   "stop_pct": -2.2,
+   "target_pct": 48.2,
+   "rr": 22.19,
+   "target_note": "",
+   "ema200": 1.596,
+   "ema200_slope_up": false,
+   "rsi": 44.5,
+   "turnover_mln": 93.3,
    "low_liquidity": false,
    "supports": [
-    165.62,
-    172.07,
-    175.18
+    1.3,
+    1.32
    ],
    "resistances": [
-    179.45,
-    227.96,
-    231.23
-   ]
+    1.97,
+    2.0,
+    2.29
+   ],
+   "strategy": "ta",
+   "comment": "поддержка",
+   "conflict": false,
+   "top": true
+  },
+  {
+   "ticker": "SNGS",
+   "name": "Сургнфгз",
+   "side": "buy",
+   "signals": [
+    "на поддержке 16.74 (2 касания, до уровня 1.7%)"
+   ],
+   "count": 1,
+   "rating": "⭐",
+   "rating_label": "на радар",
+   "date": "2026-11-11",
+   "close": 17.035,
+   "entry": 17.035,
+   "stop": 16.5775,
+   "target": 25.15,
+   "stop_pct": -2.7,
+   "target_pct": 47.6,
+   "rr": 17.74,
+   "target_note": "",
+   "ema200": 17.3455,
+   "ema200_slope_up": true,
+   "rsi": 45.8,
+   "turnover_mln": 546.9,
+   "low_liquidity": false,
+   "supports": [
+    14.52,
+    16.74
+   ],
+   "resistances": [],
+   "strategy": "ta",
+   "comment": "поддержка",
+   "conflict": true,
+   "top": false
   },
   {
    "ticker": "RUAL",
    "name": "РУСАЛ ао",
    "side": "buy",
    "signals": [
-    "на поддержке 23.85 (2 касания, до уровня 1.9%)"
+    "на поддержке 23.85 (2 касания, до уровня 0.6%)"
    ],
    "count": 1,
    "rating": "⭐",
    "rating_label": "на радар",
    "date": "2026-11-11",
-   "close": 24.305,
-   "entry": 24.305,
+   "close": 24.0,
+   "entry": 24.0,
    "stop": 23.6115,
    "target": 28.305,
-   "rr": 5.77,
+   "stop_pct": -1.6,
+   "target_pct": 17.9,
+   "rr": 11.08,
    "target_note": "",
-   "ema200": 28.0612,
+   "ema200": 28.0582,
    "ema200_slope_up": false,
-   "rsi": 47.6,
-   "turnover_mln": 498.2,
+   "rsi": 44.4,
+   "turnover_mln": 501.1,
    "low_liquidity": false,
    "supports": [
     23.85
@@ -561,7 +1133,48 @@
    "resistances": [
     28.3,
     43.22
-   ]
+   ],
+   "strategy": "ta",
+   "comment": "поддержка",
+   "conflict": false,
+   "top": true
+  },
+  {
+   "ticker": "MRKV",
+   "name": "РсетВол ао",
+   "side": "sell",
+   "signals": [
+    "у сопротивления 0.22 (2 касания, до уровня 0.5%)"
+   ],
+   "count": 1,
+   "rating": "⭐",
+   "rating_label": "на радар",
+   "date": "2026-11-11",
+   "close": 0.2212,
+   "entry": 0.2212,
+   "stop": 0.2246,
+   "target": 0.1935,
+   "stop_pct": -1.5,
+   "target_pct": 12.5,
+   "rr": 8.08,
+   "target_note": "",
+   "ema200": 0.198,
+   "ema200_slope_up": true,
+   "rsi": 49.8,
+   "turnover_mln": 53.4,
+   "low_liquidity": false,
+   "supports": [
+    0.18,
+    0.19,
+    0.19
+   ],
+   "resistances": [
+    0.22
+   ],
+   "strategy": "ta",
+   "comment": "сопротивление",
+   "conflict": false,
+   "top": false
   },
   {
    "ticker": "YDEX",
@@ -578,12 +1191,14 @@
    "entry": 3388.5,
    "stop": 3327.885,
    "target": 3721.5,
+   "stop_pct": -1.8,
+   "target_pct": 9.8,
    "rr": 5.49,
    "target_note": "",
    "ema200": 3756.0614,
    "ema200_slope_up": false,
    "rsi": 39.8,
-   "turnover_mln": 2648.0,
+   "turnover_mln": 2663.5,
    "low_liquidity": false,
    "supports": [
     3361.5
@@ -592,29 +1207,35 @@
     3721.5,
     4090.33,
     4148.75
-   ]
+   ],
+   "strategy": "ta",
+   "comment": "поддержка",
+   "conflict": false,
+   "top": true
   },
   {
    "ticker": "SBERP",
    "name": "Сбербанк-п",
    "side": "buy",
    "signals": [
-    "на поддержке 289.72 (2 касания, до уровня 0.9%)"
+    "на поддержке 289.72 (2 касания, до уровня 0.8%)"
    ],
    "count": 1,
    "rating": "⭐",
    "rating_label": "на радар",
    "date": "2026-11-11",
-   "close": 292.46,
-   "entry": 292.46,
+   "close": 292.1,
+   "entry": 292.1,
    "stop": 286.8179,
    "target": 320.255,
-   "rr": 4.93,
+   "stop_pct": -1.8,
+   "target_pct": 9.6,
+   "rr": 5.33,
    "target_note": "",
-   "ema200": 292.4728,
+   "ema200": 292.4693,
    "ema200_slope_up": true,
-   "rsi": 51.4,
-   "turnover_mln": 320.3,
+   "rsi": 50.6,
+   "turnover_mln": 321.0,
    "low_liquidity": false,
    "supports": [
     266.93,
@@ -624,7 +1245,49 @@
    "resistances": [
     320.25,
     327.29
-   ]
+   ],
+   "strategy": "ta",
+   "comment": "поддержка",
+   "conflict": false,
+   "top": true
+  },
+  {
+   "ticker": "SBER",
+   "name": "Сбербанк",
+   "side": "buy",
+   "signals": [
+    "на поддержке 289.70 (2 касания, до уровня 0.8%)"
+   ],
+   "count": 1,
+   "rating": "⭐",
+   "rating_label": "на радар",
+   "date": "2026-11-11",
+   "close": 292.15,
+   "entry": 292.15,
+   "stop": 286.803,
+   "target": 320.3775,
+   "stop_pct": -1.8,
+   "target_pct": 9.7,
+   "rr": 5.28,
+   "target_note": "",
+   "ema200": 292.1676,
+   "ema200_slope_up": true,
+   "rsi": 51.5,
+   "turnover_mln": 4530.4,
+   "low_liquidity": false,
+   "supports": [
+    266.78,
+    272.0,
+    289.7
+   ],
+   "resistances": [
+    320.38,
+    327.11
+   ],
+   "strategy": "ta",
+   "comment": "поддержка",
+   "conflict": false,
+   "top": false
   },
   {
    "ticker": "VKCO",
@@ -637,16 +1300,18 @@
    "rating": "⭐",
    "rating_label": "на радар",
    "date": "2026-11-11",
-   "close": 219.95,
-   "entry": 219.95,
+   "close": 219.25,
+   "entry": 219.25,
    "stop": 249.0155,
    "target": 128.8,
-   "rr": 3.14,
+   "stop_pct": -13.6,
+   "target_pct": 41.3,
+   "rr": 3.04,
    "target_note": "",
-   "ema200": 178.5046,
+   "ema200": 178.4977,
    "ema200_slope_up": true,
-   "rsi": 68.9,
-   "turnover_mln": 8171.0,
+   "rsi": 68.4,
+   "turnover_mln": 8175.6,
    "low_liquidity": false,
    "supports": [
     109.7,
@@ -656,29 +1321,108 @@
     246.55,
     251.15,
     275.3
-   ]
+   ],
+   "strategy": "ta",
+   "comment": "разворот RSI",
+   "conflict": false,
+   "top": false
+  },
+  {
+   "ticker": "SGZH",
+   "name": "Сегежа",
+   "side": "sell",
+   "signals": [
+    "пробой поддержки 0.82 2026-11-09 на объёме ×2.5"
+   ],
+   "count": 1,
+   "rating": "⭐",
+   "rating_label": "на радар",
+   "date": "2026-11-11",
+   "close": 0.7995,
+   "entry": 0.7995,
+   "stop": 0.8297,
+   "target": 0.717,
+   "stop_pct": -3.8,
+   "target_pct": 10.3,
+   "rr": 2.73,
+   "target_note": "",
+   "ema200": 0.7928,
+   "ema200_slope_up": false,
+   "rsi": 58.1,
+   "turnover_mln": 296.0,
+   "low_liquidity": false,
+   "supports": [
+    0.63,
+    0.72
+   ],
+   "resistances": [
+    0.92
+   ],
+   "strategy": "ta",
+   "comment": "пробой поддержки",
+   "conflict": true,
+   "top": false
+  },
+  {
+   "ticker": "PHOR",
+   "name": "ФосАгро ао",
+   "side": "buy",
+   "signals": [
+    "на поддержке 5059.50 (2 касания, до уровня 0.8%)"
+   ],
+   "count": 1,
+   "rating": "⭐",
+   "rating_label": "на радар",
+   "date": "2026-11-11",
+   "close": 5099.0,
+   "entry": 5099.0,
+   "stop": 5008.905,
+   "target": 5344.0,
+   "stop_pct": -1.8,
+   "target_pct": 4.8,
+   "rr": 2.72,
+   "target_note": "",
+   "ema200": 5659.1441,
+   "ema200_slope_up": false,
+   "rsi": 35.5,
+   "turnover_mln": 941.0,
+   "low_liquidity": false,
+   "supports": [
+    4959.67,
+    5059.5
+   ],
+   "resistances": [
+    5344.0,
+    5864.0
+   ],
+   "strategy": "ta",
+   "comment": "поддержка",
+   "conflict": false,
+   "top": false
   },
   {
    "ticker": "ROSN",
    "name": "Роснефть",
    "side": "sell",
    "signals": [
-    "пробой EMA200 367.62 вниз, 5 закрытия ниже"
+    "пробой EMA200 367.60 вниз, 5 закрытия ниже"
    ],
    "count": 1,
    "rating": "⭐",
    "rating_label": "на радар",
    "date": "2026-11-11",
-   "close": 347.45,
-   "entry": 347.45,
+   "close": 345.95,
+   "entry": 345.95,
    "stop": 361.2265,
    "target": 304.8,
-   "rr": 3.1,
+   "stop_pct": -4.4,
+   "target_pct": 11.9,
+   "rr": 2.69,
    "target_note": "",
-   "ema200": 367.6172,
+   "ema200": 367.6023,
    "ema200_slope_up": true,
-   "rsi": 27.7,
-   "turnover_mln": 2389.5,
+   "rsi": 26.9,
+   "turnover_mln": 2393.8,
    "low_liquidity": false,
    "supports": [
     288.43,
@@ -688,7 +1432,84 @@
     357.65,
     385.0,
     515.83
-   ]
+   ],
+   "strategy": "ta",
+   "comment": "ниже EMA200",
+   "conflict": false,
+   "top": false
+  },
+  {
+   "ticker": "RNFT",
+   "name": "РуссНфт ао",
+   "side": "sell",
+   "signals": [
+    "у сопротивления 86.78 (2 касания, до уровня 0.6%), свеча разворота: медвежье поглощение"
+   ],
+   "count": 1,
+   "rating": "⭐",
+   "rating_label": "на радар",
+   "date": "2026-11-11",
+   "close": 86.25,
+   "entry": 86.25,
+   "stop": 87.6428,
+   "target": 82.525,
+   "stop_pct": -1.6,
+   "target_pct": 4.3,
+   "rr": 2.67,
+   "target_note": "",
+   "ema200": 91.5576,
+   "ema200_slope_up": false,
+   "rsi": 37.2,
+   "turnover_mln": 210.2,
+   "low_liquidity": false,
+   "supports": [
+    67.12,
+    76.05,
+    82.53
+   ],
+   "resistances": [
+    86.78,
+    99.4
+   ],
+   "strategy": "ta",
+   "comment": "сопротивление + медвежье поглощение",
+   "conflict": false,
+   "top": false
+  },
+  {
+   "ticker": "FESH",
+   "name": "ДВМП ао",
+   "side": "sell",
+   "signals": [
+    "RSI вышел из перекупленности (75 → 68, 2026-11-11)"
+   ],
+   "count": 1,
+   "rating": "⭐",
+   "rating_label": "на радар",
+   "date": "2026-11-11",
+   "close": 75.0,
+   "entry": 75.0,
+   "stop": 78.5376,
+   "target": 65.965,
+   "stop_pct": -4.7,
+   "target_pct": 12.0,
+   "rr": 2.55,
+   "target_note": "",
+   "ema200": 63.7348,
+   "ema200_slope_up": true,
+   "rsi": 67.8,
+   "turnover_mln": 128.3,
+   "low_liquidity": false,
+   "supports": [
+    55.66,
+    58.0,
+    65.97
+   ],
+   "resistances": [],
+   "strategy": "ta",
+   "comment": "разворот RSI",
+   "conflict": false,
+   "top": false
   },
   {
    "ticker": "POSI",
@@ -701,118 +1522,139 @@
    "rating": "⭐",
    "rating_label": "на радар",
    "date": "2026-11-11",
-   "close": 1311.0,
-   "entry": 1311.0,
+   "close": 1310.2,
+   "entry": 1310.2,
    "stop": 1413.192,
    "target": 1064.1,
-   "rr": 2.42,
+   "stop_pct": -7.9,
+   "target_pct": 18.8,
+   "rr": 2.39,
    "target_note": "",
-   "ema200": 1049.7148,
+   "ema200": 1049.7069,
    "ema200_slope_up": true,
    "rsi": 62.4,
-   "turnover_mln": 808.1,
+   "turnover_mln": 810.9,
    "low_liquidity": false,
    "supports": [
     724.3,
     970.6,
     1064.1
    ],
-   "resistances": []
+   "resistances": [],
+   "strategy": "ta",
+   "comment": "разворот RSI",
+   "conflict": false,
+   "top": false
   },
   {
-   "ticker": "MDMG",
-   "name": "MDMG-ао",
+   "ticker": "NVTK",
+   "name": "Новатэк ао",
    "side": "sell",
    "signals": [
-    "пробой EMA200 1299.81 вниз, 2 закрытия ниже"
+    "у сопротивления 1094.47 (3 касания, до уровня 1.4%)"
    ],
    "count": 1,
    "rating": "⭐",
    "rating_label": "на радар",
    "date": "2026-11-11",
-   "close": 1280.2,
-   "entry": 1280.2,
-   "stop": 1328.5203,
-   "target": 1165.1,
+   "close": 1078.7,
+   "entry": 1078.7,
+   "stop": 1105.4113,
+   "target": 1015.25,
+   "stop_pct": -2.5,
+   "target_pct": 5.9,
    "rr": 2.38,
    "target_note": "",
-   "ema200": 1299.8061,
-   "ema200_slope_up": false,
-   "rsi": 39.1,
-   "turnover_mln": 73.1,
+   "ema200": 1076.9729,
+   "ema200_slope_up": true,
+   "rsi": 36.8,
+   "turnover_mln": 2710.9,
    "low_liquidity": false,
    "supports": [
-    1165.1,
-    1270.15
+    867.33,
+    903.8,
+    1015.25
    ],
    "resistances": [
-    1315.37,
-    1357.25,
-    1369.0
-   ]
+    1094.47,
+    1221.15
+   ],
+   "strategy": "ta",
+   "comment": "сопротивление",
+   "conflict": true,
+   "top": false
   },
   {
-   "ticker": "GMKN",
-   "name": "ГМКНорНик",
+   "ticker": "UWGN",
+   "name": "ОВК ао",
    "side": "sell",
    "signals": [
-    "у сопротивления 120.11 (2 касания, до уровня 1.0%)"
+    "RSI вышел из перекупленности (81 → 69, 2026-11-10)"
    ],
    "count": 1,
    "rating": "⭐",
    "rating_label": "на радар",
    "date": "2026-11-11",
-   "close": 118.88,
-   "entry": 118.88,
-   "stop": 121.3111,
-   "target": 113.605,
-   "rr": 2.17,
+   "close": 24.64,
+   "entry": 24.64,
+   "stop": 29.8657,
+   "target": 12.48,
+   "stop_pct": -21.2,
+   "target_pct": 49.4,
+   "rr": 2.33,
    "target_note": "",
-   "ema200": 123.4918,
-   "ema200_slope_up": false,
-   "rsi": 59.2,
-   "turnover_mln": 1405.4,
+   "ema200": 22.0699,
+   "ema200_slope_up": true,
+   "rsi": 71.5,
+   "turnover_mln": 108.9,
    "low_liquidity": false,
-   "supports": [
-    110.65,
-    113.61
-   ],
+   "supports": [],
    "resistances": [
-    120.11,
-    133.79,
-    135.94
-   ]
+    29.57
+   ],
+   "strategy": "ta",
+   "comment": "разворот RSI",
+   "conflict": false,
+   "top": false
   },
   {
-   "ticker": "MAGN",
-   "name": "ММК",
-   "side": "sell",
+   "ticker": "MTLR",
+   "name": "Мечел ао",
+   "side": "buy",
    "signals": [
-    "пробой EMA200 22.76 вниз, 2 закрытия ниже"
+    "на поддержке 42.50 (2 касания, до уровня 1.9%)"
    ],
    "count": 1,
    "rating": "⭐",
    "rating_label": "на радар",
    "date": "2026-11-11",
-   "close": 22.23,
-   "entry": 22.23,
-   "stop": 22.9624,
-   "target": 20.7825,
-   "rr": 1.98,
+   "close": 43.3,
+   "entry": 43.3,
+   "stop": 42.075,
+   "target": 45.97,
+   "stop_pct": -2.8,
+   "target_pct": 6.2,
+   "rr": 2.18,
    "target_note": "",
-   "ema200": 22.7635,
+   "ema200": 46.7087,
    "ema200_slope_up": false,
-   "rsi": 46.0,
-   "turnover_mln": 700.8,
+   "rsi": 45.0,
+   "turnover_mln": 391.1,
    "low_liquidity": false,
    "supports": [
-    20.78
+    35.54,
+    38.53,
+    42.5
    ],
    "resistances": [
-    22.73,
-    23.59,
-    27.62
-   ]
+    45.97,
+    50.55,
+    75.22
+   ],
+   "strategy": "ta",
+   "comment": "поддержка",
+   "conflict": false,
+   "top": false
   },
   {
    "ticker": "UGLD",
@@ -825,15 +1667,17 @@
    "rating": "⭐",
    "rating_label": "на радар",
    "date": "2026-11-11",
-   "close": 0.6697,
-   "entry": 0.6697,
+   "close": 0.6683,
+   "entry": 0.6683,
    "stop": 0.6405,
    "target": 0.7234,
-   "rr": 1.84,
+   "stop_pct": -4.2,
+   "target_pct": 8.2,
+   "rr": 1.98,
    "target_note": "",
    "ema200": 0.6794,
    "ema200_slope_up": true,
-   "rsi": 34.9,
+   "rsi": 34.4,
    "turnover_mln": 90.3,
    "low_liquidity": false,
    "supports": [
@@ -844,7 +1688,121 @@
    "resistances": [
     0.72,
     0.76
-   ]
+   ],
+   "strategy": "ta",
+   "comment": "дивергенция RSI",
+   "conflict": true,
+   "top": false
+  },
+  {
+   "ticker": "ENPG",
+   "name": "ЭН+ГРУП ао",
+   "side": "buy",
+   "signals": [
+    "на поддержке 313.02 (2 касания, до уровня 1.9%)"
+   ],
+   "count": 1,
+   "rating": "⭐",
+   "rating_label": "на радар",
+   "date": "2026-11-11",
+   "close": 318.9,
+   "entry": 318.9,
+   "stop": 309.8947,
+   "target": 336.5,
+   "stop_pct": -2.8,
+   "target_pct": 5.5,
+   "rr": 1.95,
+   "target_note": "",
+   "ema200": 338.3,
+   "ema200_slope_up": false,
+   "rsi": 48.1,
+   "turnover_mln": 119.4,
+   "low_liquidity": false,
+   "supports": [
+    298.7,
+    313.02
+   ],
+   "resistances": [
+    336.5,
+    399.55,
+    458.15
+   ],
+   "strategy": "ta",
+   "comment": "поддержка",
+   "conflict": false,
+   "top": false
+  },
+  {
+   "ticker": "HYDR",
+   "name": "РусГидро",
+   "side": "sell",
+   "signals": [
+    "RSI вышел из перекупленности (83 → 67, 2026-11-09)"
+   ],
+   "count": 1,
+   "rating": "⭐",
+   "rating_label": "на радар",
+   "date": "2026-11-11",
+   "close": 0.524,
+   "entry": 0.524,
+   "stop": 0.5684,
+   "target": 0.4394,
+   "stop_pct": -8.5,
+   "target_pct": 16.2,
+   "rr": 1.91,
+   "target_note": "",
+   "ema200": 0.3965,
+   "ema200_slope_up": true,
+   "rsi": 64.9,
+   "turnover_mln": 294.3,
+   "low_liquidity": false,
+   "supports": [
+    0.42,
+    0.43,
+    0.44
+   ],
+   "resistances": [],
+   "strategy": "ta",
+   "comment": "разворот RSI",
+   "conflict": false,
+   "top": false
+  },
+  {
+   "ticker": "MAGN",
+   "name": "ММК",
+   "side": "sell",
+   "signals": [
+    "пробой EMA200 22.76 вниз, 2 закрытия ниже"
+   ],
+   "count": 1,
+   "rating": "⭐",
+   "rating_label": "на радар",
+   "date": "2026-11-11",
+   "close": 22.125,
+   "entry": 22.125,
+   "stop": 22.9624,
+   "target": 20.7825,
+   "stop_pct": -3.8,
+   "target_pct": 6.1,
+   "rr": 1.6,
+   "target_note": "",
+   "ema200": 22.7624,
+   "ema200_slope_up": false,
+   "rsi": 44.8,
+   "turnover_mln": 703.4,
+   "low_liquidity": false,
+   "supports": [
+    20.78
+   ],
+   "resistances": [
+    22.73,
+    23.59,
+    27.62
+   ],
+   "strategy": "ta",
+   "comment": "ниже EMA200",
+   "conflict": false,
+   "top": false
   },
   {
    "ticker": "MDMG",
@@ -857,16 +1815,18 @@
    "rating": "⭐",
    "rating_label": "на радар",
    "date": "2026-11-11",
-   "close": 1280.2,
-   "entry": 1280.2,
+   "close": 1279.8,
+   "entry": 1279.8,
    "stop": 1257.4485,
    "target": 1315.3667,
-   "rr": 1.55,
+   "stop_pct": -1.7,
+   "target_pct": 2.8,
+   "rr": 1.59,
    "target_note": "",
-   "ema200": 1299.8061,
+   "ema200": 1299.8021,
    "ema200_slope_up": false,
-   "rsi": 39.1,
-   "turnover_mln": 73.1,
+   "rsi": 38.9,
+   "turnover_mln": 73.2,
    "low_liquidity": false,
    "supports": [
     1165.1,
@@ -876,71 +1836,200 @@
     1315.37,
     1357.25,
     1369.0
-   ]
+   ],
+   "strategy": "ta",
+   "comment": "поддержка",
+   "conflict": true,
+   "top": false
   },
   {
-   "ticker": "PHOR",
-   "name": "ФосАгро ао",
+   "ticker": "SGZH",
+   "name": "Сегежа",
    "side": "buy",
    "signals": [
-    "на поддержке 5059.50 (2 касания, до уровня 1.6%)"
+    "откат к EMA200 0.79 (+0.8%), наклон вниз — слабее"
    ],
    "count": 1,
    "rating": "⭐",
    "rating_label": "на радар",
    "date": "2026-11-11",
-   "close": 5142.0,
-   "entry": 5142.0,
-   "stop": 5008.905,
-   "target": 5344.0,
-   "rr": 1.52,
+   "close": 0.7995,
+   "entry": 0.7995,
+   "stop": 0.7098,
+   "target": 0.9223,
+   "stop_pct": -11.2,
+   "target_pct": 15.4,
+   "rr": 1.37,
    "target_note": "",
-   "ema200": 5659.5719,
+   "ema200": 0.7928,
    "ema200_slope_up": false,
-   "rsi": 37.4,
-   "turnover_mln": 939.1,
+   "rsi": 58.1,
+   "turnover_mln": 296.0,
    "low_liquidity": false,
    "supports": [
-    4959.67,
-    5059.5
+    0.63,
+    0.72
    ],
    "resistances": [
-    5344.0,
-    5864.0
-   ]
+    0.92
+   ],
+   "strategy": "ta",
+   "comment": "EMA200",
+   "conflict": true,
+   "top": false
   },
   {
-   "ticker": "DOMRF",
-   "name": "ДОМ.РФ",
-   "side": "sell",
+   "ticker": "TRNFP",
+   "name": "Транснф ап",
+   "side": "buy",
    "signals": [
-    "у сопротивления 2145.10 (2 касания, до уровня 0.9%)"
+    "на поддержке 1021.50 (2 касания, до уровня 1.9%)"
    ],
    "count": 1,
    "rating": "⭐",
    "rating_label": "на радар",
    "date": "2026-11-11",
-   "close": 2126.3,
-   "entry": 2126.3,
-   "stop": 2166.551,
-   "target": 2076.0,
-   "rr": 1.25,
+   "close": 1040.8,
+   "entry": 1040.8,
+   "stop": 1011.285,
+   "target": 1080.0,
+   "stop_pct": -2.8,
+   "target_pct": 3.8,
+   "rr": 1.33,
    "target_note": "",
-   "ema200": 2125.5855,
+   "ema200": 1148.3114,
    "ema200_slope_up": false,
-   "rsi": 53.7,
-   "turnover_mln": 461.0,
+   "rsi": 44.2,
+   "turnover_mln": 524.6,
    "low_liquidity": false,
    "supports": [
-    2035.73,
-    2076.0,
-    2108.53
+    1002.9,
+    1021.5
    ],
    "resistances": [
-    2145.1,
-    2198.27,
-    2254.97
-   ]
+    1080.0,
+    1405.9,
+    1428.27
+   ],
+   "strategy": "ta",
+   "comment": "поддержка",
+   "conflict": false,
+   "top": false
+  },
+  {
+   "ticker": "BSPB",
+   "name": "БСП ао",
+   "side": "buy",
+   "signals": [
+    "на поддержке 248.68 (3 касания, до уровня 1.0%)"
+   ],
+   "count": 1,
+   "rating": "⭐",
+   "rating_label": "на радар",
+   "date": "2026-11-11",
+   "close": 251.1,
+   "entry": 251.1,
+   "stop": 246.1899,
+   "target": 256.86,
+   "stop_pct": -2.0,
+   "target_pct": 2.3,
+   "rr": 1.17,
+   "target_note": "",
+   "ema200": 273.1446,
+   "ema200_slope_up": false,
+   "rsi": 43.1,
+   "turnover_mln": 94.8,
+   "low_liquidity": false,
+   "supports": [
+    231.7,
+    235.05,
+    248.68
+   ],
+   "resistances": [
+    256.86,
+    273.35,
+    278.45
+   ],
+   "strategy": "ta",
+   "comment": "поддержка",
+   "conflict": false,
+   "top": false
+  },
+  {
+   "ticker": "TRMK",
+   "name": "ТМК ао",
+   "side": "sell",
+   "signals": [
+    "отскок вниз от EMA200 69.65 при нисходящем наклоне"
+   ],
+   "count": 1,
+   "rating": "⭐",
+   "rating_label": "на радар",
+   "date": "2026-11-11",
+   "close": 67.16,
+   "entry": 67.16,
+   "stop": 75.5076,
+   "target": 57.39,
+   "stop_pct": -12.4,
+   "target_pct": 14.5,
+   "rr": 1.17,
+   "target_note": "",
+   "ema200": 69.6521,
+   "ema200_slope_up": false,
+   "rsi": 54.0,
+   "turnover_mln": 303.8,
+   "low_liquidity": false,
+   "supports": [
+    55.08,
+    57.39
+   ],
+   "resistances": [
+    74.76,
+    96.1
+   ],
+   "strategy": "ta",
+   "comment": "ниже EMA200",
+   "conflict": false,
+   "top": false
+  },
+  {
+   "ticker": "FLOT",
+   "name": "Совкомфлот",
+   "side": "sell",
+   "signals": [
+    "у сопротивления 80.43 (3 касания, до уровня 0.3%)"
+   ],
+   "count": 1,
+   "rating": "⭐",
+   "rating_label": "на радар",
+   "date": "2026-11-11",
+   "close": 80.21,
+   "entry": 80.21,
+   "stop": 81.2377,
+   "target": 79.13,
+   "stop_pct": -1.3,
+   "target_pct": 1.3,
+   "rr": 1.05,
+   "target_note": "",
+   "ema200": 80.8244,
+   "ema200_slope_up": true,
+   "rsi": 31.3,
+   "turnover_mln": 478.4,
+   "low_liquidity": false,
+   "supports": [
+    70.49,
+    77.55,
+    79.13
+   ],
+   "resistances": [
+    80.43,
+    81.84,
+    83.3
+   ],
+   "strategy": "ta",
+   "comment": "сопротивление",
+   "conflict": true,
+   "top": false
   },
   {
    "ticker": "SVCB",
@@ -953,16 +2042,18 @@
    "rating": "⭐",
    "rating_label": "на радар",
    "date": "2026-11-11",
-   "close": 10.505,
-   "entry": 10.505,
+   "close": 10.45,
+   "entry": 10.45,
    "stop": 10.8474,
    "target": 10.0875,
-   "rr": 1.22,
+   "stop_pct": -3.8,
+   "target_pct": 3.5,
+   "rr": 0.91,
    "target_note": "",
-   "ema200": 10.8386,
+   "ema200": 10.838,
    "ema200_slope_up": false,
-   "rsi": 52.4,
-   "turnover_mln": 530.9,
+   "rsi": 50.2,
+   "turnover_mln": 532.7,
    "low_liquidity": false,
    "supports": [
     9.28,
@@ -972,95 +2063,111 @@
     10.74,
     11.25,
     12.91
-   ]
+   ],
+   "strategy": "ta",
+   "comment": "дивергенция RSI",
+   "conflict": false,
+   "top": false
   },
   {
-   "ticker": "FLOT",
-   "name": "Совкомфлот",
-   "side": "sell",
-   "signals": [
-    "у сопротивления 81.84 (2 касания, до уровня 1.1%)"
-   ],
-   "count": 1,
-   "rating": "⭐",
-   "rating_label": "на радар",
-   "date": "2026-11-11",
-   "close": 80.96,
-   "entry": 80.96,
-   "stop": 82.6634,
-   "target": 79.13,
-   "rr": 1.07,
-   "target_note": "",
-   "ema200": 80.8318,
-   "ema200_slope_up": true,
-   "rsi": 33.0,
-   "turnover_mln": 476.5,
-   "low_liquidity": false,
-   "supports": [
-    70.49,
-    77.55,
-    79.13
-   ],
-   "resistances": [
-    81.84,
-    83.3,
-    84.72
-   ]
-  },
-  {
-   "ticker": "BSPB",
-   "name": "БСП ао",
+   "ticker": "DOMRF",
+   "name": "ДОМ.РФ",
    "side": "buy",
    "signals": [
-    "на поддержке 248.68 (3 касания, до уровня 1.4%)"
+    "на поддержке 2108.53 (3 касания, до уровня 0.5%)"
    ],
    "count": 1,
    "rating": "⭐",
    "rating_label": "на радар",
    "date": "2026-11-11",
-   "close": 252.25,
-   "entry": 252.25,
-   "stop": 246.1899,
-   "target": 256.86,
-   "rr": 0.76,
+   "close": 2119.4,
+   "entry": 2119.4,
+   "stop": 2087.448,
+   "target": 2145.1,
+   "stop_pct": -1.5,
+   "target_pct": 1.2,
+   "rr": 0.8,
    "target_note": "",
-   "ema200": 273.1561,
+   "ema200": 2125.5168,
    "ema200_slope_up": false,
-   "rsi": 44.8,
-   "turnover_mln": 94.6,
+   "rsi": 51.5,
+   "turnover_mln": 461.4,
    "low_liquidity": false,
    "supports": [
-    231.7,
-    235.05,
-    248.68
+    2035.73,
+    2076.0,
+    2108.53
    ],
    "resistances": [
-    256.86,
-    273.35,
-    278.45
-   ]
+    2145.1,
+    2198.27,
+    2254.97
+   ],
+   "strategy": "ta",
+   "comment": "поддержка",
+   "conflict": true,
+   "top": false
+  },
+  {
+   "ticker": "FEES",
+   "name": "Россети",
+   "side": "sell",
+   "signals": [
+    "RSI вышел из перекупленности (77 → 69, 2026-11-09)"
+   ],
+   "count": 1,
+   "rating": "⭐",
+   "rating_label": "на радар",
+   "date": "2026-11-11",
+   "close": 0.0679,
+   "entry": 0.0679,
+   "stop": 0.0717,
+   "target": 0.0649,
+   "stop_pct": -5.7,
+   "target_pct": 4.4,
+   "rr": 0.78,
+   "target_note": "",
+   "ema200": 0.0573,
+   "ema200_slope_up": true,
+   "rsi": 65.5,
+   "turnover_mln": 247.2,
+   "low_liquidity": false,
+   "supports": [
+    0.06
+   ],
+   "resistances": [
+    0.07,
+    0.07,
+    0.08
+   ],
+   "strategy": "ta",
+   "comment": "разворот RSI",
+   "conflict": false,
+   "top": false
   },
   {
    "ticker": "MTSS",
    "name": "МТС-ао",
-   "side": "sell",
+   "side": "buy",
    "signals": [
-    "у сопротивления 179.45 (2 касания, до уровня 0.9%)"
+    "на поддержке 175.18 (3 касания, до уровня 1.1%)"
    ],
    "count": 1,
    "rating": "⭐",
    "rating_label": "на радар",
    "date": "2026-11-11",
-   "close": 177.8,
-   "entry": 177.8,
-   "stop": 181.2445,
-   "target": 175.1833,
-   "rr": 0.76,
+   "close": 177.1,
+   "entry": 177.1,
+   "stop": 173.4315,
+   "target": 179.45,
+   "stop_pct": -2.1,
+   "target_pct": 1.3,
+   "rr": 0.64,
    "target_note": "",
-   "ema200": 191.6821,
+   "ema200": 191.6751,
    "ema200_slope_up": false,
-   "rsi": 53.7,
-   "turnover_mln": 311.4,
+   "rsi": 51.1,
+   "turnover_mln": 313.4,
    "low_liquidity": false,
    "supports": [
     165.62,
@@ -1071,29 +2178,35 @@
     179.45,
     227.96,
     231.23
-   ]
+   ],
+   "strategy": "ta",
+   "comment": "поддержка",
+   "conflict": true,
+   "top": false
   },
   {
    "ticker": "HEAD",
    "name": "Хэдхантер",
    "side": "buy",
    "signals": [
-    "на поддержке 2692.50 (2 касания, до уровня 1.8%)"
+    "на поддержке 2692.50 (2 касания, до уровня 1.7%)"
    ],
    "count": 1,
    "rating": "⭐",
    "rating_label": "на радар",
    "date": "2026-11-11",
-   "close": 2742.0,
-   "entry": 2742.0,
+   "close": 2738.0,
+   "entry": 2738.0,
    "stop": 2665.575,
    "target": 2783.0,
-   "rr": 0.54,
+   "stop_pct": -2.6,
+   "target_pct": 1.6,
+   "rr": 0.62,
    "target_note": "",
-   "ema200": 2778.753,
+   "ema200": 2778.7132,
    "ema200_slope_up": false,
-   "rsi": 53.0,
-   "turnover_mln": 275.0,
+   "rsi": 52.2,
+   "turnover_mln": 275.5,
    "low_liquidity": false,
    "supports": [
     2605.0,
@@ -1104,40 +2217,86 @@
     2783.0,
     2848.0,
     2927.4
-   ]
+   ],
+   "strategy": "ta",
+   "comment": "поддержка",
+   "conflict": true,
+   "top": false
   },
   {
-   "ticker": "BSPB",
-   "name": "БСП ао",
+   "ticker": "NLMK",
+   "name": "НЛМК ао",
    "side": "sell",
    "signals": [
-    "у сопротивления 256.86 (3 касания, до уровня 1.8%)"
+    "пробой EMA200 77.55 вниз, 2 закрытия ниже"
    ],
    "count": 1,
    "rating": "⭐",
    "rating_label": "на радар",
    "date": "2026-11-11",
-   "close": 252.25,
-   "entry": 252.25,
-   "stop": 259.4286,
-   "target": 248.6767,
-   "rr": 0.5,
+   "close": 74.58,
+   "entry": 74.58,
+   "stop": 77.366,
+   "target": 73.11,
+   "stop_pct": -3.7,
+   "target_pct": 2.0,
+   "rr": 0.53,
    "target_note": "",
-   "ema200": 273.1561,
+   "ema200": 77.5548,
    "ema200_slope_up": false,
-   "rsi": 44.8,
-   "turnover_mln": 94.6,
+   "rsi": 46.6,
+   "turnover_mln": 530.5,
    "low_liquidity": false,
    "supports": [
-    231.7,
-    235.05,
-    248.68
+    55.52,
+    73.11
    ],
    "resistances": [
-    256.86,
-    273.35,
-    278.45
-   ]
+    76.6
+   ],
+   "strategy": "ta",
+   "comment": "ниже EMA200",
+   "conflict": false,
+   "top": false
+  },
+  {
+   "ticker": "MTSS",
+   "name": "МТС-ао",
+   "side": "sell",
+   "signals": [
+    "у сопротивления 179.45 (2 касания, до уровня 1.3%)"
+   ],
+   "count": 1,
+   "rating": "⭐",
+   "rating_label": "на радар",
+   "date": "2026-11-11",
+   "close": 177.1,
+   "entry": 177.1,
+   "stop": 181.2445,
+   "target": 175.1833,
+   "stop_pct": -2.3,
+   "target_pct": 1.1,
+   "rr": 0.46,
+   "target_note": "",
+   "ema200": 191.6751,
+   "ema200_slope_up": false,
+   "rsi": 51.1,
+   "turnover_mln": 313.4,
+   "low_liquidity": false,
+   "supports": [
+    165.62,
+    172.07,
+    175.18
+   ],
+   "resistances": [
+    179.45,
+    227.96,
+    231.23
+   ],
+   "strategy": "ta",
+   "comment": "сопротивление",
+   "conflict": true,
+   "top": false
   },
   {
    "ticker": "AFLT",
@@ -1150,16 +2309,18 @@
    "rating": "⭐",
    "rating_label": "на радар",
    "date": "2026-11-11",
-   "close": 37.1,
-   "entry": 37.1,
+   "close": 36.94,
+   "entry": 36.94,
    "stop": 49.8132,
    "target": 31.55,
-   "rr": 0.44,
+   "stop_pct": -34.8,
+   "target_pct": 14.6,
+   "rr": 0.42,
    "target_note": "",
-   "ema200": 39.0936,
+   "ema200": 39.092,
    "ema200_slope_up": false,
-   "rsi": 51.2,
-   "turnover_mln": 779.3,
+   "rsi": 50.1,
+   "turnover_mln": 782.4,
    "low_liquidity": false,
    "supports": [
     31.55
@@ -1167,7 +2328,11 @@
    "resistances": [
     49.32,
     50.73
-   ]
+   ],
+   "strategy": "ta",
+   "comment": "дивергенция RSI",
+   "conflict": false,
+   "top": false
   },
   {
    "ticker": "AFKS",
@@ -1180,16 +2345,18 @@
    "rating": "⭐",
    "rating_label": "на радар",
    "date": "2026-11-11",
-   "close": 8.556,
-   "entry": 8.556,
+   "close": 8.471,
+   "entry": 8.471,
    "stop": 12.7265,
    "target": 6.786,
-   "rr": 0.42,
+   "stop_pct": -50.2,
+   "target_pct": 19.9,
+   "rr": 0.4,
    "target_note": "",
-   "ema200": 9.3955,
+   "ema200": 9.3947,
    "ema200_slope_up": false,
-   "rsi": 56.3,
-   "turnover_mln": 913.0,
+   "rsi": 54.4,
+   "turnover_mln": 915.3,
    "low_liquidity": false,
    "supports": [
     6.79
@@ -1198,39 +2365,11 @@
     12.6,
     12.81,
     13.8
-   ]
-  },
-  {
-   "ticker": "TATN",
-   "name": "Татнфт 3ао",
-   "side": "sell",
-   "signals": [
-    "пробой EMA200 591.30 вниз, 2 закрытия ниже"
    ],
-   "count": 1,
-   "rating": "⭐",
-   "rating_label": "на радар",
-   "date": "2026-11-11",
-   "close": 577.4,
-   "entry": 577.4,
-   "stop": 622.0085,
-   "target": 559.25,
-   "rr": 0.41,
-   "target_note": "",
-   "ema200": 591.3034,
-   "ema200_slope_up": true,
-   "rsi": 26.5,
-   "turnover_mln": 1276.5,
-   "low_liquidity": false,
-   "supports": [
-    502.2,
-    559.25
-   ],
-   "resistances": [
-    615.85,
-    643.0,
-    654.25
-   ]
+   "strategy": "ta",
+   "comment": "разворот RSI",
+   "conflict": false,
+   "top": false
   },
   {
    "ticker": "UGLD",
@@ -1243,15 +2382,17 @@
    "rating": "⭐",
    "rating_label": "на радар",
    "date": "2026-11-11",
-   "close": 0.6697,
-   "entry": 0.6697,
+   "close": 0.6683,
+   "entry": 0.6683,
    "stop": 0.7306,
    "target": 0.647,
-   "rr": 0.37,
+   "stop_pct": -9.3,
+   "target_pct": 3.2,
+   "rr": 0.34,
    "target_note": "",
    "ema200": 0.6794,
    "ema200_slope_up": true,
-   "rsi": 34.9,
+   "rsi": 34.4,
    "turnover_mln": 90.3,
    "low_liquidity": false,
    "supports": [
@@ -1262,40 +2403,200 @@
    "resistances": [
     0.72,
     0.76
-   ]
+   ],
+   "strategy": "ta",
+   "comment": "ниже EMA200",
+   "conflict": true,
+   "top": false
   },
   {
-   "ticker": "FLOT",
-   "name": "Совкомфлот",
+   "ticker": "MGNT",
+   "name": "Магнит ао",
    "side": "buy",
    "signals": [
-    "откат к EMA200 80.83 (+0.2%), наклон вверх — откат в восходящем тренде"
+    "пробой сопротивления 1901.50 2026-11-09 на объёме ×3.5"
    ],
    "count": 1,
    "rating": "⭐",
    "rating_label": "на радар",
    "date": "2026-11-11",
-   "close": 80.96,
-   "entry": 80.96,
-   "stop": 78.3387,
-   "target": 81.845,
-   "rr": 0.34,
+   "close": 1943.5,
+   "entry": 1943.5,
+   "stop": 1882.485,
+   "target": 1963.0,
+   "stop_pct": -3.1,
+   "target_pct": 1.0,
+   "rr": 0.32,
    "target_note": "",
-   "ema200": 80.8318,
-   "ema200_slope_up": true,
-   "rsi": 33.0,
-   "turnover_mln": 476.5,
+   "ema200": 2013.003,
+   "ema200_slope_up": false,
+   "rsi": 61.5,
+   "turnover_mln": 985.7,
    "low_liquidity": false,
    "supports": [
-    70.49,
-    77.55,
-    79.13
+    1521.25,
+    1720.5
    ],
    "resistances": [
-    81.84,
-    83.3,
-    84.72
-   ]
+    1963.0
+   ],
+   "strategy": "ta",
+   "comment": "пробой на объёме",
+   "conflict": true,
+   "top": false
+  },
+  {
+   "ticker": "TATN",
+   "name": "Татнфт 3ао",
+   "side": "sell",
+   "signals": [
+    "пробой EMA200 591.25 вниз, 2 закрытия ниже"
+   ],
+   "count": 1,
+   "rating": "⭐",
+   "rating_label": "на радар",
+   "date": "2026-11-11",
+   "close": 571.8,
+   "entry": 571.8,
+   "stop": 622.0085,
+   "target": 559.25,
+   "stop_pct": -8.8,
+   "target_pct": 2.2,
+   "rr": 0.25,
+   "target_note": "",
+   "ema200": 591.2477,
+   "ema200_slope_up": true,
+   "rsi": 25.0,
+   "turnover_mln": 1285.7,
+   "low_liquidity": false,
+   "supports": [
+    502.2,
+    559.25
+   ],
+   "resistances": [
+    615.85,
+    643.0,
+    654.25
+   ],
+   "strategy": "ta",
+   "comment": "ниже EMA200",
+   "conflict": false,
+   "top": false
+  },
+  {
+   "ticker": "NVTK",
+   "name": "Новатэк ао",
+   "side": "buy",
+   "signals": [
+    "откат к EMA200 1076.97 (+0.2%), наклон вверх — откат в восходящем тренде"
+   ],
+   "count": 1,
+   "rating": "⭐",
+   "rating_label": "на радар",
+   "date": "2026-11-11",
+   "close": 1078.7,
+   "entry": 1078.7,
+   "stop": 1005.0975,
+   "target": 1094.4667,
+   "stop_pct": -6.8,
+   "target_pct": 1.5,
+   "rr": 0.21,
+   "target_note": "",
+   "ema200": 1076.9729,
+   "ema200_slope_up": true,
+   "rsi": 36.8,
+   "turnover_mln": 2710.9,
+   "low_liquidity": false,
+   "supports": [
+    867.33,
+    903.8,
+    1015.25
+   ],
+   "resistances": [
+    1094.47,
+    1221.15
+   ],
+   "strategy": "ta",
+   "comment": "EMA200 ↑",
+   "conflict": true,
+   "top": false
+  },
+  {
+   "ticker": "ASTR",
+   "name": "iАстра ао",
+   "side": "sell",
+   "signals": [
+    "пробой EMA200 224.14 вниз, 3 закрытия ниже"
+   ],
+   "count": 1,
+   "rating": "⭐",
+   "rating_label": "на радар",
+   "date": "2026-11-11",
+   "close": 216.2,
+   "entry": 216.2,
+   "stop": 237.9307,
+   "target": 211.6667,
+   "stop_pct": -10.1,
+   "target_pct": 2.1,
+   "rr": 0.21,
+   "target_note": "",
+   "ema200": 224.1434,
+   "ema200_slope_up": false,
+   "rsi": 45.5,
+   "turnover_mln": 330.2,
+   "low_liquidity": false,
+   "supports": [
+    173.55,
+    207.05,
+    211.67
+   ],
+   "resistances": [
+    235.57,
+    266.75,
+    291.48
+   ],
+   "strategy": "ta",
+   "comment": "ниже EMA200",
+   "conflict": false,
+   "top": false
+  },
+  {
+   "ticker": "MDMG",
+   "name": "MDMG-ао",
+   "side": "sell",
+   "signals": [
+    "пробой EMA200 1299.80 вниз, 2 закрытия ниже"
+   ],
+   "count": 1,
+   "rating": "⭐",
+   "rating_label": "на радар",
+   "date": "2026-11-11",
+   "close": 1279.8,
+   "entry": 1279.8,
+   "stop": 1328.5203,
+   "target": 1270.15,
+   "stop_pct": -3.8,
+   "target_pct": 0.8,
+   "rr": 0.2,
+   "target_note": "",
+   "ema200": 1299.8021,
+   "ema200_slope_up": false,
+   "rsi": 38.9,
+   "turnover_mln": 73.2,
+   "low_liquidity": false,
+   "supports": [
+    1165.1,
+    1270.15
+   ],
+   "resistances": [
+    1315.37,
+    1357.25,
+    1369.0
+   ],
+   "strategy": "ta",
+   "comment": "ниже EMA200",
+   "conflict": true,
+   "top": false
   },
   {
    "ticker": "SNGS",
@@ -1308,22 +2609,106 @@
    "rating": "⭐",
    "rating_label": "на радар",
    "date": "2026-11-11",
-   "close": 17.135,
-   "entry": 17.135,
+   "close": 17.035,
+   "entry": 17.035,
    "stop": 18.7254,
    "target": 16.745,
-   "rr": 0.25,
+   "stop_pct": -9.9,
+   "target_pct": 1.7,
+   "rr": 0.17,
    "target_note": "",
-   "ema200": 17.3465,
+   "ema200": 17.3455,
    "ema200_slope_up": true,
-   "rsi": 47.3,
-   "turnover_mln": 545.1,
+   "rsi": 45.8,
+   "turnover_mln": 546.9,
    "low_liquidity": false,
    "supports": [
     14.52,
     16.74
    ],
-   "resistances": []
+   "resistances": [],
+   "strategy": "ta",
+   "comment": "ниже EMA200",
+   "conflict": true,
+   "top": false
+  },
+  {
+   "ticker": "FLOT",
+   "name": "Совкомфлот",
+   "side": "buy",
+   "signals": [
+    "на поддержке 79.13 (2 касания, до уровня 1.4%)"
+   ],
+   "count": 1,
+   "rating": "⭐",
+   "rating_label": "на радар",
+   "date": "2026-11-11",
+   "close": 80.21,
+   "entry": 80.21,
+   "stop": 78.3387,
+   "target": 80.4333,
+   "stop_pct": -2.3,
+   "target_pct": 0.3,
+   "rr": 0.12,
+   "target_note": "",
+   "ema200": 80.8244,
+   "ema200_slope_up": true,
+   "rsi": 31.3,
+   "turnover_mln": 478.4,
+   "low_liquidity": false,
+   "supports": [
+    70.49,
+    77.55,
+    79.13
+   ],
+   "resistances": [
+    80.43,
+    81.84,
+    83.3
+   ],
+   "strategy": "ta",
+   "comment": "поддержка",
+   "conflict": true,
+   "top": false
+  },
+  {
+   "ticker": "SIBN",
+   "name": "Газпрнефть",
+   "side": "sell",
+   "signals": [
+    "у сопротивления 522.38 (2 касания, до уровня 0.3%)"
+   ],
+   "count": 1,
+   "rating": "⭐",
+   "rating_label": "на радар",
+   "date": "2026-11-11",
+   "close": 520.8,
+   "entry": 520.8,
+   "stop": 527.5987,
+   "target": 520.55,
+   "stop_pct": -1.3,
+   "target_pct": 0.0,
+   "rr": 0.04,
+   "target_note": "",
+   "ema200": 519.4162,
+   "ema200_slope_up": true,
+   "rsi": 28.2,
+   "turnover_mln": 495.5,
+   "low_liquidity": false,
+   "supports": [
+    453.43,
+    500.59,
+    520.55
+   ],
+   "resistances": [
+    522.38,
+    546.0,
+    567.5
+   ],
+   "strategy": "ta",
+   "comment": "сопротивление",
+   "conflict": true,
+   "top": false
   }
  ],
  "errors": {}
