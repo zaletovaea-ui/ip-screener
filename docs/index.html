@@ -195,6 +195,16 @@ document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
   document.querySelectorAll("nav button").forEach(x => x.classList.toggle("on", x === b));
   ["top", "journal", "all"].forEach(t => document.getElementById("tab-" + t).classList.toggle("hidden", t !== b.dataset.tab));
 });
+
+// Авто-высота при встраивании в GetCourse (iframe): сообщаем родительской странице свою высоту
+function postHeight() {
+  try { parent.postMessage({ipScreenerHeight: document.documentElement.scrollHeight}, "*"); } catch (e) {}
+}
+if (window.parent !== window) {
+  new ResizeObserver(postHeight).observe(document.body);
+  window.addEventListener("load", postHeight);
+  document.addEventListener("click", () => setTimeout(postHeight, 50));
+}
 </script>
 </body>
 </html>
