@@ -41,8 +41,11 @@
   a.tk:hover{text-decoration:underline}
   .nm{color:var(--muted);font-size:12px}
   .pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:700}
-  .buy{background:#DCFCE7;color:var(--up)}
-  .sell{background:#FEE2E2;color:var(--down-text)}
+  .buy{background:var(--up);color:#fff}
+  .sell{background:var(--down);color:#fff}
+  h2.plate{display:inline-block;color:#fff;padding:6px 16px;border-radius:10px;font-size:17px}
+  h2.plate.buy{background:var(--up)}
+  h2.plate.sell{background:var(--down)}
   .neu{background:#EEF2F7;color:var(--sec)}
   .tgt{background:var(--lime);color:var(--navy)}
   .up{color:var(--up);font-weight:600}
@@ -77,9 +80,9 @@
   </nav>
 
   <section id="tab-top">
-    <h2>Покупка</h2>
+    <h2 class="plate buy">Покупка</h2>
     <div class="tbl"><table id="t-buy"></table></div>
-    <h2>Продажа</h2>
+    <h2 class="plate sell">Продажа</h2>
     <div class="tbl"><table id="t-sell"></table></div>
     <p class="note">Вход — цена закрытия дня сигнала. «Стоп, %» — убыток при срабатывании стопа, «Цель, %» — прибыль при достижении цели (для продаж — от падения цены). Рейтинг: ⭐ один сигнал, ⭐⭐ два, ⭐⭐⭐ три и больше.</p>
   </section>
