@@ -463,6 +463,55 @@ def market_background():
         return None
 
 
+def short_comment(sig, side):
+    """3–5 слов: почему покупка/продажа."""
+    parts = []
+    for t in sig:
+        if t.startswith("на поддержке"):
+            parts.append("поддержка")
+        elif t.startswith("у сопротивления"):
+            parts.append("сопротивление")
+        elif t.startswith("откат к EMA200"):
+            parts.append("EMA200 ↑" if "вверх" in t else "EMA200")
+        elif t.startswith("пробой EMA200") or t.startswith("отскок вниз от EMA200"):
+            parts.append("ниже EMA200")
+        elif t.startswith("пробой сопротивления"):
+            parts.append("пробой на объёме")
+        elif t.startswith("пробой поддержки"):
+            parts.append("пробой поддержки")
+        elif "дивергенция" in t:
+            parts.append("дивергенция RSI")
+        elif t.startswith("RSI"):
+            parts.append("разворот RSI")
+        if "свеча разворота" in t:
+            parts.append(t.split("свеча разворота: ")[1])
+    return " + ".join(dict.fromkeys(parts))
+
+
+def pick_top(results, n_buy=5, n_sell=3, min_rr=1.0):
+    """Топ по инструкции: больше сигналов выше, затем лучший риск/прибыль; R/R < 1 отсекаем."""
+    by = {}
+    for r in results:
+        by.setdefault(r["ticker"], {})[r["side"]] = r
+    top = []
+    for side, n in (("buy", n_buy), ("sell", n_sell)):
+        rows = [r for r in results if r["side"] == side and (r["rr"] or 0) >= min_rr
+                and not r["low_liquidity"]]
+        # конфликт: по бумаге сигналов в другую сторону не меньше — пропускаем
+        rows = [r for r in rows if by[r["ticker"]].get("sell" if side == "buy" else "buy", {}).get("count", 0) < r["count"]]
+        rows.sort(key=lambda x: (x["count"], min(x["rr"], 6)), reverse=True)
+        chosen = []
+        for r in rows:
+            base = r["ticker"][:-1] if r["ticker"].endswith("P") else r["ticker"]
+            if any(c == base or c[:-1] == base for c in chosen):  # обычка/префы — одна бумага
+                continue
+            chosen.append(r["ticker"])
+            if len(chosen) == n:
+                break
+        top += [t + ":" + side for t in chosen]
+    return top
+
+
 def rank_key(x):
     return (x["count"], (x["rr"] or 0), not x["low_liquidity"])
 
@@ -493,6 +542,9 @@ def to_md(report):
     return "\n".join(lines)
 
 
+BARS = {}
+
+
 def main():
     tickers = load_universe()
     names = load_names(tickers)
@@ -500,6 +552,7 @@ def main():
     for t in tickers:
         try:
             bars = load_candles(f"engines/stock/markets/shares/boards/TQBR/securities/{t}/candles.json")
+            BARS[t] = bars
             r = analyze(t, names.get(t, t), bars)
             if r:
                 results.extend(r)
@@ -507,6 +560,12 @@ def main():
             errors[t] = str(e)[:200]
         time.sleep(0.15)
     results.sort(key=rank_key, reverse=True)
+    for r in results:
+        r["comment"] = short_comment(r["signals"], r["side"])
+        r["conflict"] = any(x["ticker"] == r["ticker"] and x["side"] != r["side"] for x in results)
+    top = set(pick_top(results))
+    for r in results:
+        r["top"] = f"{r['ticker']}:{r['side']}" in top
     report = {
         "asof": max((r["date"] for r in results), default=dt.date.today().isoformat()),
         "generated_utc": dt.datetime.utcnow().strftime("%Y-%m-%d %H:%M"),
@@ -520,6 +579,11 @@ def main():
     (out / "latest.json").write_text(js, encoding="utf-8")
     (out / f"{report['asof']}.json").write_text(js, encoding="utf-8")
     (out / "latest.md").write_text(to_md(report), encoding="utf-8")
+    import tracker
+    tracker.update(report, BARS, load_candles)
+    docs = Path(__file__).parent / "docs" / "data"
+    docs.mkdir(parents=True, exist_ok=True)
+    (docs / "latest.json").write_text(js, encoding="utf-8")
     print(f"Готово: {len(tickers)} бумаг, сигналов {len(results)}, ошибок {len(errors)}")
 
 

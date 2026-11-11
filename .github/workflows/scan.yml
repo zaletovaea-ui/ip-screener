@@ -26,6 +26,6 @@ jobs:
         run: |
           git config user.name "screener-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add results
+          git add results docs
           git commit -m "Скан $(date -u +%F)" || echo "без изменений"
           git pull --rebase origin main && git push

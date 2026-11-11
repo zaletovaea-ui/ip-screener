@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Скринер акций — Invest Privet</title>
+<style>
+  :root{
+    --blue:#1F5CFF; --lime:#B6F03A; --navy:#0F2042; --canvas:#F8FAFC; --surface:#FFFFFF;
+    --up:#15803D; --down:#DC2626; --down-text:#B91C1C; --sec:#475569; --muted:#64748B; --border:#E2E8F0;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--canvas);color:var(--navy);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px 48px}
+  header{background:var(--navy);color:#fff}
+  header .wrap{padding:28px 20px 24px;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between}
+  .brand{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#C7D2FE}
+  h1{margin:4px 0 6px;font-size:28px;line-height:1.15}
+  .sub{color:#CBD5E1;font-size:14px}
+  .mkt{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:12px 16px;font-size:14px;max-width:420px}
+  .mkt b{font-size:16px}
+  nav{display:flex;gap:8px;margin:22px 0 18px;flex-wrap:wrap}
+  nav button{border:1px solid var(--border);background:var(--surface);color:var(--navy);padding:9px 16px;border-radius:999px;font:inherit;font-weight:600;cursor:pointer}
+  nav button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:18px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px}
+  .card .k{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+  .card .v{font-size:24px;font-weight:700;margin-top:4px}
+  .card.hl{background:var(--lime);border-color:var(--lime)}
+  .card.hl .k{color:var(--navy)}
+  h2{font-size:19px;margin:26px 0 10px}
+  .tbl{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:auto}
+  table{width:100%;border-collapse:collapse;font-size:14px;white-space:nowrap}
+  th{position:sticky;top:0;background:var(--surface);text-align:left;color:var(--sec);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.03em;padding:10px 12px;border-bottom:1px solid var(--border)}
+  td{padding:10px 12px;border-bottom:1px solid var(--border)}
+  tr:last-child td{border-bottom:none}
+  td.num{text-align:right;font-variant-numeric:tabular-nums}
+  th.num{text-align:right}
+  td.cm{white-space:normal;min-width:220px;color:var(--sec)}
+  a.tk{color:var(--blue);font-weight:700;text-decoration:none}
+  a.tk:hover{text-decoration:underline}
+  .nm{color:var(--muted);font-size:12px}
+  .pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:700}
+  .buy{background:#DCFCE7;color:var(--up)}
+  .sell{background:#FEE2E2;color:var(--down-text)}
+  .neu{background:#EEF2F7;color:var(--sec)}
+  .tgt{background:var(--lime);color:var(--navy)}
+  .up{color:var(--up);font-weight:600}
+  .down{color:var(--down);font-weight:600}
+  .warn{color:var(--down-text);font-size:12px}
+  .note{color:var(--muted);font-size:13px;margin-top:10px}
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px}
+  .filters select,.filters input{border:1px solid var(--border);border-radius:10px;padding:7px 10px;font:inherit;background:var(--surface);color:var(--navy)}
+  details{margin-top:6px}
+  summary{cursor:pointer;color:var(--blue);font-size:13px}
+  footer{color:var(--muted);font-size:13px;margin-top:30px;border-top:1px solid var(--border);padding-top:16px}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div>
+      <div class="brand">Invest Privet · Технический анализ</div>
+      <h1>Скринер акций Мосбиржи</h1>
+      <div class="sub" id="asof">Загрузка…</div>
+    </div>
+    <div class="mkt" id="mkt"></div>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav>
+    <button data-tab="top" class="on">Подборка дня</button>
+    <button data-tab="journal">Журнал сигналов</button>
+    <button data-tab="all">Все сигналы скана</button>
+  </nav>
+
+  <section id="tab-top">
+    <h2>Покупка</h2>
+    <div class="tbl"><table id="t-buy"></table></div>
+    <h2>Продажа</h2>
+    <div class="tbl"><table id="t-sell"></table></div>
+    <p class="note">Вход — цена закрытия дня сигнала. «Стоп, %» — убыток при срабатывании стопа, «Цель, %» — прибыль при достижении цели (для продаж — от падения цены). Рейтинг: ⭐ один сигнал, ⭐⭐ два, ⭐⭐⭐ три и больше.</p>
+  </section>
+
+  <section id="tab-journal" class="hidden">
+    <div class="cards" id="stats"></div>
+    <h2>Открытые сигналы</h2>
+    <div class="tbl"><table id="t-open"></table></div>
+    <h2>Закрытые сигналы</h2>
+    <div class="tbl"><table id="t-closed"></table></div>
+    <p class="note">Журнал обновляется каждый будний день после закрытия. Сигнал закрывается, когда цена касается стопа или цели (если в один день задеты оба — считается стоп), либо через 20 торговых дней по цене закрытия.</p>
+  </section>
+
+  <section id="tab-all" class="hidden">
+    <div class="filters">
+      <select id="f-side"><option value="">Все направления</option><option value="buy">Покупка</option><option value="sell">Продажа</option></select>
+      <select id="f-min"><option value="1">Рейтинг от ⭐</option><option value="2">от ⭐⭐</option><option value="3">⭐⭐⭐</option></select>
+      <input id="f-q" placeholder="Тикер или компания">
+    </div>
+    <div class="tbl"><table id="t-all"></table></div>
+  </section>
+
+  <footer>
+    Данные: Мосбиржа (ISS), дневные свечи. Обновление — пн–пт после 19:00 МСК.<br>
+    Не является индивидуальной инвестиционной рекомендацией. Каждый сетап — вероятность, а не гарантия; всегда используйте стоп.
+  </footer>
+</div>
+
+<script>
+const fmt = (x, d) => x == null ? "—" : Number(x).toLocaleString("ru-RU", {minimumFractionDigits: d ?? dec(x), maximumFractionDigits: d ?? dec(x)});
+const dec = x => { x = Math.abs(x); return x >= 1000 ? 0 : x >= 100 ? 1 : x >= 1 ? 2 : 4; };
+const pct = (x, sign) => x == null ? "—" : (x > 0 && sign ? "+" : "") + fmt(x, 1) + "%";
+const cls = x => x > 0 ? "up" : x < 0 ? "down" : "";
+const side = s => s === "buy" ? '<span class="pill buy">Покупка</span>' : '<span class="pill sell">Продажа</span>';
+const tk = (t, n) => `<a class="tk" href="https://www.tradingview.com/chart/?symbol=MOEX:${t}" target="_blank" rel="noopener">${t}</a><div class="nm">${n || ""}</div>`;
+const date = d => d ? d.split("-").reverse().join(".") : "—";
+
+async function getJSON(p) {
+  try { const r = await fetch(p + "?v=" + Date.now()); return r.ok ? r.json() : null; } catch (e) { return null; }
+}
+
+function topTable(rows) {
+  if (!rows.length) return "<tr><td>Сегодня сигналов нет</td></tr>";
+  return `<tr><th>Тикер</th><th>Рейтинг</th><th class="num">Цена</th><th class="num">Стоп</th><th class="num">Стоп, %</th><th class="num">Цель</th><th class="num">Цель, %</th><th class="num">R/R</th><th>Комментарий</th></tr>` +
+    rows.map(r => `<tr><td>${tk(r.ticker, r.name)}</td><td>${r.rating}</td><td class="num">${fmt(r.close)}</td>
+      <td class="num">${fmt(r.stop, dec(r.close))}</td><td class="num down">${pct(r.stop_pct)}</td>
+      <td class="num">${fmt(r.target, dec(r.close))}</td><td class="num up">+${fmt(r.target_pct, 1)}%</td>
+      <td class="num">${r.rr ? "1:" + fmt(r.rr, 1) : "—"}${r.rr && r.rr < 2 ? ' <span class="warn">&lt;1:2</span>' : ""}</td>
+      <td class="cm">${r.comment || ""}<details><summary>все сигналы</summary>${r.signals.join("<br>")}</details></td></tr>`).join("");
+}
+
+function journalRows(rows, closed) {
+  if (!rows.length) return `<tr><td>${closed ? "Закрытых сигналов пока нет" : "Открытых сигналов нет"}</td></tr>`;
+  const head = closed
+    ? `<tr><th>Тикер</th><th>Направление</th><th>Открыт</th><th class="num">Вход</th><th>Итог</th><th>Закрыт</th><th class="num">Дней</th><th class="num">Результат</th><th>Комментарий</th></tr>`
+    : `<tr><th>Тикер</th><th>Направление</th><th>Открыт</th><th class="num">Вход</th><th class="num">Стоп</th><th class="num">Цель</th><th class="num">Сейчас</th><th class="num">Дней</th><th class="num">Результат</th><th>Комментарий</th></tr>`;
+  return head + rows.map(s => closed
+    ? `<tr><td>${tk(s.ticker, s.name)}</td><td>${side(s.side)}</td><td>${date(s.opened)}</td><td class="num">${fmt(s.entry)}</td>
+       <td><span class="pill ${s.status === "цель" ? "tgt" : s.status === "стоп" ? "sell" : "neu"}">${s.status}</span></td>
+       <td>${date(s.closed)}</td><td class="num">${s.days}</td><td class="num ${cls(s.result_pct)}">${pct(s.result_pct, true)}</td><td class="cm">${s.comment || ""}</td></tr>`
+    : `<tr><td>${tk(s.ticker, s.name)}</td><td>${side(s.side)}</td><td>${date(s.opened)}</td><td class="num">${fmt(s.entry)}</td>
+       <td class="num">${fmt(s.stop, dec(s.entry))} <span class="nm">${pct(s.stop_pct)}</span></td>
+       <td class="num">${fmt(s.target, dec(s.entry))} <span class="nm">+${fmt(s.target_pct, 1)}%</span></td>
+       <td class="num">${fmt(s.last_price)}</td><td class="num">${s.days ?? 0}</td>
+       <td class="num ${cls(s.current_pct)}">${pct(s.current_pct, true)}</td><td class="cm">${s.comment || ""}</td></tr>`).join("");
+}
+
+function allTable(rows) {
+  const fs = document.getElementById("f-side").value, fm = +document.getElementById("f-min").value,
+        q = document.getElementById("f-q").value.trim().toLowerCase();
+  rows = rows.filter(r => (!fs || r.side === fs) && r.count >= fm &&
+    (!q || r.ticker.toLowerCase().includes(q) || (r.name || "").toLowerCase().includes(q)));
+  document.getElementById("t-all").innerHTML = !rows.length ? "<tr><td>Ничего не найдено</td></tr>" :
+    `<tr><th>Тикер</th><th>Направление</th><th>Рейтинг</th><th class="num">Цена</th><th class="num">Стоп, %</th><th class="num">Цель, %</th><th class="num">R/R</th><th class="num">RSI</th><th>Сигналы</th></tr>` +
+    rows.map(r => `<tr><td>${tk(r.ticker, r.name)}</td><td>${side(r.side)}${r.conflict ? ' <span class="warn" title="Есть сигналы в обе стороны">⇄</span>' : ""}</td><td>${r.rating}</td>
+      <td class="num">${fmt(r.close)}</td><td class="num down">${pct(r.stop_pct)}</td><td class="num up">+${fmt(r.target_pct, 1)}%</td>
+      <td class="num">${r.rr ? "1:" + fmt(r.rr, 1) : "—"}</td><td class="num">${fmt(r.rsi, 0)}</td>
+      <td class="cm">${r.signals.join("<br>")}${r.low_liquidity ? '<br><span class="warn">⚠ низкая ликвидность</span>' : ""}</td></tr>`).join("");
+}
+
+(async () => {
+  const [rep, jr] = await Promise.all([getJSON("data/latest.json"), getJSON("data/journal.json")]);
+  if (rep) {
+    document.getElementById("asof").textContent = "Скан на " + date(rep.asof) + " · бумаг в проверке: " + rep.universe.length;
+    const m = rep.market;
+    if (m) document.getElementById("mkt").innerHTML =
+      `Фон рынка: индекс Мосбиржи <b>${fmt(m.close, 0)}</b> — <b>${m.above ? "выше" : "ниже"}</b> EMA200 (${fmt(m.ema200, 0)}, ${pct(m.dist_pct, true)}), наклон EMA200 ${m.slope_up ? "вверх" : "вниз"}.<br>` +
+      `<span style="color:#CBD5E1">${m.above ? "Рынок в восходящем режиме — сигналы на покупку надёжнее." : "Рынок ниже EMA200 — покупки без подтверждения, продажи в приоритете."}</span>`;
+    const top = rep.results.filter(r => r.top);
+    document.getElementById("t-buy").innerHTML = topTable(top.filter(r => r.side === "buy"));
+    document.getElementById("t-sell").innerHTML = topTable(top.filter(r => r.side === "sell"));
+    allTable(rep.results);
+    ["f-side", "f-min", "f-q"].forEach(id => document.getElementById(id).addEventListener("input", () => allTable(rep.results)));
+  }
+  if (jr) {
+    const st = jr.stats || {};
+    document.getElementById("stats").innerHTML = [
+      ["Всего сигналов", st.total ?? 0], ["Открыто", st.open ?? 0], ["Закрыто", st.closed ?? 0],
+      ["Доля прибыльных", st.win_rate != null ? fmt(st.win_rate, 0) + "%" : "—", true],
+      ["Средний результат", st.avg_result != null ? pct(st.avg_result, true) : "—"],
+      ["Цель / стоп / истёк", st.closed ? `${st.targets} / ${st.stops} / ${st.expired}` : "—"],
+    ].map(([k, v, hl]) => `<div class="card${hl ? " hl" : ""}"><div class="k">${k}</div><div class="v">${v}</div></div>`).join("");
+    const sigs = jr.signals || [];
+    document.getElementById("t-open").innerHTML = journalRows(sigs.filter(s => s.status === "открыт"), false);
+    document.getElementById("t-closed").innerHTML = journalRows(sigs.filter(s => s.status !== "открыт").reverse(), true);
+  }
+})();
+
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("nav button").forEach(x => x.classList.toggle("on", x === b));
+  ["top", "journal", "all"].forEach(t => document.getElementById("tab-" + t).classList.toggle("hidden", t !== b.dataset.tab));
+});
+</script>
+</body>
+</html>
