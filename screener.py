@@ -716,6 +716,14 @@ def to_md(report):
 BARS = {}
 
 
+def load_intraday(ticker, date):
+    """Часовые свечи за один день (время начала свечи — МСК)."""
+    rows = table(iss(f"engines/stock/markets/shares/boards/TQBR/securities/{ticker}/candles.json",
+                     {"interval": 60, "from": date, "till": date}), "candles")
+    return [{"begin": str(r["begin"]), "h": float(r["high"]), "l": float(r["low"]), "c": float(r["close"])}
+            for r in rows if r.get("high") is not None]
+
+
 def main():
     index, candidates = load_universe()
     names = load_names(candidates)
@@ -787,7 +795,7 @@ def main():
     (out / f"{report['asof']}.json").write_text(js, encoding="utf-8")
     (out / "latest.md").write_text(to_md(report), encoding="utf-8")
     import tracker
-    tracker.update(report, BARS, load_candles)
+    tracker.update(report, BARS, load_candles, load_intraday)
     docs = Path(__file__).parent / "docs" / "data"
     docs.mkdir(parents=True, exist_ok=True)
     (docs / "latest.json").write_text(js, encoding="utf-8")

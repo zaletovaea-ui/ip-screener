@@ -3,7 +3,8 @@
 что сработало первым — стоп или цель. Сигнал живёт до MAX_DAYS торговых дней,
 потом закрывается по последней цене («истёк»).
 
-Вход — цена закрытия дня сигнала. Проверка идёт по свечам ПОСЛЕ дня сигнала.
+Вход — цена на момент скана (ночной скан — закрытие дня). Проверка: в день входа — по часовым
+свечам ПОСЛЕ времени входа (opened_at, МСК), дальше — по дневным свечам следующих дней.
 Если в одну свечу задеты и стоп, и цель — считаем стоп (консервативно).
 Файл: docs/data/journal.json
 """
@@ -26,13 +27,27 @@ def pnl(side, entry, price):
     return round(((price / entry - 1) if side == "buy" else (1 - price / entry)) * 100, 2)
 
 
-def check(sig, bars):
+def hit(sig, b):
+    if sig["side"] == "buy":
+        return b["l"] <= sig["stop"], b["h"] >= sig["target"]
+    return b["h"] >= sig["stop"], b["l"] <= sig["target"]
+
+
+def check(sig, bars, intraday=None):
+    # 1) день входа: часовые свечи, начавшиеся после времени входа
+    for b in intraday or []:
+        if b["begin"] < sig.get("opened_at", sig["opened"] + " 23:59"):
+            continue
+        hs, ht = hit(sig, b)
+        if hs or ht:
+            px = sig["stop"] if hs else sig["target"]
+            sig.update(status="стоп" if hs else "цель", closed=sig["opened"], closed_at=b["begin"][:16],
+                       close_price=px, result_pct=pnl(sig["side"], sig["entry"], px), days=0)
+            return
+    # 2) следующие дни: дневные свечи
     after = [b for b in bars if b["date"] > sig["opened"]]
     for i, b in enumerate(after, 1):
-        if sig["side"] == "buy":
-            hit_stop, hit_tgt = b["l"] <= sig["stop"], b["h"] >= sig["target"]
-        else:
-            hit_stop, hit_tgt = b["h"] >= sig["stop"], b["l"] <= sig["target"]
+        hit_stop, hit_tgt = hit(sig, b)
         if hit_stop or hit_tgt:
             px = sig["stop"] if hit_stop else sig["target"]
             sig.update(status="стоп" if hit_stop else "цель", closed=b["date"], close_price=px,
@@ -72,7 +87,19 @@ def stats_all(signals):
     return out
 
 
-def update(report, bars_by_ticker, loader):
+def opened_at(bar_date):
+    """Время входа (МСК). Ночной скан (уже следующие сутки) — вход по закрытию: проверка в тот же день не нужна."""
+    now = msk_now()
+    if now.strftime("%Y-%m-%d") > bar_date or now.strftime("%H:%M") >= "23:50":
+        return bar_date + " 23:59"
+    return now.strftime("%Y-%m-%d %H:%M")
+
+
+def msk_now():
+    return dt.datetime.utcnow() + dt.timedelta(hours=3)
+
+
+def update(report, bars_by_ticker, loader, intraday_loader=None):
     j = load()
     sigs = j["signals"]
     # 1) проверяем открытые
@@ -85,7 +112,13 @@ def update(report, bars_by_ticker, loader):
                 bars = loader(TQBR.format(s["ticker"]))
             except Exception:  # noqa
                 continue
-        check(s, bars)
+        intr = None
+        if intraday_loader and s.get("opened_at") and s["opened_at"][11:16] < "23:59":
+            try:
+                intr = intraday_loader(s["ticker"], s["opened"])
+            except Exception:  # noqa
+                intr = None
+        check(s, bars, intr)
     # 2) добавляем новые из топа (если по бумаге в ту же сторону уже нет открытого)
     def _base(t):
         return t[:-1] if t.endswith("P") and len(t) > 4 else t
@@ -101,7 +134,7 @@ def update(report, bars_by_ticker, loader):
             "id": f"{r['date']}-{r['ticker']}-{r['side']}-{r.get('strategy', 'ta')}",
             "strategy": r.get("strategy", "ta"),
             "ticker": r["ticker"], "name": r["name"], "side": r["side"],
-            "opened": r["date"], "entry": r["close"], "stop": r["stop"], "target": r["target"],
+            "opened": r["date"], "opened_at": opened_at(r["date"]), "entry": r["close"], "stop": r["stop"], "target": r["target"],
             "stop_pct": r.get("stop_pct"), "target_pct": r.get("target_pct"),
             "rating": r["rating"], "comment": r.get("comment", ""), "signals": r["signals"],
             "status": "открыт", "current_pct": 0.0, "last_price": r["close"], "last_date": r["date"], "days": 0,
