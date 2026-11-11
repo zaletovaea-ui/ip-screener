@@ -44,6 +44,25 @@ def check(sig, bars, intraday=None):
             sig.update(status="стоп" if hs else "цель", closed=sig["opened"], closed_at=b["begin"][:16],
                        close_price=px, result_pct=pnl(sig["side"], sig["entry"], px), days=0)
             return
+    # 1б) часовые свечи биржа отдаёт с задержкой: если дневная свеча дня входа уже задела уровень,
+    #     а до времени входа (часовые свечи до opened_at) цена его не касалась — значит, задела после входа.
+    if intraday is not None and sig.get("opened_at", "")[11:16] < "23:59":
+        day = next((b for b in bars if b["date"] == sig["opened"]), None)
+        if day:
+            pre = [b for b in intraday if b["begin"] < sig["opened_at"]]
+            pre_h = max([b["h"] for b in pre], default=-1e18)
+            pre_l = min([b["l"] for b in pre], default=1e18)
+            if sig["side"] == "buy":
+                hs = day["l"] <= sig["stop"] and pre_l > sig["stop"]
+                ht = day["h"] >= sig["target"] and pre_h < sig["target"]
+            else:
+                hs = day["h"] >= sig["stop"] and pre_h < sig["stop"]
+                ht = day["l"] <= sig["target"] and pre_l > sig["target"]
+            if hs or ht:
+                px = sig["stop"] if hs else sig["target"]
+                sig.update(status="стоп" if hs else "цель", closed=sig["opened"], closed_at=sig["opened"] + " (в течение дня)",
+                           close_price=px, result_pct=pnl(sig["side"], sig["entry"], px), days=0)
+                return
     # 2) следующие дни: дневные свечи
     after = [b for b in bars if b["date"] > sig["opened"]]
     for i, b in enumerate(after, 1):
