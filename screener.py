@@ -408,7 +408,7 @@ def analyze(ticker, name, bars):
             stop = min(base, low20 if base > c else base) * 0.99
             if E and E < c and (c - E) / E <= P["near_ema"] and not used_levels["buy"]:
                 stop = min(stop, E * 0.985)
-            target = min([r for r in all_res if r > c * 1.01], default=hi52 if hi52 > c * 1.01 else None)
+            target = min([r for r in all_res if r > c], default=hi52 if hi52 > c * 1.01 else None)
             if target is None:
                 target = c + 2 * (c - stop)
                 tnote = "цель расчётная (2× риск), выше нет уровней"
@@ -419,7 +419,7 @@ def analyze(ticker, name, bars):
             entry = c
             base = used_levels["sell"] or min([r for r in all_res if r >= c], default=high20)
             stop = max(base, high20 if base < c else base) * 1.01
-            target = max([s for s in all_sup if s < c * 0.99], default=lo52 if lo52 < c * 0.99 else None)
+            target = max([s for s in all_sup if s < c], default=lo52 if lo52 < c * 0.99 else None)
             if target is None:
                 target = c - 2 * (stop - c)
                 tnote = "цель расчётная (2× риск), ниже нет уровней"
