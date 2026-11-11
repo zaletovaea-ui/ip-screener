@@ -18,8 +18,8 @@
     "откат к EMA200 292.17 (+0.1%), наклон вверх — откат в восходящем тренде"
    ],
    "status": "открыт",
-   "current_pct": -0.12,
-   "last_price": 292.08,
+   "current_pct": -0.07,
+   "last_price": 292.21,
    "last_date": "2026-11-11",
    "days": 0
   },
@@ -41,8 +41,8 @@
     "пробой сопротивления 45.80 2026-11-09 на объёме ×7.0, был ретест уровня"
    ],
    "status": "открыт",
-   "current_pct": -1.81,
-   "last_price": 45.13,
+   "current_pct": -1.63,
+   "last_price": 45.21,
    "last_date": "2026-11-11",
    "days": 0
   },
@@ -63,8 +63,8 @@
     "на поддержке 3361.50 (4 касания, до уровня 0.8%)"
    ],
    "status": "открыт",
-   "current_pct": 0.03,
-   "last_price": 3389.5,
+   "current_pct": 0.04,
+   "last_price": 3390.0,
    "last_date": "2026-11-11",
    "days": 0
   },
@@ -85,8 +85,8 @@
     "на поддержке 23.85 (2 касания, до уровня 1.9%)"
    ],
    "status": "открыт",
-   "current_pct": -1.07,
-   "last_price": 24.045,
+   "current_pct": -1.15,
+   "last_price": 24.025,
    "last_date": "2026-11-11",
    "days": 0
   },
@@ -107,8 +107,8 @@
     "на поддержке 5059.50 (2 касания, до уровня 1.6%)"
    ],
    "status": "открыт",
-   "current_pct": -0.47,
-   "last_price": 5118.0,
+   "current_pct": -0.58,
+   "last_price": 5112.0,
    "last_date": "2026-11-11",
    "days": 0
   },
@@ -130,8 +130,8 @@
     "отскок вниз от EMA200 277.54 при нисходящем наклоне"
    ],
    "status": "открыт",
-   "current_pct": 0.33,
-   "last_price": 273.08,
+   "current_pct": 0.21,
+   "last_price": 273.4,
    "last_date": "2026-11-11",
    "days": 0
   },
@@ -153,8 +153,8 @@
     "пробой EMA200 701.35 вниз, 2 закрытия ниже"
    ],
    "status": "открыт",
-   "current_pct": 0.47,
-   "last_price": 683.8,
+   "current_pct": 0.32,
+   "last_price": 684.8,
    "last_date": "2026-11-11",
    "days": 0
   },
@@ -176,8 +176,8 @@
     "RSI вышел из перекупленности (76 → 67, 2026-11-10)"
    ],
    "status": "открыт",
-   "current_pct": 0.29,
-   "last_price": 42.475,
+   "current_pct": 0.19,
+   "last_price": 42.52,
    "last_date": "2026-11-11",
    "days": 0
   },
@@ -202,8 +202,8 @@
     "медвежья дивергенция (2026-10-28 → 2026-11-02)"
    ],
    "status": "открыт",
-   "current_pct": -0.15,
-   "last_price": 1946.5,
+   "current_pct": -0.08,
+   "last_price": 1945.0,
    "last_date": "2026-11-11",
    "days": 0
   },
@@ -226,8 +226,8 @@
     "RSI вышел из перекупленности (74 → 70, 2026-11-09)"
    ],
    "status": "открыт",
-   "current_pct": -0.1,
-   "last_price": 10.57,
+   "current_pct": 0.22,
+   "last_price": 10.536,
    "last_date": "2026-11-11",
    "days": 0
   },
@@ -249,20 +249,44 @@
     "на поддержке 1.32 (2 касания, до уровня 1.2%)"
    ],
    "status": "открыт",
-   "current_pct": 0.08,
-   "last_price": 1.3325,
+   "current_pct": 0.19,
+   "last_price": 1.334,
+   "last_date": "2026-11-11",
+   "days": 0
+  },
+  {
+   "id": "2026-11-11-BAZA-sell-ta",
+   "strategy": "ta",
+   "ticker": "BAZA",
+   "name": "iБАЗИС",
+   "side": "sell",
+   "opened": "2026-11-11",
+   "entry": 149.9,
+   "stop": 154.7724,
+   "target": 119.92,
+   "stop_pct": -3.3,
+   "target_pct": 20.0,
+   "rating": "⭐⭐",
+   "comment": "разворот RSI + дивергенция RSI",
+   "signals": [
+    "RSI вышел из перекупленности (75 → 69, 2026-11-09)",
+    "медвежья дивергенция (2026-10-29 → 2026-11-02)"
+   ],
+   "status": "открыт",
+   "current_pct": 0.0,
+   "last_price": 149.9,
    "last_date": "2026-11-11",
    "days": 0
   }
  ],
  "stats": {
-  "total": 11,
-  "open": 11,
+  "total": 12,
+  "open": 12,
   "closed": 0,
   "by_strategy": {
    "ta": {
-    "total": 11,
-    "open": 11,
+    "total": 12,
+    "open": 12,
     "closed": 0
    },
    "momentum": {
@@ -272,5 +296,5 @@
    }
   }
  },
- "updated_utc": "2026-11-11 08:38"
+ "updated_utc": "2026-11-11 08:42"
 }
