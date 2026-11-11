@@ -717,9 +717,9 @@ BARS = {}
 
 
 def load_intraday(ticker, date):
-    """Часовые свечи за один день (время начала свечи — МСК)."""
+    """10-минутные свечи за один день (время начала свечи — МСК)."""
     rows = table(iss(f"engines/stock/markets/shares/boards/TQBR/securities/{ticker}/candles.json",
-                     {"interval": 60, "from": date, "till": date}), "candles")
+                     {"interval": 10, "from": date, "till": date}), "candles")
     return [{"begin": str(r["begin"]), "h": float(r["high"]), "l": float(r["low"]), "c": float(r["close"])}
             for r in rows if r.get("high") is not None]
 
