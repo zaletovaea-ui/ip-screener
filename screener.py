@@ -658,7 +658,7 @@ def main():
     for r in results + moms:
         flags = []
         bars = BARS.get(r["ticker"], [])
-        if LISTLEVEL.get(r["ticker"]) == 3:
+        if LISTLEVEL.get(r["ticker"]) == 3 and r["ticker"] not in index:
             flags.append("3-й уровень листинга")
         if r["side"] == "buy" and bars:
             hi = max(b["h"] for b in bars[-250:])
