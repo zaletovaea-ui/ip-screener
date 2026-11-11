@@ -1,0 +1,18 @@
+name: Отладка (служебный)
+on:
+  workflow_dispatch:
+    inputs:
+      code:
+        description: "Python-код"
+        required: true
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install -q requests
+      - env: {CODE: "${{ inputs.code }}"}
+        run: python -c "$CODE"
