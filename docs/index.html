@@ -4,37 +4,43 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Скринер акций — Invest Privet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600&family=Inter:wght@400;500;600;700&display=swap">
 <style>
   :root{
     --blue:#1F5CFF; --lime:#B6F03A; --navy:#0F2042; --canvas:#F8FAFC; --surface:#FFFFFF;
     --up:#15803D; --down:#DC2626; --down-text:#B91C1C; --sec:#475569; --muted:#64748B; --border:#E2E8F0;
+    --blue-pressed:#1D4ED8; --hover:#F1F5F9; --bull-subtle:#DCFCE7; --bear-subtle:#FEE2E2; --warn:#D97706; --warn-subtle:#FEF3C7;
+    --serif:"Source Serif 4",Georgia,serif; --sans:Inter,system-ui,sans-serif; --shadow:0 1px 3px rgba(15,32,66,.05);
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--canvas);color:var(--navy);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+  body{margin:0;background:var(--canvas);color:var(--navy);font:15px/22px var(--sans)}
   .wrap{max-width:1180px;margin:0 auto;padding:0 20px 48px}
   header{background:var(--blue);color:#fff;position:relative;overflow:hidden}
   header:after{content:"";position:absolute;right:-120px;top:-160px;width:420px;height:420px;border-radius:50%;background:rgba(15,32,66,.18)}
   header .wrap{position:relative;z-index:1}
-  .logo{display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:15px;letter-spacing:.02em;color:#fff}
-  .logo i{width:12px;height:12px;border-radius:50%;background:var(--lime);display:inline-block}
+  .logo{font-family:var(--serif);font-weight:600;font-size:20px;color:#fff}
   header .wrap{padding:28px 20px 24px;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between}
   .brand{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#DBE4FF;margin-top:14px}
-  h1{margin:4px 0 6px;font-size:28px;line-height:1.15}
+  h1{margin:4px 0 6px;font-family:var(--serif);font-weight:600;font-size:32px;line-height:40px}
   .sub{color:#DBE4FF;font-size:14px}
-  .mkt{background:var(--navy);border:1px solid var(--navy);border-radius:12px;padding:12px 16px;font-size:14px;max-width:420px}
+  .mkt{background:var(--navy);border:1px solid var(--navy);border-radius:16px;padding:12px 16px;font-size:14px;max-width:420px}
   .mkt b{font-size:16px}
   nav{display:flex;gap:8px;margin:22px 0 18px;flex-wrap:wrap}
-  nav button{border:1px solid var(--border);background:var(--surface);color:var(--navy);padding:9px 16px;border-radius:999px;font:inherit;font-weight:600;cursor:pointer}
+  nav button{border:1px solid var(--border);background:var(--surface);color:var(--navy);padding:0 18px;height:44px;border-radius:10px;font:600 13px/16px var(--sans);cursor:pointer}
+  nav button:hover{background:var(--hover)}
   nav button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+  nav button.on:hover{background:var(--blue-pressed)}
   .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:18px}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:var(--shadow)}
   .card .k{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
-  .card .v{font-size:24px;font-weight:700;margin-top:4px}
+  .card .v{font-size:24px;line-height:32px;font-weight:600;margin-top:4px;font-variant-numeric:tabular-nums}
   .card.hl{background:var(--lime);border-color:var(--lime)}
   .card.hl .k{color:var(--navy)}
-  h2{font-size:19px;margin:26px 0 10px}
-  .tbl{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:auto}
-  table{width:100%;border-collapse:collapse;font-size:14px;white-space:nowrap}
+  h2{font-family:var(--serif);font-weight:600;font-size:24px;line-height:32px;margin:32px 0 12px}
+  .tbl{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:auto;box-shadow:var(--shadow)}
+  table{width:100%;border-collapse:collapse;font-size:14px;line-height:20px;white-space:nowrap;font-variant-numeric:tabular-nums}
+  tr:hover td{background:var(--hover)}
   th{position:sticky;top:0;background:var(--surface);text-align:left;color:var(--sec);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.03em;padding:10px 12px;border-bottom:1px solid var(--border)}
   td{padding:10px 12px;border-bottom:1px solid var(--border)}
   tr:last-child td{border-bottom:none}
@@ -44,23 +50,24 @@
   a.tk{color:var(--blue);font-weight:700;text-decoration:none}
   a.tk:hover{text-decoration:underline}
   .nm{color:var(--muted);font-size:12px}
-  .pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:700}
+  .pill{display:inline-block;padding:2px 8px;border-radius:6px;font-size:12px;line-height:16px;font-weight:600}
   .buy{background:var(--up);color:#fff}
   .sell{background:var(--down);color:#fff}
-  h2.plate{display:inline-block;color:#fff;padding:6px 16px;border-radius:10px;font-size:17px}
+  h2.plate{display:inline-block;color:#fff;padding:4px 16px;border-radius:10px;font-family:var(--sans);font-size:17px;line-height:22px}
   h2.plate.buy{background:var(--up)}
   h2.plate.sell{background:var(--down)}
   h2.plate.mom{background:var(--blue)}
   .mom-p{background:var(--blue);color:#fff}
   .sub-h{font-size:15px;margin:22px 0 10px;color:var(--sec)}
   .neu{background:#EEF2F7;color:var(--sec)}
-  .tgt{background:var(--lime);color:var(--navy)}
+  .tgt{background:var(--bull-subtle);color:var(--up)}
   .up{color:var(--up);font-weight:600}
   .down{color:var(--down);font-weight:600}
-  .warn{color:var(--down-text);font-size:12px}
-  .note{color:var(--muted);font-size:13px;margin-top:10px}
+  .warn{color:var(--sec);font-size:12px}
+  .warn:before{content:"⚠ ";color:var(--warn)}
+  .note{color:var(--muted);font-size:12px;line-height:16px;margin-top:12px}
   .filters{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px}
-  .filters select,.filters input{border:1px solid var(--border);border-radius:10px;padding:7px 10px;font:inherit;background:var(--surface);color:var(--navy)}
+  .filters select,.filters input{border:1px solid #CBD5E1;border-radius:8px;height:40px;padding:7px 10px;font:inherit;background:var(--surface);color:var(--navy)}
   details{margin-top:6px}
   summary{cursor:pointer;color:var(--blue);font-size:13px}
   h2{color:var(--navy)}
@@ -132,7 +139,7 @@
 <script>
 const fmt = (x, d) => x == null ? "—" : Number(x).toLocaleString("ru-RU", {minimumFractionDigits: d ?? dec(x), maximumFractionDigits: d ?? dec(x)});
 const dec = x => { x = Math.abs(x); return x >= 1000 ? 0 : x >= 100 ? 1 : x >= 1 ? 2 : 4; };
-const pct = (x, sign) => x == null ? "—" : (x > 0 && sign ? "+" : "") + fmt(x, 1) + "%";
+const pct = (x, sign) => x == null ? "—" : (x > 0 ? "▲ +" : x < 0 ? "▼ −" : "") + fmt(Math.abs(x), 1) + "%";
 const cls = x => x > 0 ? "up" : x < 0 ? "down" : "";
 const side = (s, strat) => strat === "momentum" ? '<span class="pill mom-p">Моментум</span>' : s === "buy" ? '<span class="pill buy">Покупка</span>' : '<span class="pill sell">Продажа</span>';
 const tk = (t, n) => `<a class="tk" href="https://www.tradingview.com/chart/?symbol=MOEX:${t}" target="_blank" rel="noopener">${t}</a><div class="nm">${n || ""}</div>`;
@@ -147,9 +154,9 @@ function momTable(rows) {
   rows = rows.filter(r => r.top);
   if (!rows.length) return "<tr><td>Сегодня импульсов нет</td></tr>";
   return `<tr><th>Тикер</th><th class="num">Рост за день</th><th class="num">Объём</th><th class="num">Цена</th><th class="num">Стоп</th><th class="num">Стоп, %</th><th class="num">Цель</th><th class="num">Цель, %</th><th>Комментарий</th></tr>` +
-    rows.map(r => `<tr><td>${tk(r.ticker, r.name)}</td><td class="num up">+${fmt(r.change_pct, 1)}%</td><td class="num">×${fmt(r.volume_mult, 1)}</td>
+    rows.map(r => `<tr><td>${tk(r.ticker, r.name)}</td><td class="num up">▲ +${fmt(r.change_pct, 1)}%</td><td class="num">×${fmt(r.volume_mult, 1)}</td>
       <td class="num">${fmt(r.close)}</td><td class="num">${fmt(r.stop, dec(r.close))}</td><td class="num down">${pct(r.stop_pct)}</td>
-      <td class="num">${fmt(r.target, dec(r.close))}</td><td class="num up">+${fmt(r.target_pct, 1)}%</td><td class="cm">${r.comment || ""}</td></tr>`).join("");
+      <td class="num">${fmt(r.target, dec(r.close))}</td><td class="num up">▲ +${fmt(r.target_pct, 1)}%</td><td class="cm">${r.comment || ""}</td></tr>`).join("");
 }
 
 function topTable(rows) {
@@ -157,7 +164,7 @@ function topTable(rows) {
   return `<tr><th>Тикер</th><th>Рейтинг</th><th class="num">Цена</th><th class="num">Стоп</th><th class="num">Стоп, %</th><th class="num">Цель</th><th class="num">Цель, %</th><th class="num">R/R</th><th>Комментарий</th></tr>` +
     rows.map(r => `<tr><td>${tk(r.ticker, r.name)}</td><td>${r.rating}</td><td class="num">${fmt(r.close)}</td>
       <td class="num">${fmt(r.stop, dec(r.close))}</td><td class="num down">${pct(r.stop_pct)}</td>
-      <td class="num">${fmt(r.target, dec(r.close))}</td><td class="num up">+${fmt(r.target_pct, 1)}%</td>
+      <td class="num">${fmt(r.target, dec(r.close))}</td><td class="num up">▲ +${fmt(r.target_pct, 1)}%</td>
       <td class="num">${r.rr ? "1:" + fmt(r.rr, 1) : "—"}${r.rr && r.rr < 2 ? ' <span class="warn">&lt;1:2</span>' : ""}</td>
       <td class="cm">${r.comment || ""}<details><summary>все сигналы</summary>${r.signals.join("<br>")}</details></td></tr>`).join("");
 }
@@ -186,9 +193,9 @@ function allTable(rows) {
   document.getElementById("t-all").innerHTML = !rows.length ? "<tr><td>Ничего не найдено</td></tr>" :
     `<tr><th>Тикер</th><th>Направление</th><th>Рейтинг</th><th class="num">Цена</th><th class="num">Стоп, %</th><th class="num">Цель, %</th><th class="num">R/R</th><th class="num">RSI</th><th>Сигналы</th></tr>` +
     rows.map(r => `<tr><td>${tk(r.ticker, r.name)}</td><td>${side(r.side)}${r.conflict ? ' <span class="warn" title="Есть сигналы в обе стороны">⇄</span>' : ""}</td><td>${r.rating}</td>
-      <td class="num">${fmt(r.close)}</td><td class="num down">${pct(r.stop_pct)}</td><td class="num up">+${fmt(r.target_pct, 1)}%</td>
+      <td class="num">${fmt(r.close)}</td><td class="num down">${pct(r.stop_pct)}</td><td class="num up">▲ +${fmt(r.target_pct, 1)}%</td>
       <td class="num">${r.rr ? "1:" + fmt(r.rr, 1) : "—"}</td><td class="num">${fmt(r.rsi, 0)}</td>
-      <td class="cm">${r.signals.join("<br>")}${r.low_liquidity ? '<br><span class="warn">⚠ низкая ликвидность</span>' : ""}${(r.risk_flags || []).map(f => '<br><span class="warn">⚠ ' + f + '</span>').join("")}</td></tr>`).join("");
+      <td class="cm">${r.signals.join("<br>")}${r.low_liquidity ? '<br><span class="warn">низкая ликвидность</span>' : ""}${(r.risk_flags || []).map(f => '<br><span class="warn">' + f + '</span>').join("")}</td></tr>`).join("");
 }
 
 (async () => {
