@@ -63,7 +63,7 @@ def iss(path, params=None):
     params.setdefault("iss.meta", "off")
     for attempt in range(4):
         try:
-            r = S.get(f"{BASE}/{path}", params=params, timeout=30)
+            r = S.get(f"{BASE}/{path}", params=params, timeout=(10, 20))
             r.raise_for_status()
             return r.json()
         except Exception as e:  # noqa
