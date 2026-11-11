@@ -232,29 +232,6 @@
    "days": 0
   },
   {
-   "id": "2026-11-11-MGKL-buy-ta",
-   "strategy": "ta",
-   "ticker": "MGKL",
-   "name": "МГКЛ",
-   "side": "buy",
-   "opened": "2026-11-11",
-   "entry": 0.4355,
-   "stop": 0.3995,
-   "target": 0.5226,
-   "stop_pct": -8.3,
-   "target_pct": 20.0,
-   "rating": "⭐",
-   "comment": "дивергенция RSI",
-   "signals": [
-    "бычья дивергенция (2026-11-06 → 2026-11-11)"
-   ],
-   "status": "открыт",
-   "current_pct": -0.34,
-   "last_price": 0.434,
-   "last_date": "2026-11-11",
-   "days": 0
-  },
-  {
    "id": "2026-11-11-MSNG-buy-ta",
    "strategy": "ta",
    "ticker": "MSNG",
@@ -279,13 +256,13 @@
   }
  ],
  "stats": {
-  "total": 12,
-  "open": 12,
+  "total": 11,
+  "open": 11,
   "closed": 0,
   "by_strategy": {
    "ta": {
-    "total": 12,
-    "open": 12,
+    "total": 11,
+    "open": 11,
     "closed": 0
    },
    "momentum": {

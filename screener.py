@@ -39,6 +39,7 @@ P = {
     "rsi_cross_recent": 3,        # пересечение 30/70 за последние N дней
     "div_lookback": 60,           # окно поиска дивергенций
     "div_recent": 10,             # второй экстремум дивергенции не старше N дней
+    "max_drawdown": 0.50,         # покупки: если цена ниже годового максимума больше чем на 50% — «падающий нож», в подборку не берём
     "max_target": 0.20,           # цель не дальше ±20% от цены: дальше — уже не сделка на 20 дней
     "mom_change": 0.05,           # моментум: рост за день от 5%
     "mom_quiet_days": 20,         # «первый день»: до этого N дней без роста ≥5%
@@ -97,13 +98,28 @@ def load_index():
     return list(dict.fromkeys(UNIVERSE_FALLBACK))
 
 
+LISTLEVEL = {}
+
+
+def load_exclude():
+    f = Path(__file__).parent / "exclude.txt"
+    if not f.exists():
+        return set()
+    return {ln.split("#")[0].strip().upper() for ln in f.read_text(encoding="utf-8").splitlines()
+            if ln.split("#")[0].strip()}
+
+
 def load_universe():
-    """Все акции режима TQBR; фильтр по обороту — после загрузки свечей (средний за 20 дней)."""
-    index = load_index()
+    """Все акции режима TQBR минус exclude.txt; фильтр по обороту — после загрузки свечей."""
+    excl = load_exclude()
+    index = [t for t in load_index() if t not in excl]
     try:
         rows = table(iss("engines/stock/markets/shares/boards/TQBR/securities.json",
-                         {"iss.only": "securities", "securities.columns": "SECID"}), "securities")
-        all_t = [r["SECID"] for r in rows if r.get("SECID")]
+                         {"iss.only": "securities", "securities.columns": "SECID,LISTLEVEL"}), "securities")
+        all_t = [r["SECID"] for r in rows if r.get("SECID") and r["SECID"] not in excl]
+        for r in rows:
+            if r.get("SECID"):
+                LISTLEVEL[r["SECID"]] = r.get("LISTLEVEL")
     except Exception as e:  # noqa
         print("Список акций не загрузился, только индекс:", e, file=sys.stderr)
         all_t = []
@@ -558,7 +574,7 @@ def pick_top(results, n_buy=5, n_sell=3, min_rr=1.0):
     top = []
     for side, n in (("buy", n_buy), ("sell", n_sell)):
         rows = [r for r in results if r["side"] == side and (r["rr"] or 0) >= min_rr
-                and not r["low_liquidity"] and r.get("strategy", "ta") == "ta"]
+                and not r["low_liquidity"] and r.get("strategy", "ta") == "ta" and not r.get("risk_flags")]
         # конфликт: по бумаге сигналов в другую сторону не меньше — пропускаем
         rows = [r for r in rows if by[r["ticker"]].get("sell" if side == "buy" else "buy", {}).get("count", 0) < r["count"]]
         rows.sort(key=lambda x: (x["count"], min(x["rr"], 3)), reverse=True)
@@ -639,6 +655,22 @@ def main():
             errors[t] = str(e)[:200]
         time.sleep(0.1)
     results.sort(key=rank_key, reverse=True)
+    for r in results + moms:
+        flags = []
+        bars = BARS.get(r["ticker"], [])
+        if LISTLEVEL.get(r["ticker"]) == 3:
+            flags.append("3-й уровень листинга")
+        if r["side"] == "buy" and bars:
+            hi = max(b["h"] for b in bars[-250:])
+            dd = 1 - r["close"] / hi
+            if dd > P["max_drawdown"]:
+                flags.append(f"падающий нож: −{dd * 100:.0f}% от годового максимума")
+        if r["side"] == "buy" and r.get("strategy", "ta") == "ta" and all(
+                ("RSI" in t or "дивергенция" in t) for t in r["signals"]):
+            flags.append("только сигнал RSI — без уровня")
+        r["risk_flags"] = flags
+        if flags and r.get("strategy") == "momentum":
+            r["top"] = False
     for r in results:
         r["strategy"] = "ta"
         r["comment"] = short_comment(r["signals"], r["side"])

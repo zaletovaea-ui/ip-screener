@@ -137,6 +137,8 @@ async function getJSON(p) {
 
 function momTable(rows) {
   if (!rows.length) return "<tr><td>Сегодня импульсов нет</td></tr>";
+  rows = rows.filter(r => r.top);
+  if (!rows.length) return "<tr><td>Сегодня импульсов нет</td></tr>";
   return `<tr><th>Тикер</th><th class="num">Рост за день</th><th class="num">Объём</th><th class="num">Цена</th><th class="num">Стоп</th><th class="num">Стоп, %</th><th class="num">Цель</th><th class="num">Цель, %</th><th>Комментарий</th></tr>` +
     rows.map(r => `<tr><td>${tk(r.ticker, r.name)}</td><td class="num up">+${fmt(r.change_pct, 1)}%</td><td class="num">×${fmt(r.volume_mult, 1)}</td>
       <td class="num">${fmt(r.close)}</td><td class="num">${fmt(r.stop, dec(r.close))}</td><td class="num down">${pct(r.stop_pct)}</td>
@@ -179,7 +181,7 @@ function allTable(rows) {
     rows.map(r => `<tr><td>${tk(r.ticker, r.name)}</td><td>${side(r.side)}${r.conflict ? ' <span class="warn" title="Есть сигналы в обе стороны">⇄</span>' : ""}</td><td>${r.rating}</td>
       <td class="num">${fmt(r.close)}</td><td class="num down">${pct(r.stop_pct)}</td><td class="num up">+${fmt(r.target_pct, 1)}%</td>
       <td class="num">${r.rr ? "1:" + fmt(r.rr, 1) : "—"}</td><td class="num">${fmt(r.rsi, 0)}</td>
-      <td class="cm">${r.signals.join("<br>")}${r.low_liquidity ? '<br><span class="warn">⚠ низкая ликвидность</span>' : ""}</td></tr>`).join("");
+      <td class="cm">${r.signals.join("<br>")}${r.low_liquidity ? '<br><span class="warn">⚠ низкая ликвидность</span>' : ""}${(r.risk_flags || []).map(f => '<br><span class="warn">⚠ ' + f + '</span>').join("")}</td></tr>`).join("");
 }
 
 (async () => {
