@@ -81,10 +81,12 @@ def update(report, bars_by_ticker, loader):
                 continue
         check(s, bars)
     # 2) добавляем новые из топа (если по бумаге в ту же сторону уже нет открытого)
-    open_keys = {(s["ticker"], s["side"]) for s in sigs if s["status"] == "открыт"}
+    open_tickers = {s["ticker"] for s in sigs if s["status"] == "открыт"}
     for r in report["results"]:
-        if not r.get("top") or (r["ticker"], r["side"]) in open_keys:
+        # по бумаге уже есть открытый сигнал (в любую сторону) — новый не открываем
+        if not r.get("top") or r["ticker"] in open_tickers:
             continue
+        open_tickers.add(r["ticker"])
         sigs.append({
             "id": f"{r['date']}-{r['ticker']}-{r['side']}",
             "ticker": r["ticker"], "name": r["name"], "side": r["side"],
