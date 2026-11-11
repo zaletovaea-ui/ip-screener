@@ -66,6 +66,12 @@ def stats(signals):
     return out
 
 
+def stats_all(signals):
+    out = stats(signals)
+    out["by_strategy"] = {k: stats([s for s in signals if s.get("strategy", "ta") == k]) for k in ("ta", "momentum")}
+    return out
+
+
 def update(report, bars_by_ticker, loader):
     j = load()
     sigs = j["signals"]
@@ -81,14 +87,16 @@ def update(report, bars_by_ticker, loader):
                 continue
         check(s, bars)
     # 2) добавляем новые из топа (если по бумаге в ту же сторону уже нет открытого)
-    open_tickers = {s["ticker"] for s in sigs if s["status"] == "открыт"}
+    open_keys = {(s["ticker"], s.get("strategy", "ta")) for s in sigs if s["status"] == "открыт"}
     for r in report["results"]:
-        # по бумаге уже есть открытый сигнал (в любую сторону) — новый не открываем
-        if not r.get("top") or r["ticker"] in open_tickers:
+        # по бумаге уже есть открытый сигнал этой стратегии (в любую сторону) — новый не открываем
+        key = (r["ticker"], r.get("strategy", "ta"))
+        if not r.get("top") or key in open_keys:
             continue
-        open_tickers.add(r["ticker"])
+        open_keys.add(key)
         sigs.append({
-            "id": f"{r['date']}-{r['ticker']}-{r['side']}",
+            "id": f"{r['date']}-{r['ticker']}-{r['side']}-{r.get('strategy', 'ta')}",
+            "strategy": r.get("strategy", "ta"),
             "ticker": r["ticker"], "name": r["name"], "side": r["side"],
             "opened": r["date"], "entry": r["close"], "stop": r["stop"], "target": r["target"],
             "stop_pct": r.get("stop_pct"), "target_pct": r.get("target_pct"),
@@ -96,7 +104,7 @@ def update(report, bars_by_ticker, loader):
             "status": "открыт", "current_pct": 0.0, "last_price": r["close"], "last_date": r["date"], "days": 0,
         })
     j["signals"] = sigs
-    j["stats"] = stats(sigs)
+    j["stats"] = stats_all(sigs)
     j["updated_utc"] = dt.datetime.utcnow().strftime("%Y-%m-%d %H:%M")
     PATH.parent.mkdir(parents=True, exist_ok=True)
     PATH.write_text(json.dumps(j, ensure_ascii=False, indent=1), encoding="utf-8")

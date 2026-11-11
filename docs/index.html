@@ -46,6 +46,9 @@
   h2.plate{display:inline-block;color:#fff;padding:6px 16px;border-radius:10px;font-size:17px}
   h2.plate.buy{background:var(--up)}
   h2.plate.sell{background:var(--down)}
+  h2.plate.mom{background:var(--blue)}
+  .mom-p{background:var(--blue);color:#fff}
+  .sub-h{font-size:15px;margin:22px 0 10px;color:var(--sec)}
   .neu{background:#EEF2F7;color:var(--sec)}
   .tgt{background:var(--lime);color:var(--navy)}
   .up{color:var(--up);font-weight:600}
@@ -84,11 +87,19 @@
     <div class="tbl"><table id="t-buy"></table></div>
     <h2 class="plate sell">Продажа</h2>
     <div class="tbl"><table id="t-sell"></table></div>
+    <h2 class="plate mom">Моментум 🚀</h2>
+    <div class="tbl"><table id="t-mom"></table></div>
+    <p class="note">Моментум — первый за 20 торговых дней рост акции на 5% и больше за день на объёме от 1,5× среднего. Стоп — под минимумом дня импульса, цель — 2 × риск.</p>
     <p class="note">Вход — цена закрытия дня сигнала. «Стоп, %» — убыток при срабатывании стопа, «Цель, %» — прибыль при достижении цели (для продаж — от падения цены). Рейтинг: ⭐ один сигнал, ⭐⭐ два, ⭐⭐⭐ три и больше.</p>
   </section>
 
   <section id="tab-journal" class="hidden">
+    <div class="sub-h">Все стратегии</div>
     <div class="cards" id="stats"></div>
+    <div class="sub-h">По уровням (технический анализ)</div>
+    <div class="cards" id="stats-ta"></div>
+    <div class="sub-h">Моментум</div>
+    <div class="cards" id="stats-mom"></div>
     <h2>Открытые сигналы</h2>
     <div class="tbl"><table id="t-open"></table></div>
     <h2>Закрытые сигналы</h2>
@@ -116,12 +127,20 @@ const fmt = (x, d) => x == null ? "—" : Number(x).toLocaleString("ru-RU", {min
 const dec = x => { x = Math.abs(x); return x >= 1000 ? 0 : x >= 100 ? 1 : x >= 1 ? 2 : 4; };
 const pct = (x, sign) => x == null ? "—" : (x > 0 && sign ? "+" : "") + fmt(x, 1) + "%";
 const cls = x => x > 0 ? "up" : x < 0 ? "down" : "";
-const side = s => s === "buy" ? '<span class="pill buy">Покупка</span>' : '<span class="pill sell">Продажа</span>';
+const side = (s, strat) => strat === "momentum" ? '<span class="pill mom-p">Моментум</span>' : s === "buy" ? '<span class="pill buy">Покупка</span>' : '<span class="pill sell">Продажа</span>';
 const tk = (t, n) => `<a class="tk" href="https://www.tradingview.com/chart/?symbol=MOEX:${t}" target="_blank" rel="noopener">${t}</a><div class="nm">${n || ""}</div>`;
 const date = d => d ? d.split("-").reverse().join(".") : "—";
 
 async function getJSON(p) {
   try { const r = await fetch(p + "?v=" + Date.now()); return r.ok ? r.json() : null; } catch (e) { return null; }
+}
+
+function momTable(rows) {
+  if (!rows.length) return "<tr><td>Сегодня импульсов нет</td></tr>";
+  return `<tr><th>Тикер</th><th class="num">Рост за день</th><th class="num">Объём</th><th class="num">Цена</th><th class="num">Стоп</th><th class="num">Стоп, %</th><th class="num">Цель</th><th class="num">Цель, %</th><th>Комментарий</th></tr>` +
+    rows.map(r => `<tr><td>${tk(r.ticker, r.name)}</td><td class="num up">+${fmt(r.change_pct, 1)}%</td><td class="num">×${fmt(r.volume_mult, 1)}</td>
+      <td class="num">${fmt(r.close)}</td><td class="num">${fmt(r.stop, dec(r.close))}</td><td class="num down">${pct(r.stop_pct)}</td>
+      <td class="num">${fmt(r.target, dec(r.close))}</td><td class="num up">+${fmt(r.target_pct, 1)}%</td><td class="cm">${r.comment || ""}</td></tr>`).join("");
 }
 
 function topTable(rows) {
@@ -140,10 +159,10 @@ function journalRows(rows, closed) {
     ? `<tr><th>Тикер</th><th>Направление</th><th>Открыт</th><th class="num">Вход</th><th>Итог</th><th>Закрыт</th><th class="num">Дней</th><th class="num">Результат</th><th>Комментарий</th></tr>`
     : `<tr><th>Тикер</th><th>Направление</th><th>Открыт</th><th class="num">Вход</th><th class="num">Стоп</th><th class="num">Цель</th><th class="num">Сейчас</th><th class="num">Дней</th><th class="num">Результат</th><th>Комментарий</th></tr>`;
   return head + rows.map(s => closed
-    ? `<tr><td>${tk(s.ticker, s.name)}</td><td>${side(s.side)}</td><td>${date(s.opened)}</td><td class="num">${fmt(s.entry)}</td>
+    ? `<tr><td>${tk(s.ticker, s.name)}</td><td>${side(s.side, s.strategy)}</td><td>${date(s.opened)}</td><td class="num">${fmt(s.entry)}</td>
        <td><span class="pill ${s.status === "цель" ? "tgt" : s.status === "стоп" ? "sell" : "neu"}">${s.status}</span></td>
        <td>${date(s.closed)}</td><td class="num">${s.days}</td><td class="num ${cls(s.result_pct)}">${pct(s.result_pct, true)}</td><td class="cm">${s.comment || ""}</td></tr>`
-    : `<tr><td>${tk(s.ticker, s.name)}</td><td>${side(s.side)}</td><td>${date(s.opened)}</td><td class="num">${fmt(s.entry)}</td>
+    : `<tr><td>${tk(s.ticker, s.name)}</td><td>${side(s.side, s.strategy)}</td><td>${date(s.opened)}</td><td class="num">${fmt(s.entry)}</td>
        <td class="num">${fmt(s.stop, dec(s.entry))} <span class="nm">${pct(s.stop_pct)}</span></td>
        <td class="num">${fmt(s.target, dec(s.entry))} <span class="nm">+${fmt(s.target_pct, 1)}%</span></td>
        <td class="num">${fmt(s.last_price)}</td><td class="num">${s.days ?? 0}</td>
@@ -171,20 +190,25 @@ function allTable(rows) {
     if (m) document.getElementById("mkt").innerHTML =
       `Фон рынка: индекс Мосбиржи <b>${fmt(m.close, 0)}</b> — <b>${m.above ? "выше" : "ниже"}</b> EMA200 (${fmt(m.ema200, 0)}, ${pct(m.dist_pct, true)}), наклон EMA200 ${m.slope_up ? "вверх" : "вниз"}.<br>` +
       `<span style="color:#CBD5E1">${m.above ? "Рынок в восходящем режиме — сигналы на покупку надёжнее." : "Рынок ниже EMA200 — покупки без подтверждения, продажи в приоритете."}</span>`;
-    const top = rep.results.filter(r => r.top);
+    const ta = rep.results.filter(r => (r.strategy || "ta") === "ta");
+    const top = ta.filter(r => r.top);
+    document.getElementById("t-mom").innerHTML = momTable(rep.results.filter(r => r.strategy === "momentum"));
     document.getElementById("t-buy").innerHTML = topTable(top.filter(r => r.side === "buy"));
     document.getElementById("t-sell").innerHTML = topTable(top.filter(r => r.side === "sell"));
-    allTable(rep.results);
-    ["f-side", "f-min", "f-q"].forEach(id => document.getElementById(id).addEventListener("input", () => allTable(rep.results)));
+    allTable(ta);
+    ["f-side", "f-min", "f-q"].forEach(id => document.getElementById(id).addEventListener("input", () => allTable(ta)));
   }
   if (jr) {
-    const st = jr.stats || {};
-    document.getElementById("stats").innerHTML = [
+    const cards = (st, hl) => [
       ["Всего сигналов", st.total ?? 0], ["Открыто", st.open ?? 0], ["Закрыто", st.closed ?? 0],
-      ["Доля прибыльных", st.win_rate != null ? fmt(st.win_rate, 0) + "%" : "—", true],
+      ["Доля прибыльных", st.win_rate != null ? fmt(st.win_rate, 0) + "%" : "—", hl],
       ["Средний результат", st.avg_result != null ? pct(st.avg_result, true) : "—"],
       ["Цель / стоп / истёк", st.closed ? `${st.targets} / ${st.stops} / ${st.expired}` : "—"],
-    ].map(([k, v, hl]) => `<div class="card${hl ? " hl" : ""}"><div class="k">${k}</div><div class="v">${v}</div></div>`).join("");
+    ].map(([k, v, h]) => `<div class="card${h ? " hl" : ""}"><div class="k">${k}</div><div class="v">${v}</div></div>`).join("");
+    const st = jr.stats || {}, bs = st.by_strategy || {};
+    document.getElementById("stats").innerHTML = cards(st, true);
+    document.getElementById("stats-ta").innerHTML = cards(bs.ta || {}, false);
+    document.getElementById("stats-mom").innerHTML = cards(bs.momentum || {}, false);
     const sigs = jr.signals || [];
     document.getElementById("t-open").innerHTML = journalRows(sigs.filter(s => s.status === "открыт"), false);
     document.getElementById("t-closed").innerHTML = journalRows(sigs.filter(s => s.status !== "открыт").reverse(), true);

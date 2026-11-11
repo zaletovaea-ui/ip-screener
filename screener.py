@@ -39,6 +39,10 @@ P = {
     "rsi_cross_recent": 3,        # пересечение 30/70 за последние N дней
     "div_lookback": 60,           # окно поиска дивергенций
     "div_recent": 10,             # второй экстремум дивергенции не старше N дней
+    "mom_change": 0.05,           # моментум: рост за день от 5%
+    "mom_quiet_days": 20,         # «первый день»: до этого N дней без роста ≥5%
+    "mom_volume_mult": 1.5,       # объём в день импульса ≥ 1.5× средний за 20 дней
+    "mom_rr": 2.0,                # цель моментума = вход + 2 × риск
     "min_turnover_mln": 50,       # акции вне индекса с оборотом ниже не анализируем, млн ₽ в день (средний за 20 дней)
 }
 
@@ -501,15 +505,53 @@ def short_comment(sig, side):
     return " + ".join(dict.fromkeys(parts))
 
 
+def momentum(ticker, name, bars):
+    """Первый за N дней дневной рост ≥ mom_change на повышенном объёме."""
+    n = len(bars)
+    if n < 25:
+        return None
+    ch = [None] + [bars[i]["c"] / bars[i - 1]["c"] - 1 for i in range(1, n)]
+    last, chg = bars[-1], ch[-1]
+    if chg is None or chg < P["mom_change"]:
+        return None
+    if any(c is not None and c >= P["mom_change"] for c in ch[-1 - P["mom_quiet_days"]:-1]):
+        return None
+    avgv = sum(b["v"] for b in bars[-21:-1]) / 20
+    vm = last["v"] / avgv if avgv else 0
+    if vm < P["mom_volume_mult"]:
+        return None
+    c = last["c"]
+    stop = last["l"] * 0.995
+    risk = c - stop
+    if risk <= 0:
+        return None
+    target = c + P["mom_rr"] * risk
+    turnover = sum(b["val"] for b in bars[-20:]) / 20 / 1e6
+    return {
+        "ticker": ticker, "name": name, "side": "buy", "strategy": "momentum",
+        "signals": [f"рост +{chg * 100:.1f}% за день — первый за {P['mom_quiet_days']} дней, объём ×{vm:.1f}"],
+        "count": 1, "rating": "🚀", "rating_label": "моментум",
+        "date": last["date"], "close": round(c, 4), "entry": round(c, 4),
+        "stop": round(stop, 4), "target": round(target, 4),
+        "stop_pct": round(-risk / c * 100, 1), "target_pct": round((target / c - 1) * 100, 1),
+        "rr": P["mom_rr"], "target_note": "цель = 2 × риск",
+        "change_pct": round(chg * 100, 1), "volume_mult": round(vm, 1),
+        "rsi": None, "ema200": None, "turnover_mln": round(turnover, 1), "low_liquidity": False,
+        "comment": f"Импульс +{chg * 100:.1f}% на объёме ×{vm:.1f}", "top": True, "conflict": False,
+        "supports": [], "resistances": [],
+    }
+
+
 def pick_top(results, n_buy=5, n_sell=3, min_rr=1.0):
     """Топ по инструкции: больше сигналов выше, затем лучший риск/прибыль; R/R < 1 отсекаем."""
     by = {}
     for r in results:
-        by.setdefault(r["ticker"], {})[r["side"]] = r
+        if r.get("strategy", "ta") == "ta":
+            by.setdefault(r["ticker"], {})[r["side"]] = r
     top = []
     for side, n in (("buy", n_buy), ("sell", n_sell)):
         rows = [r for r in results if r["side"] == side and (r["rr"] or 0) >= min_rr
-                and not r["low_liquidity"]]
+                and not r["low_liquidity"] and r.get("strategy", "ta") == "ta"]
         # конфликт: по бумаге сигналов в другую сторону не меньше — пропускаем
         rows = [r for r in rows if by[r["ticker"]].get("sell" if side == "buy" else "buy", {}).get("count", 0) < r["count"]]
         rows.sort(key=lambda x: (x["count"], min(x["rr"], 6)), reverse=True)
@@ -539,7 +581,7 @@ def to_md(report):
                      + ("вверх" if m["slope_up"] else "вниз") + ".")
         lines.append("")
     for side, title in (("buy", "Покупка"), ("sell", "Продажа")):
-        rows = [r for r in report["results"] if r["side"] == side]
+        rows = [r for r in report["results"] if r["side"] == side and r.get("strategy", "ta") == "ta"]
         lines += [f"## {title} ({len(rows)})", "",
                   "| Тикер | Компания | Сигналы | Рейтинг | Цена | Вход | Стоп | Стоп, % | Цель | Цель, % | R/R |",
                   "|---|---|---|---|---|---|---|---|---|---|---|"]
@@ -551,6 +593,12 @@ def to_md(report):
             lines.append(f"**{r['ticker']}** — " + "; ".join(r["signals"])
                          + (" ⚠️ низкая ликвидность" if r["low_liquidity"] else ""))
         lines.append("")
+    moms = [r for r in report["results"] if r.get("strategy") == "momentum"]
+    lines += [f"## Моментум ({len(moms)})", ""]
+    for r in moms:
+        lines.append(f"- **{r['ticker']}** {r['name']}: {r['signals'][0]}; вход {r['entry']}, "
+                     f"стоп {r['stop']} ({r['stop_pct']}%), цель {r['target']} (+{r['target_pct']}%)")
+    lines.append("")
     lines.append("Не является индивидуальной инвестиционной рекомендацией.")
     return "\n".join(lines)
 
@@ -561,7 +609,7 @@ BARS = {}
 def main():
     index, candidates = load_universe()
     names = load_names(candidates)
-    results, errors, tickers, skipped = [], {}, [], 0
+    results, errors, tickers, skipped, moms = [], {}, [], 0, []
     for t in candidates:
         try:
             bars = load_candles(f"engines/stock/markets/shares/boards/TQBR/securities/{t}/candles.json")
@@ -577,16 +625,22 @@ def main():
             r = analyze(t, names.get(t, t), bars)
             if r:
                 results.extend(r)
+            m = momentum(t, names.get(t, t), bars)
+            if m:
+                moms.append(m)
         except Exception as e:  # noqa
             errors[t] = str(e)[:200]
         time.sleep(0.1)
     results.sort(key=rank_key, reverse=True)
     for r in results:
+        r["strategy"] = "ta"
         r["comment"] = short_comment(r["signals"], r["side"])
         r["conflict"] = any(x["ticker"] == r["ticker"] and x["side"] != r["side"] for x in results)
     top = set(pick_top(results))
     for r in results:
         r["top"] = f"{r['ticker']}:{r['side']}" in top
+    moms.sort(key=lambda x: x["change_pct"], reverse=True)
+    results += moms
     report = {
         "asof": max((r["date"] for r in results), default=dt.date.today().isoformat()),
         "generated_utc": dt.datetime.utcnow().strftime("%Y-%m-%d %H:%M"),
