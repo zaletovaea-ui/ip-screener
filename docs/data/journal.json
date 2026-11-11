@@ -31,9 +31,9 @@
    "opened": "2026-11-11",
    "entry": 45.96,
    "stop": 45.337,
-   "target": 58.18,
+   "target": 55.152,
    "stop_pct": -1.4,
-   "target_pct": 26.6,
+   "target_pct": 20.0,
    "rating": "⭐⭐",
    "comment": "Пробой на объёме ×7, ретест",
    "signals": [
@@ -216,9 +216,9 @@
    "opened": "2026-11-11",
    "entry": 10.559,
    "stop": 10.7328,
-   "target": 7.253,
+   "target": 8.4472,
    "stop_pct": -1.6,
-   "target_pct": 31.3,
+   "target_pct": 20.0,
    "rating": "⭐⭐",
    "comment": "сопротивление + разворот RSI",
    "signals": [
@@ -240,9 +240,9 @@
    "opened": "2026-11-11",
    "entry": 0.4355,
    "stop": 0.3995,
-   "target": 2.0293,
+   "target": 0.5226,
    "stop_pct": -8.3,
-   "target_pct": 366.0,
+   "target_pct": 20.0,
    "rating": "⭐",
    "comment": "дивергенция RSI",
    "signals": [
@@ -263,9 +263,9 @@
    "opened": "2026-11-11",
    "entry": 1.3315,
    "stop": 1.3026,
-   "target": 1.973,
+   "target": 1.5978,
    "stop_pct": -2.2,
-   "target_pct": 48.2,
+   "target_pct": 20.0,
    "rating": "⭐",
    "comment": "поддержка",
    "signals": [
@@ -276,39 +276,16 @@
    "last_price": 1.3315,
    "last_date": "2026-11-11",
    "days": 0
-  },
-  {
-   "id": "2026-11-11-SBERP-buy-ta",
-   "strategy": "ta",
-   "ticker": "SBERP",
-   "name": "Сбербанк-п",
-   "side": "buy",
-   "opened": "2026-11-11",
-   "entry": 292.1,
-   "stop": 286.8179,
-   "target": 320.255,
-   "stop_pct": -1.8,
-   "target_pct": 9.6,
-   "rating": "⭐",
-   "comment": "поддержка",
-   "signals": [
-    "на поддержке 289.72 (2 касания, до уровня 0.8%)"
-   ],
-   "status": "открыт",
-   "current_pct": 0.0,
-   "last_price": 292.1,
-   "last_date": "2026-11-11",
-   "days": 0
   }
  ],
  "stats": {
-  "total": 13,
-  "open": 13,
+  "total": 12,
+  "open": 12,
   "closed": 0,
   "by_strategy": {
    "ta": {
-    "total": 13,
-    "open": 13,
+    "total": 12,
+    "open": 12,
     "closed": 0
    },
    "momentum": {

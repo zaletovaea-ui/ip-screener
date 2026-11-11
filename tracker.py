@@ -87,10 +87,13 @@ def update(report, bars_by_ticker, loader):
                 continue
         check(s, bars)
     # 2) добавляем новые из топа (если по бумаге в ту же сторону уже нет открытого)
-    open_keys = {(s["ticker"], s.get("strategy", "ta")) for s in sigs if s["status"] == "открыт"}
+    def _base(t):
+        return t[:-1] if t.endswith("P") and len(t) > 4 else t
+    open_keys = {(_base(s["ticker"]), s.get("strategy", "ta")) for s in sigs if s["status"] == "открыт"}
     for r in report["results"]:
         # по бумаге уже есть открытый сигнал этой стратегии (в любую сторону) — новый не открываем
-        key = (r["ticker"], r.get("strategy", "ta"))
+        base = r["ticker"][:-1] if r["ticker"].endswith("P") and len(r["ticker"]) > 4 else r["ticker"]
+        key = (base, r.get("strategy", "ta"))  # обычка и префы — одна позиция
         if not r.get("top") or key in open_keys:
             continue
         open_keys.add(key)

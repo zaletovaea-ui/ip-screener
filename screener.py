@@ -39,6 +39,7 @@ P = {
     "rsi_cross_recent": 3,        # пересечение 30/70 за последние N дней
     "div_lookback": 60,           # окно поиска дивергенций
     "div_recent": 10,             # второй экстремум дивергенции не старше N дней
+    "max_target": 0.20,           # цель не дальше ±20% от цены: дальше — уже не сделка на 20 дней
     "mom_change": 0.05,           # моментум: рост за день от 5%
     "mom_quiet_days": 20,         # «первый день»: до этого N дней без роста ≥5%
     "mom_volume_mult": 1.5,       # объём в день импульса ≥ 1.5× средний за 20 дней
@@ -431,6 +432,9 @@ def analyze(ticker, name, bars):
                 tnote = "цель расчётная (2× риск), выше нет уровней"
             else:
                 tnote = ""
+            if target > c * (1 + P["max_target"]):
+                target = c * (1 + P["max_target"])
+                tnote = "цель ограничена +20%, ближайший уровень дальше"
             risk, reward = c - stop, target - c
         else:
             entry = c
@@ -442,6 +446,9 @@ def analyze(ticker, name, bars):
                 tnote = "цель расчётная (2× риск), ниже нет уровней"
             else:
                 tnote = ""
+            if target < c * (1 - P["max_target"]):
+                target = c * (1 - P["max_target"])
+                tnote = "цель ограничена −20%, ближайший уровень дальше"
             risk, reward = stop - c, c - target
         rr = reward / risk if risk > 0 else None
         cnt = len(sig)
@@ -554,7 +561,7 @@ def pick_top(results, n_buy=5, n_sell=3, min_rr=1.0):
                 and not r["low_liquidity"] and r.get("strategy", "ta") == "ta"]
         # конфликт: по бумаге сигналов в другую сторону не меньше — пропускаем
         rows = [r for r in rows if by[r["ticker"]].get("sell" if side == "buy" else "buy", {}).get("count", 0) < r["count"]]
-        rows.sort(key=lambda x: (x["count"], min(x["rr"], 6)), reverse=True)
+        rows.sort(key=lambda x: (x["count"], min(x["rr"], 3)), reverse=True)
         chosen = []
         for r in rows:
             base = r["ticker"][:-1] if r["ticker"].endswith("P") else r["ticker"]
