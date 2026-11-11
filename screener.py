@@ -435,6 +435,7 @@ def analyze(ticker, name, bars):
             "rating_label": "сильный сетап" if cnt >= 3 else ("интересно" if cnt == 2 else "на радар"),
             "date": last["date"], "close": round(c, 4),
             "entry": round(entry, 4), "stop": round(stop, 4), "target": round(target, 4),
+            "stop_pct": round(-abs(stop / c - 1) * 100, 1),
             "rr": round(rr, 2) if rr else None, "target_note": tnote,
             "ema200": round(E, 4) if E else None, "ema200_slope_up": slope_up,
             "rsi": round(r_now, 1) if r_now else None,
@@ -477,11 +478,11 @@ def to_md(report):
     for side, title in (("buy", "Покупка"), ("sell", "Продажа")):
         rows = [r for r in report["results"] if r["side"] == side]
         lines += [f"## {title} ({len(rows)})", "",
-                  "| Тикер | Компания | Сигналы | Рейтинг | Цена | Вход | Стоп | Цель | R/R |",
-                  "|---|---|---|---|---|---|---|---|---|"]
+                  "| Тикер | Компания | Сигналы | Рейтинг | Цена | Вход | Стоп | Стоп, % | Цель | R/R |",
+                  "|---|---|---|---|---|---|---|---|---|---|"]
         for r in rows:
             lines.append(f"| {r['ticker']} | {r['name']} | {r['count']} | {r['rating']} | {r['close']} | "
-                         f"{r['entry']} | {r['stop']} | {r['target']} | {r['rr']} |")
+                         f"{r['entry']} | {r['stop']} | {r['stop_pct']}% | {r['target']} | {r['rr']} |")
         lines.append("")
         for r in rows:
             lines.append(f"**{r['ticker']}** — " + "; ".join(r["signals"])
