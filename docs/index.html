@@ -73,6 +73,7 @@
   h2{color:var(--navy)}
   footer{color:var(--muted);font-size:13px;margin-top:30px;border-top:1px solid var(--border);padding-top:16px}
   .hidden{display:none!important}
+  .syncbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 12px;color:var(--sec);font-size:14px}
   .ideas{display:grid;grid-template-columns:minmax(300px,420px) 1fr;gap:16px;align-items:start}
   @media(max-width:900px){.ideas{grid-template-columns:1fr}}
   .ilist{max-height:80vh;overflow:auto}
@@ -158,6 +159,7 @@
   </section>
 
   <section id="tab-ideas" class="hidden">
+    <div class="syncbar" id="ideas-sync"></div>
     <div class="ideas">
       <div class="tbl ilist" id="ideas-list"></div>
       <div class="card ipanel" id="ideas-panel"></div>

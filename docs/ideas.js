@@ -17,8 +17,83 @@
   let saved = {};
   try { saved = JSON.parse(localStorage.getItem(LS) || "{}"); } catch (e) {}
   const persist = () => { try { localStorage.setItem(LS, JSON.stringify(saved)); } catch (e) {} };
+  const touch = d => { d.updated = Date.now(); persist(); syncSoon(); };
 
   let companies = {}, scan = [], market = null, current = null;
+
+  // ---------- синхронизация через приватный репозиторий GitHub ----------
+  const CFG = window.IP_CONFIG || {};
+  const TK = "ipIdeasToken";
+  let token = ""; try { token = localStorage.getItem(TK) || ""; } catch (e) {}
+  let remoteSha = null, syncTimer = null, syncState = token ? "…" : "off";
+  const b64e = s => btoa(unescape(encodeURIComponent(s)));
+  const b64d = s => decodeURIComponent(escape(atob(s.replace(/\n/g, ""))));
+  const api = (method, body) => fetch(`https://api.github.com/repos/${CFG.ideasRepo}/contents/${CFG.ideasPath}`, {
+    method, cache: "no-store",
+    headers: { Authorization: "Bearer " + token, Accept: "application/vnd.github+json", ...(body ? { "Content-Type": "application/json" } : {}) },
+    body: body ? JSON.stringify(body) : undefined });
+
+  function merge(remote) {  // по каждой идее побеждает более свежая правка; удаление хранится как метка
+    let changed = false;
+    for (const [id, r] of Object.entries(remote || {})) {
+      const l = saved[id];
+      if (!l || (r.updated || 0) > (l.updated || 0)) { saved[id] = r; }
+    }
+    for (const [id, l] of Object.entries(saved)) {
+      const r = (remote || {})[id];
+      if (!r || (l.updated || 0) > (r.updated || 0)) changed = true;
+    }
+    return changed;
+  }
+
+  async function pull() {
+    const res = await api("GET");
+    if (res.status === 404) { remoteSha = null; return {}; }
+    if (!res.ok) throw new Error(res.status === 401 ? "токен не подходит" : "GitHub " + res.status);
+    const j = await res.json(); remoteSha = j.sha;
+    return JSON.parse(b64d(j.content) || "{}");
+  }
+
+  async function sync() {
+    if (!token) { syncState = "off"; showSync(); return; }
+    syncState = "…"; showSync();
+    try {
+      for (let attempt = 0; attempt < 3; attempt++) {
+        const remote = await pull();
+        const needPush = merge(remote);
+        persist();
+        if (!needPush) break;
+        const res = await api("PUT", { message: "Идеи: обновление", content: b64e(JSON.stringify(saved, null, 1)), ...(remoteSha ? { sha: remoteSha } : {}) });
+        if (res.ok) { remoteSha = (await res.json()).content.sha; break; }
+        if (res.status !== 409 && res.status !== 422) throw new Error("GitHub " + res.status);
+      }
+      syncState = "ok:" + new Date().toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
+    } catch (e) { syncState = "err:" + e.message; }
+    showSync(); renderList(); if (current && !saved[current]) current = null;
+  }
+  const syncSoon = () => { clearTimeout(syncTimer); syncTimer = setTimeout(sync, 1200); };
+
+  function showSync() {
+    const el = document.getElementById("ideas-sync"); if (!el) return;
+    if (syncState === "off") el.innerHTML = `<span>Идеи хранятся только в этом браузере.</span> <button class="btn" id="sync-on">Подключить синхронизацию</button>`;
+    else if (syncState === "…") el.innerHTML = `<span>☁ Синхронизация…</span>`;
+    else if (syncState.startsWith("ok")) el.innerHTML = `<span>☁ Синхронизировано в ${syncState.slice(3)}</span> <button class="btn" id="sync-now">Обновить</button> <button class="btn" id="sync-off">Отключить</button>`;
+    else el.innerHTML = `<span class="warn">Синхронизация: ${esc(syncState.slice(4))}</span> <button class="btn" id="sync-on">Ввести токен заново</button> <button class="btn" id="sync-now">Повторить</button>`;
+    const on = document.getElementById("sync-on");
+    if (on) on.onclick = () => {
+      el.innerHTML = `<input id="sync-tok" type="password" placeholder="Вставьте токен GitHub (github_pat_…)" style="flex:1;min-width:240px;height:40px;border:1px solid #CBD5E1;border-radius:8px;padding:0 10px"> <button class="btn" id="sync-save">Сохранить</button>`;
+      document.getElementById("sync-save").onclick = () => {
+        token = document.getElementById("sync-tok").value.trim();
+        try { localStorage.setItem(TK, token); } catch (e) {}
+        sync();
+      };
+    };
+    const now = document.getElementById("sync-now"); if (now) now.onclick = sync;
+    const off = document.getElementById("sync-off"); if (off) off.onclick = () => {
+      if (!confirm("Отключить синхронизацию в этом браузере? Идеи в GitHub останутся.")) return;
+      token = ""; try { localStorage.removeItem(TK); } catch (e) {} syncState = "off"; showSync();
+    };
+  }
 
   const fp = x => { x = +x; if (!isFinite(x)) return ""; const d = x >= 1000 ? 0 : x >= 100 ? 1 : x >= 1 ? 2 : 4; return x.toFixed(d); };
   const pc = (a, b) => ((b / a - 1) * 100);
@@ -121,8 +196,8 @@
   }
 
   function renderList() {
-    const mine = Object.values(saved).sort((a, b) => b.date.localeCompare(a.date));
-    const fresh = scan.filter(r => !saved[idOf(r)]).map(fromScan);
+    const mine = Object.values(saved).filter(d => !d.deleted).sort((a, b) => b.date.localeCompare(a.date));
+    const fresh = scan.filter(r => !saved[idOf(r)] || saved[idOf(r)].deleted).map(fromScan);
     const top = fresh.filter(d => scan.find(r => idOf(r) === d.id).top);
     const rest = fresh.filter(d => !scan.find(r => idOf(r) === d.id).top);
     document.getElementById("ideas-list").innerHTML =
@@ -133,19 +208,19 @@
       const id = cb.dataset.id;
       if (cb.checked) {
         const r = scan.find(x => idOf(x) === id);
-        if (r) saved[id] = fromScan(r);
+        if (r) { saved[id] = fromScan(r); touch(saved[id]); }
         current = id;
       } else {
         if (!confirm("Убрать идею из «Моих идей»? Правки по ней удалятся.")) { cb.checked = true; return; }
-        delete saved[id];
+        saved[id] = { id, deleted: true, date: saved[id]?.date || "" }; touch(saved[id]);
         if (current === id) current = null;
       }
-      persist(); renderList(); renderPanel();
+      renderList(); renderPanel();
     });
     document.querySelectorAll("#ideas-list .irow").forEach(l => l.onclick = ev => {
       if (ev.target.tagName === "INPUT") return;
       ev.preventDefault();
-      if (saved[l.dataset.id]) { current = l.dataset.id; renderList(); renderPanel(); }
+      if (saved[l.dataset.id] && !saved[l.dataset.id].deleted) { current = l.dataset.id; renderList(); renderPanel(); }
     });
   }
 
@@ -155,7 +230,7 @@
 
   function renderPanel() {
     const box = document.getElementById("ideas-panel");
-    const d = current && saved[current];
+    const d = current && saved[current] && !saved[current].deleted ? saved[current] : null;
     if (!d) { box.innerHTML = '<div class="empty">Поставьте галочку у бумаги слева — здесь появится идея: вход, стоп, тейки и готовый пост.</div>'; return; }
     box.innerHTML = `
       <div class="ph"><div><b class="pt">${d.ticker}</b> <span class="nm">${esc(d.name)} · сигнал от ${d.date.split("-").reverse().join(".")}</span></div></div>
@@ -172,7 +247,7 @@
       <div id="msg-wrap" class="hidden"><div class="ibar"><b id="msg-title"></b><button class="btn" id="cp-msg">Скопировать</button></div><pre class="out" id="out-msg"></pre></div>`;
     const upd = () => { document.getElementById("out-post").textContent = post(d); };
     box.querySelectorAll("[data-k]").forEach(el => el.oninput = el.onchange = () => {
-      d[el.dataset.k] = el.type === "checkbox" ? el.checked : el.value; persist(); upd();
+      d[el.dataset.k] = el.type === "checkbox" ? el.checked : el.value; touch(d); upd();
       if (lastMsg) showMsg(lastMsg);
     });
     let lastMsg = null;
@@ -192,6 +267,7 @@
     try { companies = await (await fetch("data/companies.json?v=" + Date.now())).json(); } catch (e) {}
     scan = (rep?.results || []).slice().sort((a, b) => (b.top - a.top) || ((b.strategy === "momentum") - (a.strategy === "momentum")) || (b.count - a.count));
     market = rep?.market;
-    renderList(); renderPanel();
+    renderList(); renderPanel(); showSync();
+    if (token) sync();
   };
 })();
