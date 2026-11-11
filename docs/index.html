@@ -72,7 +72,34 @@
   summary{cursor:pointer;color:var(--blue);font-size:13px}
   h2{color:var(--navy)}
   footer{color:var(--muted);font-size:13px;margin-top:30px;border-top:1px solid var(--border);padding-top:16px}
-  .hidden{display:none}
+  .hidden{display:none!important}
+  .ideas{display:grid;grid-template-columns:minmax(300px,420px) 1fr;gap:16px;align-items:start}
+  @media(max-width:900px){.ideas{grid-template-columns:1fr}}
+  .ilist{max-height:80vh;overflow:auto}
+  .ih{padding:10px 12px 6px;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--sec);font-weight:600;background:var(--canvas);border-bottom:1px solid var(--border)}
+  .irow{display:grid;grid-template-columns:20px 1fr auto auto;gap:4px 10px;align-items:center;padding:10px 12px;border-bottom:1px solid var(--border);cursor:pointer}
+  .irow:hover{background:var(--hover)}
+  .irow.cur{background:#EEF3FF;box-shadow:inset 3px 0 0 var(--blue)}
+  .irow input{width:18px;height:18px;accent-color:var(--blue)}
+  .irow .ic{grid-column:2/5;white-space:normal}
+  .ipanel{position:sticky;top:12px;padding:20px}
+  .ipanel .empty{color:var(--muted);padding:40px 10px;text-align:center}
+  .pt{font-family:var(--serif);font-size:24px}
+  .fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:14px 0}
+  .f{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+  .f span{font-size:12px;color:var(--sec);font-weight:600}
+  .f input,.f textarea{border:1px solid #CBD5E1;border-radius:8px;padding:9px 10px;font:14px/20px var(--sans);color:var(--navy);background:#fff;resize:vertical}
+  .f input:focus,.f textarea:focus{outline:2px solid var(--blue);outline-offset:2px}
+  .ibar{display:flex;justify-content:space-between;align-items:center;margin:14px 0 6px}
+  .out{white-space:pre-wrap;background:var(--canvas);border:1px solid var(--border);border-radius:12px;padding:14px;font:14px/20px var(--sans);margin:0}
+  .btn{border:1px solid var(--border);background:#fff;color:var(--navy);border-radius:10px;height:40px;padding:0 14px;font:600 13px/16px var(--sans);cursor:pointer}
+  .btn:hover{background:var(--hover)}
+  #cp-post{background:var(--lime);border-color:var(--lime);color:var(--navy)}
+  #cp-post:hover{background:#A3E635}
+  .btn.tk{color:var(--up)} .btn.st{color:var(--down-text)}
+  .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .chk{display:flex;gap:8px;align-items:center;font-size:14px;margin:4px 0 6px}
+  .ih2{font-family:var(--serif);font-size:20px;margin:22px 0 10px}
 </style>
 </head>
 <body>
@@ -93,6 +120,7 @@
     <button data-tab="top" class="on">Подборка дня</button>
     <button data-tab="journal">Журнал сигналов</button>
     <button data-tab="all">Все сигналы скана</button>
+    <button data-tab="ideas" id="nav-ideas" class="hidden">Формирование идей</button>
   </nav>
 
   <section id="tab-top">
@@ -129,6 +157,14 @@
     <div class="tbl"><table id="t-all"></table></div>
   </section>
 
+  <section id="tab-ideas" class="hidden">
+    <div class="ideas">
+      <div class="tbl ilist" id="ideas-list"></div>
+      <div class="card ipanel" id="ideas-panel"></div>
+    </div>
+    <p class="note">Вкладка видна только вам (ссылка с ?editor=1). Отмеченные идеи и правки хранятся в этом браузере. Ссылка на идею при копировании вставится в Telegram кликабельной.</p>
+  </section>
+
   <footer>
     <b style="color:var(--navy)">Invest Privet+</b> · investprivet.online<br>
     Данные: Мосбиржа (ISS), дневные свечи. Обновление — каждую торговую ночь в 00:05 МСК, по закрытой дневной свече.<br>
@@ -136,6 +172,7 @@
   </footer>
 </div>
 
+<script src="ideas.js"></script>
 <script>
 const fmt = (x, d) => x == null ? "—" : Number(x).toLocaleString("ru-RU", {minimumFractionDigits: d ?? dec(x), maximumFractionDigits: d ?? dec(x)});
 const dec = x => { x = Math.abs(x); return x >= 1000 ? 0 : x >= 100 ? 1 : x >= 1 ? 2 : 4; };
@@ -212,6 +249,7 @@ function allTable(rows) {
     document.getElementById("t-buy").innerHTML = topTable(top.filter(r => r.side === "buy"));
     document.getElementById("t-sell").innerHTML = topTable(top.filter(r => r.side === "sell"));
     allTable(ta);
+    if (window.ipIdeasInit) window.ipIdeasInit(rep);
     ["f-side", "f-min", "f-q"].forEach(id => document.getElementById(id).addEventListener("input", () => allTable(ta)));
   }
   if (jr) {
@@ -233,7 +271,7 @@ function allTable(rows) {
 
 document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
   document.querySelectorAll("nav button").forEach(x => x.classList.toggle("on", x === b));
-  ["top", "journal", "all"].forEach(t => document.getElementById("tab-" + t).classList.toggle("hidden", t !== b.dataset.tab));
+  ["top", "journal", "all", "ideas"].forEach(t => document.getElementById("tab-" + t).classList.toggle("hidden", t !== b.dataset.tab));
 });
 
 // Авто-высота при встраивании в GetCourse (iframe): сообщаем родительской странице свою высоту

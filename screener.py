@@ -99,6 +99,7 @@ def load_index():
 
 
 LISTLEVEL = {}
+NAMES = {}
 
 
 def load_exclude():
@@ -115,11 +116,14 @@ def load_universe():
     index = [t for t in load_index() if t not in excl]
     try:
         rows = table(iss("engines/stock/markets/shares/boards/TQBR/securities.json",
-                         {"iss.only": "securities", "securities.columns": "SECID,LISTLEVEL"}), "securities")
-        all_t = [r["SECID"] for r in rows if r.get("SECID") and r["SECID"] not in excl]
+                         {"iss.only": "securities",
+                          "securities.columns": "SECID,SHORTNAME,SECTYPE,LISTLEVEL"}), "securities")
+        # только акции: 1 — обыкновенные, 2 — привилегированные, D — депозитарные расписки (фонды и пр. — нет)
+        rows = [r for r in rows if r.get("SECID") and str(r.get("SECTYPE")) in ("1", "2", "D")]
+        all_t = [r["SECID"] for r in rows if r["SECID"] not in excl]
         for r in rows:
-            if r.get("SECID"):
-                LISTLEVEL[r["SECID"]] = r.get("LISTLEVEL")
+            LISTLEVEL[r["SECID"]] = r.get("LISTLEVEL")
+            NAMES[r["SECID"]] = r.get("SHORTNAME") or r["SECID"]
     except Exception as e:  # noqa
         print("Список акций не загрузился, только индекс:", e, file=sys.stderr)
         all_t = []
@@ -127,6 +131,8 @@ def load_universe():
 
 
 def load_names(tickers):
+    if NAMES:
+        return {t: NAMES.get(t, t) for t in tickers}
     names = {}
     try:
         rows = table(iss("engines/stock/markets/shares/boards/TQBR/securities.json",
@@ -503,6 +509,87 @@ def market_background():
         return None
 
 
+def fp(x):
+    """Цена для поста: 5400 / 292.4 / 24.31 / 0.4355."""
+    x = float(x)
+    d = 0 if x >= 1000 else 1 if x >= 100 else 2 if x >= 1 else 4
+    return f"{x:.{d}f}"
+
+
+def times(n):
+    n = int(n)
+    return f"{n} раза" if 2 <= n % 10 <= 4 and not 12 <= n % 100 <= 14 else f"{n} раз"
+
+
+def human(sig_text):
+    """Сигнал скринера → фраза для поста («в чем идея?»)."""
+    import re
+    t = sig_text
+    m = re.match(r"на поддержке ([\d.]+) \((\d+) касан\w*, до уровня ([\d.]+)%\)", t)
+    out = []
+    if m:
+        out.append(f"Цена у поддержки {fp(m.group(1))} руб.: уровень отрабатывал {times(m.group(2))} за последний год, до него {m.group(3)}%.")
+    m = re.match(r"у сопротивления ([\d.]+) \((\d+) касан\w*, до уровня ([\d.]+)%\)", t)
+    if m:
+        out.append(f"Цена подошла к сопротивлению {fp(m.group(1))} руб.: от уровня продавали {times(m.group(2))} за последний год, до него {m.group(3)}%.")
+    if "свеча разворота" in t:
+        out.append(f"На уровне сформировалась разворотная свеча «{t.split('свеча разворота: ')[1]}».")
+    m = re.match(r"откат к EMA200 ([\d.]+)", t)
+    if m:
+        out.append(f"Акция откатилась к EMA200 (экспоненциальная скользящая средняя за 200 дней) — {fp(m.group(1))} руб."
+                   + (" Средняя растёт: это коррекция внутри восходящего тренда." if "вверх" in t else " Наклон средней вниз — сигнал слабее."))
+    m = re.match(r"пробой EMA200 ([\d.]+) вниз, (\d+)", t)
+    if m:
+        out.append(f"Цена пробила EMA200 (экспоненциальная скользящая средняя за 200 дней, {fp(m.group(1))} руб.) сверху вниз и закрепилась ниже — {m.group(2)} закрытия подряд.")
+    m = re.match(r"отскок вниз от EMA200 ([\d.]+)", t)
+    if m:
+        out.append(f"Цена отскочила вниз от EMA200 (экспоненциальная скользящая средняя за 200 дней, {fp(m.group(1))} руб.), средняя направлена вниз.")
+    m = re.match(r"пробой сопротивления ([\d.]+) [\d-]+ на объёме ×([\d.]+)", t)
+    if m:
+        out.append(f"Пробито сопротивление {fp(m.group(1))} руб. на объёме в {m.group(2)} раза выше среднего."
+                   + (" Уровень уже протестирован сверху — пробой подтверждён." if "ретест" in t else ""))
+    m = re.match(r"пробой поддержки ([\d.]+) [\d-]+ на объёме ×([\d.]+)", t)
+    if m:
+        out.append(f"Пробита поддержка {fp(m.group(1))} руб. на объёме в {m.group(2)} раза выше среднего.")
+    if t.startswith("RSI вышел из перепроданности"):
+        out.append("RSI(14) (индекс относительной силы) вышел из зоны перепроданности — продавцы выдыхаются.")
+    if t.startswith("RSI вышел из перекупленности"):
+        out.append("RSI(14) (индекс относительной силы) вышел из зоны перекупленности — покупатели выдыхаются.")
+    if t.startswith("бычья дивергенция"):
+        out.append("Бычья дивергенция RSI: цена обновила минимум, а индикатор — нет, давление продавцов слабеет.")
+    if t.startswith("медвежья дивергенция"):
+        out.append("Медвежья дивергенция RSI: цена обновила максимум, а индикатор — нет, импульс покупателей слабеет.")
+    m = re.match(r"рост \+([\d.]+)% за день — первый за (\d+) дней, объём ×([\d.]+)", t)
+    if m:
+        out.append(f"Первый за {m.group(2)} торговых дней импульс +{m.group(1)}% за день на объёме в {m.group(3)} раза выше среднего — в бумагу пришли деньги.")
+    return out
+
+
+def add_idea(r, market, levels_up, levels_down):
+    """Готовые поля для вкладки «Формирование идей»: текст идеи, риски, вход, тейки."""
+    c = r["close"]
+    buy = r["side"] == "buy"
+    sents = []
+    for t in r["signals"]:
+        sents += human(t)
+    r["idea"] = sents
+    bg = ""
+    if market:
+        bg = (f" Фон рынка: индекс Мосбиржи {'выше' if market['above'] else 'ниже'} EMA200"
+              + (" — сделка по рынку." if market["above"] == buy else " — сделка против рынка, такие сигналы срабатывают реже."))
+    r["risk"] = (f"сценарий отменяется при закрытии дня {'ниже' if buy else 'выше'} {fp(r['stop'])} руб." + bg)
+    r["entry_limit"] = c * (1.01 if buy else 0.99)
+    tgt = r["target"]
+    nxt = [x for x in (levels_up if buy else levels_down) if (x > tgt * 1.005 if buy else x < tgt * 0.995)]
+    cap = c * (1 + P["max_target"]) if buy else c * (1 - P["max_target"])
+    if nxt:
+        t2 = nxt[0] if buy else nxt[-1]
+        t2 = min(t2, cap) if buy else max(t2, cap)
+        r["take1"], r["take2"] = tgt, t2
+    else:
+        r["take1"], r["take2"] = c + (tgt - c) / 2, tgt
+
+
 def short_comment(sig, side):
     """3–5 слов: почему покупка/продажа."""
     parts = []
@@ -680,11 +767,17 @@ def main():
         r["top"] = f"{r['ticker']}:{r['side']}" in top
     moms.sort(key=lambda x: x["change_pct"], reverse=True)
     results += moms
+    mkt = market_background()
+    for r in results:
+        try:
+            add_idea(r, mkt, sorted(r.get("resistances", [])), sorted(r.get("supports", [])))
+        except Exception as e:  # noqa
+            print("idea", r["ticker"], e, file=sys.stderr)
     report = {
         "asof": max((r["date"] for r in results), default=dt.date.today().isoformat()),
         "generated_utc": dt.datetime.utcnow().strftime("%Y-%m-%d %H:%M"),
         "source": "apis.moex.com (AlgoPack)" if TOKEN else "iss.moex.com",
-        "universe": tickers, "index": index, "candidates": len(candidates), "params": P, "market": market_background(),
+        "universe": tickers, "index": index, "candidates": len(candidates), "params": P, "market": mkt,
         "results": results, "errors": errors,
     }
     out = Path(__file__).parent / "results"
