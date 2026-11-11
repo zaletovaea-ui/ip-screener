@@ -27,4 +27,4 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git add results
           git commit -m "Скан $(date -u +%F)" || echo "без изменений"
-          git push
+          git pull --rebase origin main && git push
