@@ -166,7 +166,7 @@ function allTable(rows) {
 (async () => {
   const [rep, jr] = await Promise.all([getJSON("data/latest.json"), getJSON("data/journal.json")]);
   if (rep) {
-    document.getElementById("asof").textContent = "Скан на " + date(rep.asof) + " · бумаг в проверке: " + rep.universe.length;
+    document.getElementById("asof").textContent = "Скан на " + date(rep.asof) + " · в анализе " + rep.universe.length + " акций" + (rep.index ? " (индекс Мосбиржи + ликвидные от " + rep.params.min_turnover_mln + " млн ₽/день)" : "");
     const m = rep.market;
     if (m) document.getElementById("mkt").innerHTML =
       `Фон рынка: индекс Мосбиржи <b>${fmt(m.close, 0)}</b> — <b>${m.above ? "выше" : "ниже"}</b> EMA200 (${fmt(m.ema200, 0)}, ${pct(m.dist_pct, true)}), наклон EMA200 ${m.slope_up ? "вверх" : "вниз"}.<br>` +

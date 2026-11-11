@@ -39,7 +39,7 @@ P = {
     "rsi_cross_recent": 3,        # пересечение 30/70 за последние N дней
     "div_lookback": 60,           # окно поиска дивергенций
     "div_recent": 10,             # второй экстремум дивергенции не старше N дней
-    "min_turnover_mln": 50,       # ниже — предупреждение о ликвидности, млн ₽ в день
+    "min_turnover_mln": 50,       # акции вне индекса с оборотом ниже не анализируем, млн ₽ в день (средний за 20 дней)
 }
 
 UNIVERSE_FALLBACK = [
@@ -79,7 +79,7 @@ def table(js, name):
 
 
 # ---------------- Загрузка данных ----------------
-def load_universe():
+def load_index():
     try:
         rows = table(iss("statistics/engines/stock/markets/index/analytics/IMOEX.json",
                          {"limit": 100}), "analytics")
@@ -90,6 +90,19 @@ def load_universe():
     except Exception as e:  # noqa
         print("Состав индекса не загрузился, беру запасной список:", e, file=sys.stderr)
     return list(dict.fromkeys(UNIVERSE_FALLBACK))
+
+
+def load_universe():
+    """Все акции режима TQBR; фильтр по обороту — после загрузки свечей (средний за 20 дней)."""
+    index = load_index()
+    try:
+        rows = table(iss("engines/stock/markets/shares/boards/TQBR/securities.json",
+                         {"iss.only": "securities", "securities.columns": "SECID"}), "securities")
+        all_t = [r["SECID"] for r in rows if r.get("SECID")]
+    except Exception as e:  # noqa
+        print("Список акций не загрузился, только индекс:", e, file=sys.stderr)
+        all_t = []
+    return index, list(dict.fromkeys(index + all_t))
 
 
 def load_names(tickers):
@@ -546,19 +559,27 @@ BARS = {}
 
 
 def main():
-    tickers = load_universe()
-    names = load_names(tickers)
-    results, errors = [], {}
-    for t in tickers:
+    index, candidates = load_universe()
+    names = load_names(candidates)
+    results, errors, tickers, skipped = [], {}, [], 0
+    for t in candidates:
         try:
             bars = load_candles(f"engines/stock/markets/shares/boards/TQBR/securities/{t}/candles.json")
+            if not bars or bars[-1]["date"] < (dt.date.today() - dt.timedelta(days=10)).isoformat():
+                skipped += 1  # бумага не торгуется
+                continue
+            turnover = sum(b["val"] for b in bars[-20:]) / min(20, len(bars)) / 1e6
+            if t not in index and turnover < P["min_turnover_mln"]:
+                skipped += 1
+                continue
+            tickers.append(t)
             BARS[t] = bars
             r = analyze(t, names.get(t, t), bars)
             if r:
                 results.extend(r)
         except Exception as e:  # noqa
             errors[t] = str(e)[:200]
-        time.sleep(0.15)
+        time.sleep(0.1)
     results.sort(key=rank_key, reverse=True)
     for r in results:
         r["comment"] = short_comment(r["signals"], r["side"])
@@ -570,7 +591,7 @@ def main():
         "asof": max((r["date"] for r in results), default=dt.date.today().isoformat()),
         "generated_utc": dt.datetime.utcnow().strftime("%Y-%m-%d %H:%M"),
         "source": "apis.moex.com (AlgoPack)" if TOKEN else "iss.moex.com",
-        "universe": tickers, "params": P, "market": market_background(),
+        "universe": tickers, "index": index, "candidates": len(candidates), "params": P, "market": market_background(),
         "results": results, "errors": errors,
     }
     out = Path(__file__).parent / "results"
@@ -584,7 +605,8 @@ def main():
     docs = Path(__file__).parent / "docs" / "data"
     docs.mkdir(parents=True, exist_ok=True)
     (docs / "latest.json").write_text(js, encoding="utf-8")
-    print(f"Готово: {len(tickers)} бумаг, сигналов {len(results)}, ошибок {len(errors)}")
+    print(f"Готово: проверено {len(candidates)}, в анализе {len(tickers)} (из них индекс {len(index)}), "
+          f"отсеяно по обороту {skipped}, сигналов {len(results)}, ошибок {len(errors)}")
 
 
 if __name__ == "__main__":
