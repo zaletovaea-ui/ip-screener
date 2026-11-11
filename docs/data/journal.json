@@ -432,35 +432,11 @@
    "last_price": 354.9,
    "last_date": "2026-11-11",
    "days": 0
-  },
-  {
-   "id": "2026-11-11-RUAL-buy-ta",
-   "strategy": "ta",
-   "ticker": "RUAL",
-   "name": "РУСАЛ ао",
-   "side": "buy",
-   "opened": "2026-11-11",
-   "opened_at": "2026-11-11 16:13",
-   "entry": 24.305,
-   "stop": 23.6115,
-   "target": 28.305,
-   "stop_pct": -2.9,
-   "target_pct": 16.5,
-   "rating": "⭐",
-   "comment": "поддержка + молот",
-   "signals": [
-    "на поддержке 23.85 (2 касания, до уровня 1.9%), свеча разворота: молот"
-   ],
-   "status": "открыт",
-   "current_pct": 0.0,
-   "last_price": 24.305,
-   "last_date": "2026-11-11",
-   "days": 0
   }
  ],
  "stats": {
-  "total": 18,
-  "open": 14,
+  "total": 17,
+  "open": 13,
   "closed": 4,
   "win_rate": 0.0,
   "avg_result": -1.92,
@@ -472,8 +448,8 @@
   "win_rate_sell": 0.0,
   "by_strategy": {
    "ta": {
-    "total": 18,
-    "open": 14,
+    "total": 17,
+    "open": 13,
     "closed": 4,
     "win_rate": 0.0,
     "avg_result": -1.92,

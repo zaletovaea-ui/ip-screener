@@ -13,6 +13,7 @@ import datetime as dt
 from pathlib import Path
 
 MAX_DAYS = 20
+COOLDOWN = 7  # календарных дней без повторного входа после стопа
 PATH = Path(__file__).parent / "docs" / "data" / "journal.json"
 TQBR = "engines/stock/markets/shares/boards/TQBR/securities/{}/candles.json"
 
@@ -147,6 +148,11 @@ def update(report, bars_by_ticker, loader, intraday_loader=None):
         base = r["ticker"][:-1] if r["ticker"].endswith("P") and len(r["ticker"]) > 4 else r["ticker"]
         key = (base, r.get("strategy", "ta"))  # обычка и префы — одна позиция
         if not r.get("top") or key in open_keys:
+            continue
+        # после стопа в ту же сторону по этой бумаге — пауза COOLDOWN дней (не перезаходим в тот же сетап)
+        if any(_base(x["ticker"]) == base and x["side"] == r["side"] and x.get("status") == "стоп"
+               and (dt.date.fromisoformat(r["date"]) - dt.date.fromisoformat(x["closed"])).days < COOLDOWN
+               for x in sigs):
             continue
         open_keys.add(key)
         sigs.append({
