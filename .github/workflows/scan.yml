@@ -2,6 +2,11 @@ name: Скан акций
 
 on:
   workflow_dispatch:        # ручной запуск: вкладка Actions → «Скан акций» → Run workflow
+    inputs:
+      dry_run:
+        description: "Проверка без сохранения результата"
+        type: boolean
+        default: false
   schedule:
     - cron: "5 21 * * 1-5"  # 00:05 МСК вт–сб: дневная свеча закрыта вместе с вечерней сессией
 
@@ -21,8 +26,11 @@ jobs:
       - name: Скан
         env:
           MOEX_TOKEN: ${{ secrets.MOEX_TOKEN }}   # необязательно; без него — публичный ISS
-        run: python screener.py
+        run: |
+          python screener.py
+          python -c "import json;j=json.load(open('docs/data/journal.json'));print('Журнал:',j['stats']);[print(s['ticker'],s['side'],s['status'],s.get('current_pct')) for s in j['signals']]"
       - name: Сохранить результат
+        if: ${{ !inputs.dry_run }}
         run: |
           git config user.name "screener-bot"
           git config user.email "actions@users.noreply.github.com"
