@@ -162,7 +162,7 @@
       <div class="tbl ilist" id="ideas-list"></div>
       <div class="card ipanel" id="ideas-panel"></div>
     </div>
-    <p class="note">Вкладка видна только вам (ссылка с ?editor=1). Отмеченные идеи и правки хранятся в этом браузере. Ссылка на идею при копировании вставится в Telegram кликабельной.</p>
+    <p class="note">Отмеченные идеи и правки хранятся в этом браузере. Ссылка на идею при копировании вставится в Telegram кликабельной.</p>
   </section>
 
   <footer>
@@ -172,6 +172,7 @@
   </footer>
 </div>
 
+<script src="config.js"></script>
 <script src="ideas.js"></script>
 <script>
 const fmt = (x, d) => x == null ? "—" : Number(x).toLocaleString("ru-RU", {minimumFractionDigits: d ?? dec(x), maximumFractionDigits: d ?? dec(x)});

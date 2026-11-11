@@ -10,6 +10,7 @@
     if (url.searchParams.get("editor") === "0") localStorage.removeItem("ipEditor");
     editor = localStorage.getItem("ipEditor") === "1";
   } catch (e) { editor = url.searchParams.get("editor") === "1"; }
+  if ((window.IP_CONFIG || {}).ideasForAll) editor = true;
   if (!editor) return;
   document.getElementById("nav-ideas").classList.remove("hidden");
 
