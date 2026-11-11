@@ -75,6 +75,8 @@
 
   function showSync() {
     const el = document.getElementById("ideas-sync"); if (!el) return;
+    // синхронизация необязательна: панель видна, только если она подключена или открыта ссылка с ?sync=1
+    if (syncState === "off" && url.searchParams.get("sync") !== "1") { el.innerHTML = ""; return; }
     if (syncState === "off") el.innerHTML = `<span>Идеи хранятся только в этом браузере.</span> <button class="btn" id="sync-on">Подключить синхронизацию</button>`;
     else if (syncState === "…") el.innerHTML = `<span>☁ Синхронизация…</span>`;
     else if (syncState.startsWith("ok")) el.innerHTML = `<span>☁ Синхронизировано в ${syncState.slice(3)}</span> <button class="btn" id="sync-now">Обновить</button> <button class="btn" id="sync-off">Отключить</button>`;
