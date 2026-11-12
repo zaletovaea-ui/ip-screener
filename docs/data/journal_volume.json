@@ -18,14 +18,36 @@
    "comment": "Объём ×3.1 нормы, покупатели 59%",
    "status": "открыт",
    "days": 0,
-   "last_price": 144.15,
+   "last_price": 143.95,
    "last_date": "2026-11-12",
-   "current_pct": 0.56
+   "current_pct": 0.42
+  },
+  {
+   "id": "2026-11-12-HYDR-buy-volume",
+   "strategy": "volume",
+   "ticker": "HYDR",
+   "name": "РусГидро",
+   "side": "buy",
+   "opened": "2026-11-12",
+   "opened_at": "2026-11-12 19:13",
+   "entry": 0.55,
+   "stop": 0.524365,
+   "stop_pct": -4.7,
+   "target": null,
+   "ratio": 3.0,
+   "buy_share": 58,
+   "change_pct": 4.3,
+   "comment": "Объём ×3.0 нормы, покупатели 58%",
+   "status": "открыт",
+   "days": 0,
+   "last_price": 0.55,
+   "last_date": "2026-11-12",
+   "current_pct": 0.0
   }
  ],
  "stats": {
-  "total": 1,
-  "open": 1,
+  "total": 2,
+  "open": 2,
   "closed": 0
  },
  "params": {
@@ -47,5 +69,5 @@
   "against_share": 0.6,
   "cooldown": 7
  },
- "updated": "2026-11-12 19:03"
+ "updated": "2026-11-12 19:13"
 }
