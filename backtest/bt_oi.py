@@ -78,17 +78,34 @@ def z(series, i, k=LOOK):
 
 
 SIGNALS = {
-    "доля ≥10%": dict(kind="rel", thr=0.10),
-    "деньги ≥100 млн": dict(kind="rel", thr=0.0, rub=100e6),
-    "деньги ≥150 млн": dict(kind="rel", thr=0.0, rub=150e6),
-    "деньги ≥300 млн": dict(kind="rel", thr=0.0, rub=300e6),
-    "деньги ≥150 млн И доля ≥10%": dict(kind="rel", thr=0.10, rub=150e6),
-    "деньги ≥150 млн ИЛИ доля ≥10%": dict(kind="rel", thr=0.10, rub=150e6, any=True),
+    "тренд 3 дня подряд": dict(kind="streak", n=3),
+    "тренд 3 дня + сумма ≥150 млн": dict(kind="streak", n=3, rub=150e6),
+    "тренд 3 дня + сумма ≥10%": dict(kind="streak", n=3, thr=0.10),
+    "тренд 5 дней подряд": dict(kind="streak", n=5),
+    "тренд 3 дня + (150 млн или 10%)": dict(kind="streak", n=3, rub=150e6, thr=0.10, any=True),
+    "для сравнения: доля ≥10% за день": dict(kind="rel", thr=0.10),
+    "для сравнения: 150 млн или 10% за день": dict(kind="rel", thr=0.10, rub=150e6, any=True),
 }
 EXITS = {
     "без тейка, 10 дн.": dict(take=None, max_days=10),
 }
 VARIANTS = {f"{sn} | {en}": (sp, ep) for sn, sp in SIGNALS.items() for en, ep in EXITS.items()}
+
+
+def streaks(ds, oi, n):
+    """{дата: (сторона, суммарное изменение, индекс начала)} — в день, когда серия из n однонаправленных изменений достигла n."""
+    net = [oi[d]["FIZ"]["pos"] for d in ds]
+    out, run, start = {}, 0, 0
+    for i in range(1, len(ds)):
+        d1 = net[i] - net[i - 1]
+        sgn = (d1 > 0) - (d1 < 0)
+        if sgn and run and (run > 0) == (sgn > 0):
+            run += sgn
+        else:
+            run, start = sgn, i - 1
+        if abs(run) == n:
+            out[ds[i]] = ("sell" if run > 0 else "buy", float(net[i] - net[start]), start)
+    return out
 
 
 def signals(ds, oi, kind, thr=0.05):
@@ -181,19 +198,24 @@ def main():
         pidx = {d: i for i, d in enumerate(pdays)}
         sig_cache = {}
         for vname, (sp, ep) in VARIANTS.items():
-            key = ("rel", 1e-9)
-            if key not in sig_cache:
-                sig_cache[key] = signals(ds, oi, "rel", 1e-9)
+            if sp["kind"] == "streak":
+                key = ("streak", sp["n"])
+                if key not in sig_cache:
+                    sig_cache[key] = streaks(ds, oi, sp["n"])
+            else:
+                key = ("rel", 1e-9)
+                if key not in sig_cache:
+                    sig_cache[key] = {d: (sd, dl, None) for d, (sd, dl) in signals(ds, oi, "rel", 1e-9).items()}
             busy = ""
-            for d, (side, delta) in sorted(sig_cache[key].items()):
+            for d, (side, delta, st_i) in sorted(sig_cache[key].items()):
                 if d < test_from or d <= busy:
                     continue
                 i = pidx[d]
-                prv = ds[ds.index(d) - 1]
+                prv = ds[st_i] if st_i is not None else ds[ds.index(d) - 1]
                 gross = oi[prv]["FIZ"]["pos_long"] - oi[prv]["FIZ"]["pos_short"]
                 relv = abs(delta) / gross if gross else 0
                 rubv = abs(delta) * lot * px[d]["c"]
-                ok_rel = relv >= sp["thr"] if sp["thr"] > 0 else None
+                ok_rel = relv >= sp["thr"] if sp.get("thr", 0) > 0 else None
                 ok_rub = rubv >= sp["rub"] if sp.get("rub") else None
                 if sp.get("any"):
                     ok = bool(ok_rel) or bool(ok_rub)
