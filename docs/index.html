@@ -145,8 +145,19 @@
     <button data-tab="oi-top" class="on">Сигналы</button>
     <button data-tab="oi-table">Таблица открытого интереса</button>
     <button data-tab="oi-journal">Журнал сигналов</button>
+    <button data-tab="oi-mx">MX против физлиц</button>
     <button data-tab="ideas" class="nav-ideas hidden">Формирование идей</button>
   </nav>
+
+  <section id="tab-oi-mx" class="hidden">
+    <div class="cards" id="mx-cards"></div>
+    <div class="card" style="margin-bottom:16px"><div class="k" style="color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.04em">Доходность стратегии с 2023 года, %</div><div id="mx-chart"></div></div>
+    <h2>Изменение позиции физлиц в MX по дням</h2>
+    <div class="tbl"><table id="mx-rows"></table></div>
+    <h2>Позиции стратегии</h2>
+    <div class="tbl"><table id="mx-flips"></table></div>
+    <p class="note" id="mx-rules"></p>
+  </section>
 
   <section id="tab-oi-top" class="hidden">
     <h2>Кандидаты сегодня</h2>
@@ -248,6 +259,7 @@
 <script src="ideas.js"></script>
 <script src="volume.js"></script>
 <script src="oi.js"></script>
+<script src="mx.js"></script>
 <script>
 const fmt = (x, d) => x == null ? "—" : Number(x).toLocaleString("ru-RU", {minimumFractionDigits: d ?? dec(x), maximumFractionDigits: d ?? dec(x)});
 const dec = x => { x = Math.abs(x); return x >= 1000 ? 0 : x >= 100 ? 1 : x >= 1 ? 2 : 4; };
@@ -313,7 +325,8 @@ function allTable(rows) {
 (async () => {
   const [rep, jr, vol, vjr] = await Promise.all([getJSON("data/latest.json"), getJSON("data/journal.json"),
     getJSON("data/volume.json"), getJSON("data/journal_volume.json")]);
-  const [oi, ojr] = await Promise.all([getJSON("data/oi.json"), getJSON("data/journal_oi.json")]);
+  const [oi, ojr, mx] = await Promise.all([getJSON("data/oi.json"), getJSON("data/journal_oi.json"), getJSON("data/mx.json")]);
+  if (window.ipMxRender) window.ipMxRender(mx);
   if (window.ipVolumeRender) window.ipVolumeRender(vol, vjr);
   if (window.ipOiRender) window.ipOiRender(oi, ojr);
   if (rep) {

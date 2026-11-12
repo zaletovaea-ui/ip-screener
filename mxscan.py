@@ -81,7 +81,7 @@ def main():
                 pending = -1
             elif ch is not None and ch <= -thr:
                 pending = 1
-            rows.append(dict(date=d, net=net[d], d1=net[d] - net[ds[i - 1]] if i else None, d3=ch,
+            rows.append(dict(date=d, intraday=(d == msk_now().strftime("%Y-%m-%d") and msk_now().strftime("%H:%M") < "23:55"), net=net[d], d1=net[d] - net[ds[i - 1]] if i else None, d3=ch,
                              long=oi[d]["FIZ"]["pos_long"], short=-oi[d]["FIZ"]["pos_short"],
                              long_num=oi[d]["FIZ"]["pos_long_num"], short_num=oi[d]["FIZ"]["pos_short_num"],
                              index=c, pos=pos, signal=("short" if ch is not None and ch >= thr else "long" if ch is not None and ch <= -thr else None)))
