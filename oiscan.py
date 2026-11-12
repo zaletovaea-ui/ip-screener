@@ -145,8 +145,9 @@ def stats(sigs):
     return out
 
 
-def manage(s, candles):
-    """Вход по открытию следующего дня и ведение сделки по дневным свечам."""
+def manage(s, candles, entry_only=False, last=None):
+    """Вход по открытию следующего дня и ведение сделки по дневным свечам.
+    entry_only — днём: только записать вход по открытию и текущий результат (дневная свеча ещё не закрыта)."""
     if s["status"] == "ждёт входа":
         nxt = [c for c in candles if c["d"] > s["signal_date"]]
         if not nxt:
@@ -158,6 +159,10 @@ def manage(s, candles):
                  stop=round(c0["o"] - O["atr_k"] * a if s["side"] == "buy" else c0["o"] + O["atr_k"] * a, 6), days=0)
         s["stop_pct"] = round(-abs(s["stop"] / s["entry"] - 1) * 100, 1)
         s["best"] = c0["o"]
+    if entry_only:
+        if s["status"] == "открыт" and last:
+            s["last_price"], s["current_pct"] = last, pnl(s["side"], s["entry"], last)
+        return
     if s["status"] != "открыт":
         return
     buy = s["side"] == "buy"
@@ -199,6 +204,13 @@ def run(mode):
     rows = build_table(m, md, cur, prev, week, label)
     j = load_json(JOURNAL, {"signals": []})
     sigs = j["signals"]
+    if mode == "intraday":
+        for s in sigs:
+            if s["status"] in ("ждёт входа", "открыт"):
+                try:
+                    manage(s, daily(s["ticker"]), entry_only=True, last=(md.get(s["ticker"]) or {}).get("LAST"))
+                except Exception as e:  # noqa
+                    print("вход", s["ticker"], e, file=sys.stderr)
     if mode == "nightly":
         sig_date = closed_days[-1]
         cache = {}
