@@ -1,0 +1,26 @@
+{
+ "position": "long",
+ "contract": "MXZ6",
+ "entry": 249000,
+ "entry_time": "2026-11-12 открытие",
+ "events": [
+  {
+   "time": "2026-11-12 09:00",
+   "action": "Открываем лонг MX",
+   "side": "long",
+   "price": 249000,
+   "contract": "MXZ6",
+   "reason": "старт наблюдения: физлица за 3 дня сократили позицию на 18 716 контр."
+  }
+ ],
+ "trades": [],
+ "last_price": 248050,
+ "last_time": "17:24",
+ "contract_now": "MXZ6",
+ "current": -0.38,
+ "d3_now": -11443,
+ "snap_time": "17:20",
+ "closed_return": 0.0,
+ "total_return": -0.38,
+ "updated": "2026-11-12 17:24"
+}

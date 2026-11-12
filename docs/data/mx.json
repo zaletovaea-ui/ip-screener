@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-12 17:16",
+ "updated": "2026-11-12 17:24",
  "params": {
   "window": 3,
   "threshold": 10000,
@@ -14,27 +14,27 @@
   "start": "2026-11-12",
   "entry": 2497.38,
   "live": true,
-  "current": -0.38
+  "current": -0.39
  },
  "live": null,
- "total": 163.06,
- "live_return": -0.54,
+ "total": 163.04,
+ "live_return": -0.55,
  "maxdd": -12.7,
  "by_year": {
   "2023": 10.8,
   "2024": 53.8,
   "2025": 49.0,
-  "2026": 3.6
+  "2026": 3.5
  },
  "index_change": 15.3,
- "index": 2487.95,
+ "index": 2487.76,
  "flips": [
   {
    "side": "long",
    "start": "2026-11-12",
    "entry": 2497.38,
    "live": true,
-   "current": -0.38
+   "current": -0.39
   },
   {
    "side": "short",
@@ -509,14 +509,14 @@
   {
    "date": "2026-11-12",
    "intraday": true,
-   "net": 14512,
-   "d1": 850,
-   "d3": -11143,
-   "long": 122077,
-   "short": 107565,
-   "long_num": 5005,
-   "short_num": 3725,
-   "index": 2487.95,
+   "net": 14212,
+   "d1": 550,
+   "d3": -11443,
+   "long": 121759,
+   "short": 107547,
+   "long_num": 5019,
+   "short_num": 3704,
+   "index": 2487.76,
    "pos": 1,
    "signal": "long"
   },
@@ -5905,8 +5905,34 @@
   ],
   [
    "2026-11-12",
-   163.06,
+   163.04,
    1
   ]
- ]
+ ],
+ "live_journal": {
+  "position": "long",
+  "contract": "MXZ6",
+  "entry": 249000,
+  "entry_time": "2026-11-12 открытие",
+  "events": [
+   {
+    "time": "2026-11-12 09:00",
+    "action": "Открываем лонг MX",
+    "side": "long",
+    "price": 249000,
+    "contract": "MXZ6",
+    "reason": "старт наблюдения: физлица за 3 дня сократили позицию на 18 716 контр."
+   }
+  ],
+  "trades": [],
+  "last_price": 248050,
+  "last_time": "17:24",
+  "contract_now": "MXZ6",
+  "current": -0.38,
+  "d3_now": -11443,
+  "snap_time": "17:20",
+  "closed_return": 0.0,
+  "total_return": -0.38,
+  "updated": "2026-11-12 17:24"
+ }
 }
