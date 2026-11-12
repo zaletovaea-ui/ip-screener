@@ -14,8 +14,8 @@
 
   function sigRows(rows) {
     if (!rows.length) return "<tr><td>Нет сигналов</td></tr>";
-    return `<tr><th>Сигнал</th><th>Тикер</th><th>Идея</th><th class="num">Физлица изм. за день</th><th class="num">% позиции</th><th class="num">Цена при сигнале</th><th>Статус</th><th class="num">Вход</th><th class="num">Стоп</th><th class="num">Результат</th></tr>` +
-      rows.map(s => `<tr><td>${dt(s.signal_date)}</td><td>${tk(s.ticker, s.name)}</td><td>${side(s.side)}</td>
+    return `<tr><th>Идея</th><th>Сигнал</th><th>Тикер</th><th class="num">Физлица изм. за день</th><th class="num">% позиции</th><th class="num">Цена при сигнале</th><th>Статус</th><th class="num">Вход</th><th class="num">Стоп</th><th class="num">Результат</th></tr>` +
+      rows.map(s => `<tr><td>${side(s.side)}</td><td>${dt(s.signal_date)}</td><td>${tk(s.ticker, s.name)}</td>
         <td class="num ${cl(s.d_net)}">${sg(s.d_net)} контр.${mln(s.d_net_mln)}</td>
         <td class="num"><b>${sg(s.rel_pct, 1)}%</b></td><td class="num">${px(s.ref_price)}</td>
         <td>${s.status === "ждёт входа" ? '<span class="pill neu">вход по открытию</span>' : `<span class="pill ${s.status === "открыт" ? "tgt" : (s.result_pct > 0 ? "tgt" : "sell")}">${s.status}</span>`}</td>
@@ -27,17 +27,16 @@
   function table(rows, onlySide) {
     if (onlySide) rows = rows.filter(r => r.side);
     if (!rows.length) return "<tr><td>Нет бумаг с изменением ≥10%</td></tr>";
-    return `<tr><th>Тикер</th><th class="num">Цена</th><th class="num">Физлица: лонг</th><th class="num">Шорт</th><th class="num">Чистая позиция</th>
-      <th class="num">Изм. за день</th><th class="num">% позиции</th><th class="num">Изм. за неделю</th><th class="num">Физлиц в лонге / шорте</th><th>Идея</th></tr>` +
-      rows.map(r => `<tr><td>${tk(r.ticker, r.name)}<div class="nm">фьючерс ${r.code}, ${f(r.lot)} акц.</div></td>
+    return `<tr><th>Идея</th><th>Тикер</th><th class="num">Цена</th><th class="num">Физлица: лонг</th><th class="num">Шорт</th><th class="num">Чистая позиция</th>
+      <th class="num">Изм. за день</th><th class="num">% позиции</th><th class="num">Изм. за неделю</th><th class="num">Физлиц в лонге / шорте</th></tr>` +
+      rows.map(r => `<tr><td>${r.side ? side(r.side) : Math.abs(r.rel_pct) >= 5 ? '<span class="pill neu">заметно</span>' : ""}</td><td>${tk(r.ticker, r.name)}<div class="nm">фьючерс ${r.code}, ${f(r.lot)} акц.</div></td>
         <td class="num">${px(r.price)}<div class="nm ${cl(r.change_pct)}">${pc(r.change_pct)}</div></td>
         <td class="num">${f(r.long)}<div class="nm ${cl(r.d_long)}">${sg(r.d_long)}</div></td>
         <td class="num">${f(r.short)}<div class="nm ${cl(-r.d_short)}">${sg(r.d_short)}</div></td>
         <td class="num"><b>${sg(r.net)}</b>${mln(r.net_mln)}</td>
         <td class="num ${cl(r.d_net)}">${sg(r.d_net)}${mln(r.d_net_mln)}</td>${rel(r)}
         <td class="num ${cl(r.d_net_week)}">${sg(r.d_net_week)}${mln(r.d_net_week_mln)}</td>
-        <td class="num">${f(r.long_num)} / ${f(r.short_num)}<div class="nm">${sg(r.d_long_num)} / ${sg(r.d_short_num)}</div></td>
-        <td>${r.side ? side(r.side) : Math.abs(r.rel_pct) >= 5 ? '<span class="pill neu">заметно</span>' : ""}</td></tr>`).join("");
+        <td class="num">${f(r.long_num)} / ${f(r.short_num)}<div class="nm">${sg(r.d_long_num)} / ${sg(r.d_short_num)}</div></td></tr>`).join("");
   }
 
   window.ipOiRender = (oi, jr) => {

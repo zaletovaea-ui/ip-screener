@@ -46,6 +46,9 @@ jobs:
       - name: Открытый интерес физлиц
         if: ${{ always() }}
         run: python oiscan.py $MODE
+      - name: MX против физлиц
+        if: ${{ always() }}
+        run: python mxscan.py
       - name: Сохранить норму в кэш
         if: ${{ env.MODE == 'nightly' || env.BUILT == '1' }}
         uses: actions/cache/save@v4
