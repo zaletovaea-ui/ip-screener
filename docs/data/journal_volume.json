@@ -18,9 +18,9 @@
    "comment": "Объём ×3.1 нормы, покупатели 59%",
    "status": "открыт",
    "days": 0,
-   "last_price": 143.6,
+   "last_price": 143.55,
    "last_date": "2026-11-12",
-   "current_pct": 0.17
+   "current_pct": 0.14
   },
   {
    "id": "2026-11-12-HYDR-buy-volume",
@@ -40,9 +40,9 @@
    "comment": "Объём ×3.0 нормы, покупатели 58%",
    "status": "открыт",
    "days": 0,
-   "last_price": 0.551,
+   "last_price": 0.5506,
    "last_date": "2026-11-12",
-   "current_pct": 0.18
+   "current_pct": 0.11
   }
  ],
  "stats": {
@@ -69,5 +69,5 @@
   "against_share": 0.6,
   "cooldown": 7
  },
- "updated": "2026-11-12 20:33"
+ "updated": "2026-11-12 20:43"
 }
