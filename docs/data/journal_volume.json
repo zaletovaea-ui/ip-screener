@@ -1,0 +1,51 @@
+{
+ "signals": [
+  {
+   "id": "2026-11-12-RASP-buy-volume",
+   "strategy": "volume",
+   "ticker": "RASP",
+   "name": "Распадская",
+   "side": "buy",
+   "opened": "2026-11-12",
+   "opened_at": "2026-11-12 12:28",
+   "entry": 143.35,
+   "stop": 138.35475,
+   "stop_pct": -3.5,
+   "target": null,
+   "ratio": 3.1,
+   "buy_share": 59,
+   "change_pct": 2.36,
+   "comment": "Объём ×3.1 нормы, покупатели 59%",
+   "status": "открыт",
+   "days": 0,
+   "last_price": 143.35,
+   "last_date": "2026-11-12",
+   "current_pct": 0.0
+  }
+ ],
+ "stats": {
+  "total": 1,
+  "open": 1,
+  "closed": 0
+ },
+ "params": {
+  "norm_days": 20,
+  "min_days": 10,
+  "ratio": 3.0,
+  "buy_share": 0.58,
+  "sell_share": 0.42,
+  "min_change": 1.5,
+  "range_pos": 0.6,
+  "min_value_mln": 30,
+  "stop_pad": 0.005,
+  "min_stop": 0.015,
+  "max_stop": 0.08,
+  "trail_from": 5,
+  "trail": 0.014,
+  "max_days": 10,
+  "against_ratio": 2.0,
+  "against_share": 0.6,
+  "cooldown": 7
+ },
+ "updated": "2026-11-12 12:28"
+}
