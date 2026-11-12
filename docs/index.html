@@ -73,6 +73,10 @@
   h2{color:var(--navy)}
   footer{color:var(--muted);font-size:13px;margin-top:30px;border-top:1px solid var(--border);padding-top:16px}
   .hidden{display:none!important}
+  .seg{display:inline-flex;background:rgba(15,32,66,.25);border-radius:12px;padding:4px;gap:4px;margin:14px 0 4px}
+  .seg button{border:0;background:transparent;color:#fff;font:600 13px/16px var(--sans);padding:0 16px;height:36px;border-radius:9px;cursor:pointer}
+  .seg button.on{background:#fff;color:var(--navy)}
+  .vol-p{background:var(--navy);color:#fff}
   .syncbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 12px;color:var(--sec);font-size:14px}
   .ideas{display:grid;grid-template-columns:minmax(300px,420px) 1fr;gap:16px;align-items:start}
   @media(max-width:900px){.ideas{grid-template-columns:1fr}}
@@ -108,21 +112,52 @@
   <div class="wrap">
     <div>
       <div class="logo"><i></i>Invest Privet+</div>
-      <div class="brand">Технический анализ · Мосбиржа</div>
+      <div class="seg" id="seg"><button data-sec="ta" class="on">Технический анализ</button><button data-sec="vol">Аномальные объёмы</button></div>
+      <div class="brand" id="brand">Технический анализ · дневной таймфрейм</div>
       <h1>Скринер акций Мосбиржи</h1>
       <div class="sub" id="asof">Загрузка…</div>
+      <div class="sub hidden" id="asof-vol">Загрузка…</div>
     </div>
     <div class="mkt" id="mkt"></div>
+    <div class="mkt hidden" id="mkt-vol">Сигнал: оборот к этому времени дня в <b>3+ раза выше нормы</b> (медиана за 20 дней), его инициировали покупатели (продавцы) и цена движется в их сторону. Данные AlgoPack, проверка каждые 15 минут.</div>
   </div>
 </header>
 
 <div class="wrap">
-  <nav>
+  <nav id="nav-ta">
     <button data-tab="top" class="on">Подборка дня</button>
     <button data-tab="journal">Журнал сигналов</button>
     <button data-tab="all">Все сигналы скана</button>
-    <button data-tab="ideas" id="nav-ideas" class="hidden">Формирование идей</button>
+    <button data-tab="ideas" class="nav-ideas hidden">Формирование идей</button>
   </nav>
+  <nav id="nav-vol" class="hidden">
+    <button data-tab="vol-top" class="on">Сигналы дня</button>
+    <button data-tab="vol-journal">Журнал сигналов</button>
+    <button data-tab="vol-all">Все аномалии</button>
+    <button data-tab="ideas" class="nav-ideas hidden">Формирование идей</button>
+  </nav>
+
+  <section id="tab-vol-top" class="hidden">
+    <h2 class="plate buy">Покупатели</h2>
+    <div class="tbl"><table id="v-buy"></table></div>
+    <h2 class="plate sell">Продавцы</h2>
+    <div class="tbl"><table id="v-sell"></table></div>
+    <p class="note">«Объём ×» — во сколько раз оборот к этому времени дня выше нормы (медиана за 20 торговых дней на то же время). «Покупатели» — доля оборота, инициированного покупателями. «Нетто» — оборот покупателей минус продавцов, млн ₽. Сигнал фиксируется по первому появлению; цена «при сигнале» — вход в журнале.</p>
+  </section>
+
+  <section id="tab-vol-journal" class="hidden">
+    <div class="cards" id="v-stats"></div>
+    <h2>Открытые сигналы</h2>
+    <div class="tbl"><table id="v-open"></table></div>
+    <h2>Закрытые сигналы</h2>
+    <div class="tbl"><table id="v-closed"></table></div>
+    <p class="note" id="v-rules"></p>
+  </section>
+
+  <section id="tab-vol-all" class="hidden">
+    <div class="tbl"><table id="v-all"></table></div>
+    <p class="note">Все бумаги, у которых оборот к этому времени дня в 3+ раза выше нормы, — включая те, где не выполнены условия по направлению.</p>
+  </section>
 
   <section id="tab-top">
     <h2 class="plate buy">Покупка</h2>
@@ -169,13 +204,14 @@
 
   <footer>
     <b style="color:var(--navy)">Invest Privet+</b> · investprivet.online<br>
-    Данные: Мосбиржа (ISS), дневные свечи. Обновление — каждую торговую ночь в 00:05 МСК, по закрытой дневной свече.<br>
+    Данные: Мосбиржа. Технический анализ — дневные свечи, обновление каждую торговую ночь в 00:05 МСК. Аномальные объёмы — AlgoPack (SuperCandles), каждые 15 минут с 07:00 до 23:45 МСК.<br>
     Не является индивидуальной инвестиционной рекомендацией. Каждый сетап — вероятность, а не гарантия; всегда используйте стоп.
   </footer>
 </div>
 
 <script src="config.js"></script>
 <script src="ideas.js"></script>
+<script src="volume.js"></script>
 <script>
 const fmt = (x, d) => x == null ? "—" : Number(x).toLocaleString("ru-RU", {minimumFractionDigits: d ?? dec(x), maximumFractionDigits: d ?? dec(x)});
 const dec = x => { x = Math.abs(x); return x >= 1000 ? 0 : x >= 100 ? 1 : x >= 1 ? 2 : 4; };
@@ -239,7 +275,9 @@ function allTable(rows) {
 }
 
 (async () => {
-  const [rep, jr] = await Promise.all([getJSON("data/latest.json"), getJSON("data/journal.json")]);
+  const [rep, jr, vol, vjr] = await Promise.all([getJSON("data/latest.json"), getJSON("data/journal.json"),
+    getJSON("data/volume.json"), getJSON("data/journal_volume.json")]);
+  if (window.ipVolumeRender) window.ipVolumeRender(vol, vjr);
   if (rep) {
     document.getElementById("asof").textContent = "Скан на " + date(rep.asof) + " · в анализе " + rep.universe.length + " акций" + (rep.index ? " (индекс Мосбиржи + ликвидные от " + rep.params.min_turnover_mln + " млн ₽/день)" : "");
     const m = rep.market;
@@ -252,7 +290,7 @@ function allTable(rows) {
     document.getElementById("t-buy").innerHTML = topTable(top.filter(r => r.side === "buy"));
     document.getElementById("t-sell").innerHTML = topTable(top.filter(r => r.side === "sell"));
     allTable(ta);
-    if (window.ipIdeasInit) window.ipIdeasInit(rep);
+    if (window.ipIdeasInit) window.ipIdeasInit(rep, window.ipVolumeIdeas ? window.ipVolumeIdeas(vol) : []);
     ["f-side", "f-min", "f-q"].forEach(id => document.getElementById(id).addEventListener("input", () => allTable(ta)));
   }
   if (jr) {
@@ -272,10 +310,27 @@ function allTable(rows) {
   }
 })();
 
-document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
-  document.querySelectorAll("nav button").forEach(x => x.classList.toggle("on", x === b));
-  ["top", "journal", "all", "ideas"].forEach(t => document.getElementById("tab-" + t).classList.toggle("hidden", t !== b.dataset.tab));
-});
+function showTab(nav, tab) {
+  nav.querySelectorAll("button").forEach(x => x.classList.toggle("on", x.dataset.tab === tab));
+  document.querySelectorAll("section[id^=tab-]").forEach(sec => sec.classList.toggle("hidden", sec.id !== "tab-" + tab));
+  setTimeout(postHeight, 50);
+}
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => showTab(b.closest("nav"), b.dataset.tab));
+function showSection(sec) {
+  const vol = sec === "vol";
+  document.querySelectorAll("#seg button").forEach(b => b.classList.toggle("on", b.dataset.sec === sec));
+  document.getElementById("nav-ta").classList.toggle("hidden", vol);
+  document.getElementById("nav-vol").classList.toggle("hidden", !vol);
+  ["asof", "mkt"].forEach(id => document.getElementById(id).classList.toggle("hidden", vol));
+  ["asof-vol", "mkt-vol"].forEach(id => document.getElementById(id).classList.toggle("hidden", !vol));
+  document.getElementById("brand").textContent = vol ? "Аномальные объёмы · AlgoPack, каждые 15 минут" : "Технический анализ · дневной таймфрейм";
+  const nav = document.getElementById(vol ? "nav-vol" : "nav-ta");
+  const cur = nav.querySelector("button.on") || nav.querySelector("button");
+  showTab(nav, cur.dataset.tab);
+  try { localStorage.setItem("ipSec", sec); } catch (e) {}
+}
+document.querySelectorAll("#seg button").forEach(b => b.onclick = () => showSection(b.dataset.sec));
+try { if (localStorage.getItem("ipSec") === "vol") showSection("vol"); } catch (e) {}
 
 // Авто-высота при встраивании в GetCourse (iframe): сообщаем родительской странице свою высоту
 function postHeight() {

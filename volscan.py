@@ -164,7 +164,8 @@ def daily_norm(prof, t, before=None):
 
 def netflow(prof, t, today=None):
     """Нетто-поток (покупатели − продавцы) за дни профиля + сегодня, млн ₽."""
-    s = sum(v["vb"] - v["vs"] for v in prof["data"].get(t, {}).values())
+    d = prof["data"].get(t, {})
+    s = sum(d[k]["vb"] - d[k]["vs"] for k in sorted(d)[-V["norm_days"]:])
     if today:
         s += today["vb"] - today["vs"]
     return round(s / 1e6, 1)

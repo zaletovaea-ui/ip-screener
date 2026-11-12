@@ -12,7 +12,7 @@
   } catch (e) { editor = url.searchParams.get("editor") === "1"; }
   if ((window.IP_CONFIG || {}).ideasForAll) editor = true;
   if (!editor) return;
-  document.getElementById("nav-ideas").classList.remove("hidden");
+  document.querySelectorAll(".nav-ideas").forEach(b => b.classList.remove("hidden"));
 
   let saved = {};
   try { saved = JSON.parse(localStorage.getItem(LS) || "{}"); } catch (e) {}
@@ -109,7 +109,7 @@
     return {
       id: idOf(r), ticker: r.ticker, side: r.side, strategy: r.strategy || "ta", date: r.date,
       name: co[0] || (r.name || r.ticker).replace(/\s*-?\s*а[оп]$/i, "").trim(),
-      sector: co[1] || "", type: r.strategy === "momentum" ? "моментум" : "техническая",
+      sector: co[1] || "", type: r.strategy === "momentum" ? "моментум" : r.strategy === "volume" ? "объёмы" : "техническая",
       rating: r.rating, comment: r.comment || "",
       price: fp(r.close), entry: fp(r.entry_limit ?? r.close * (buy ? 1.01 : 0.99)),
       stop: fp(r.stop), take1: fp(r.take1 ?? r.target), take2: fp(r.take2 ?? r.target),
@@ -189,6 +189,7 @@
   // ---------- список ----------
   function row(d, checked, isSaved) {
     const pill = d.strategy === "momentum" ? '<span class="pill mom-p">Моментум</span>'
+      : d.strategy === "volume" ? `<span class="pill vol-p">Объёмы · ${d.side === "buy" ? "покупка" : "продажа"}</span>`
       : d.side === "buy" ? '<span class="pill buy">Покупка</span>' : '<span class="pill sell">Продажа</span>';
     return `<label class="irow${current === d.id ? " cur" : ""}" data-id="${d.id}">
       <input type="checkbox" ${checked ? "checked" : ""} data-id="${d.id}">
@@ -204,7 +205,7 @@
     const rest = fresh.filter(d => !scan.find(r => idOf(r) === d.id).top);
     document.getElementById("ideas-list").innerHTML =
       (mine.length ? `<div class="ih">Мои идеи (${mine.length})</div>` + mine.map(d => row(d, true, true)).join("") : "") +
-      `<div class="ih">Подборка дня и моментум</div>` + (top.map(d => row(d, false)).join("") || '<div class="nm" style="padding:8px 12px">нет</div>') +
+      `<div class="ih">Подборка дня, моментум и объёмы</div>` + (top.map(d => row(d, false)).join("") || '<div class="nm" style="padding:8px 12px">нет</div>') +
       `<div class="ih">Остальные сигналы скана</div>` + rest.map(d => row(d, false)).join("");
     document.querySelectorAll("#ideas-list input[type=checkbox]").forEach(cb => cb.onchange = () => {
       const id = cb.dataset.id;
@@ -265,9 +266,9 @@
     upd();
   }
 
-  window.ipIdeasInit = async (rep) => {
+  window.ipIdeasInit = async (rep, extra) => {
     try { companies = await (await fetch("data/companies.json?v=" + Date.now())).json(); } catch (e) {}
-    scan = (rep?.results || []).slice().sort((a, b) => (b.top - a.top) || ((b.strategy === "momentum") - (a.strategy === "momentum")) || (b.count - a.count));
+    scan = (rep?.results || []).concat(extra || []).sort((a, b) => (b.top - a.top) || ((b.strategy === "momentum") - (a.strategy === "momentum")) || (b.count - a.count));
     market = rep?.market;
     renderList(); renderPanel(); showSync();
     if (token) sync();
