@@ -1,0 +1,77 @@
+{
+ "signals": [
+  {
+   "ref_price": 38.75,
+   "atr": 1.110714285714286,
+   "net": 36974,
+   "long": 64892,
+   "short": 27918,
+   "id": "2026-11-11-AFLT-sell-oi",
+   "strategy": "oi",
+   "ticker": "AFLT",
+   "name": "Аэрофлот",
+   "code": "AF",
+   "side": "sell",
+   "signal_date": "2026-11-11",
+   "status": "ждёт входа",
+   "rel_pct": 12.1,
+   "d_net": 10206,
+   "d_net_mln": 40.1,
+   "comment": "Физлица нарастили лонг: +10 206 контр. (+12.1% позиции)"
+  },
+  {
+   "ref_price": 0.5273,
+   "atr": 0.021664285714285712,
+   "net": -14658,
+   "long": 10952,
+   "short": 25610,
+   "id": "2026-11-11-HYDR-buy-oi",
+   "strategy": "oi",
+   "ticker": "HYDR",
+   "name": "РусГидро",
+   "code": "HY",
+   "side": "buy",
+   "signal_date": "2026-11-11",
+   "status": "ждёт входа",
+   "rel_pct": -11.5,
+   "d_net": -4457,
+   "d_net_mln": -24.3,
+   "comment": "Физлица нарастили шорт: -4 457 контр. (-11.5% позиции)"
+  },
+  {
+   "ref_price": 298.51,
+   "atr": 3.654285714285712,
+   "net": 4432,
+   "long": 6084,
+   "short": 1652,
+   "id": "2026-11-11-SBERP-sell-oi",
+   "strategy": "oi",
+   "ticker": "SBERP",
+   "name": "Сбербанк-п",
+   "code": "SP",
+   "side": "sell",
+   "signal_date": "2026-11-11",
+   "status": "ждёт входа",
+   "rel_pct": 11.3,
+   "d_net": 893,
+   "d_net_mln": 26.6,
+   "comment": "Физлица нарастили лонг: +893 контр. (+11.3% позиции)"
+  }
+ ],
+ "updated_night": "2026-11-12 15:18",
+ "stats": {
+  "total": 3,
+  "open": 0,
+  "pending": 3,
+  "closed": 0
+ },
+ "params": {
+  "threshold": 0.1,
+  "atr_k": 1.5,
+  "atr_n": 14,
+  "trail_from": 5,
+  "trail": 0.014,
+  "max_days": 10,
+  "cooldown": 7
+ }
+}
