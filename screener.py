@@ -7,7 +7,7 @@
   Продажа: сопротивление, EMA200 вниз, пробой поддержки, RSI (выход из перекупленности / медвежья дивергенция)
 
 Данные: публичный ISS Мосбиржи (ключ не нужен). Если задан MOEX_TOKEN,
-запросы идут через apis.moex.com (AlgoPack) с этим ключом.
+запросы идут через apim.moex.com (AlgoPack) с этим ключом.
 
 Результат: results/latest.json, results/latest.md, results/YYYY-MM-DD.json
 """
@@ -57,7 +57,7 @@ UNIVERSE_FALLBACK = [
 ]
 
 TOKEN = os.environ.get("MOEX_TOKEN", "").strip()
-BASE = "https://apis.moex.com/iss" if TOKEN else "https://iss.moex.com/iss"
+BASE = "https://apim.moex.com/iss" if TOKEN else "https://iss.moex.com/iss"
 S = requests.Session()
 if TOKEN:
     S.headers["Authorization"] = f"Bearer {TOKEN}"
@@ -784,7 +784,7 @@ def main():
     report = {
         "asof": max((r["date"] for r in results), default=dt.date.today().isoformat()),
         "generated_utc": dt.datetime.utcnow().strftime("%Y-%m-%d %H:%M"),
-        "source": "apis.moex.com (AlgoPack)" if TOKEN else "iss.moex.com",
+        "source": "apim.moex.com (AlgoPack, без задержки)" if TOKEN else "iss.moex.com",
         "universe": tickers, "index": index, "candidates": len(candidates), "params": P, "market": mkt,
         "results": results, "errors": errors,
     }
