@@ -43,6 +43,9 @@ jobs:
           if [ ! -s data/vol_profile.json ] && [ "$MODE" = "intraday" ]; then python volscan.py nightly; echo "BUILT=1" >> $GITHUB_ENV; fi
       - name: Расчёт
         run: python volscan.py $MODE
+      - name: Открытый интерес физлиц
+        if: ${{ always() }}
+        run: python oiscan.py $MODE
       - name: Сохранить норму в кэш
         if: ${{ env.MODE == 'nightly' || env.BUILT == '1' }}
         uses: actions/cache/save@v4
@@ -50,6 +53,7 @@ jobs:
           path: data/vol_profile.json
           key: vol-profile-${{ github.run_id }}
       - name: Сохранить результат
+        if: ${{ always() }}
         run: |
           git config user.name "screener-bot"
           git config user.email "actions@users.noreply.github.com"

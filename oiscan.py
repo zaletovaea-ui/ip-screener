@@ -216,7 +216,14 @@ def run(mode):
             if any(s["ticker"] == r["ticker"] and s["signal_date"] == sig_date for s in sigs):
                 continue
             crowd = "лонг" if r["side"] == "sell" else "шорт"
+            try:
+                cc = daily(r["ticker"])
+                hist = [c for c in cc if c["d"] <= sig_date]
+                ref, a = hist[-1]["c"], atr(hist, O["atr_n"])
+            except Exception:  # noqa
+                ref, a = r["price"], None
             sigs.append({
+                "ref_price": ref, "atr": a, "net": r["net"], "long": r["long"], "short": r["short"],
                 "id": f"{sig_date}-{r['ticker']}-{r['side']}-oi", "strategy": "oi", "ticker": r["ticker"], "name": r["name"],
                 "code": r["code"], "side": r["side"], "signal_date": sig_date, "status": "ждёт входа",
                 "rel_pct": r["rel_pct"], "d_net": r["d_net"], "d_net_mln": r["d_net_mln"],
