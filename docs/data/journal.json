@@ -18,12 +18,12 @@
     "откат к EMA200 292.17 (+0.1%), наклон вверх — откат в восходящем тренде"
    ],
    "status": "открыт",
-   "current_pct": 2.19,
-   "last_price": 298.81,
+   "current_pct": 2.16,
+   "last_price": 298.73,
    "last_date": "2026-11-12",
    "days": 1,
    "opened_at": "2026-11-11 10:30",
-   "last_time": "22:51"
+   "last_time": "23:01"
   },
   {
    "id": "2026-11-11-RTKM-buy",
@@ -70,12 +70,12 @@
     "на поддержке 3361.50 (4 касания, до уровня 0.8%)"
    ],
    "status": "открыт",
-   "current_pct": 1.43,
-   "last_price": 3437.0,
+   "current_pct": 1.46,
+   "last_price": 3438.0,
    "last_date": "2026-11-12",
    "days": 1,
    "opened_at": "2026-11-11 10:30",
-   "last_time": "22:51"
+   "last_time": "23:01"
   },
   {
    "id": "2026-11-11-RUAL-buy",
@@ -121,12 +121,12 @@
     "на поддержке 5059.50 (2 касания, до уровня 1.6%)"
    ],
    "status": "открыт",
-   "current_pct": 1.61,
-   "last_price": 5225.0,
+   "current_pct": 1.67,
+   "last_price": 5228.0,
    "last_date": "2026-11-12",
    "days": 1,
    "opened_at": "2026-11-11 10:30",
-   "last_time": "22:51"
+   "last_time": "23:01"
   },
   {
    "id": "2026-11-11-T-sell",
@@ -289,12 +289,12 @@
     "на поддержке 1.32 (2 касания, до уровня 1.2%)"
    ],
    "status": "открыт",
-   "current_pct": 1.95,
-   "last_price": 1.3575,
+   "current_pct": 1.99,
+   "last_price": 1.358,
    "last_date": "2026-11-12",
    "days": 1,
    "opened_at": "2026-11-11 11:33",
-   "last_time": "22:51"
+   "last_time": "23:01"
   },
   {
    "id": "2026-11-11-BAZA-sell-ta",
@@ -320,7 +320,7 @@
    "last_date": "2026-11-12",
    "days": 1,
    "opened_at": "2026-11-11 11:42",
-   "last_time": "22:51"
+   "last_time": "23:01"
   },
   {
    "id": "2026-11-11-HEAD-sell-ta",
@@ -342,12 +342,12 @@
     "пробой поддержки 2777.33 2026-11-10 на объёме ×1.7"
    ],
    "status": "открыт",
-   "current_pct": 0.8,
-   "last_price": 2741.0,
+   "current_pct": 0.87,
+   "last_price": 2739.0,
    "last_date": "2026-11-12",
    "days": 1,
    "opened_at": "2026-11-11 15:43",
-   "last_time": "22:51"
+   "last_time": "23:01"
   },
   {
    "id": "2026-11-11-SMLT-sell-ta",
@@ -396,12 +396,12 @@
     "на поддержке 1044.00 (2 касания, до уровня 0.1%)"
    ],
    "status": "открыт",
-   "current_pct": 1.91,
-   "last_price": 1064.8,
+   "current_pct": 1.9,
+   "last_price": 1064.6,
    "last_date": "2026-11-12",
    "days": 1,
    "opened_at": "2026-11-11 15:43",
-   "last_time": "22:51"
+   "last_time": "23:01"
   },
   {
    "id": "2026-11-11-RTKM-sell-ta",
@@ -454,11 +454,11 @@
     "пробой EMA200 367.69 вниз, 5 закрытия ниже"
    ],
    "status": "открыт",
-   "current_pct": -1.02,
-   "last_price": 358.25,
+   "current_pct": -1.09,
+   "last_price": 358.5,
    "last_date": "2026-11-12",
    "days": 1,
-   "last_time": "22:51"
+   "last_time": "23:01"
   },
   {
    "id": "2026-11-11-ETLN-sell-ta",
@@ -510,11 +510,11 @@
     "пробой сопротивления 701.80 2026-11-11 на объёме ×2.0"
    ],
    "status": "открыт",
-   "current_pct": 0.31,
-   "last_price": 714.0,
+   "current_pct": 0.28,
+   "last_price": 713.8,
    "last_date": "2026-11-12",
    "days": 1,
-   "last_time": "22:51"
+   "last_time": "23:01"
   },
   {
    "id": "2026-11-11-T-buy-ta",
@@ -536,11 +536,11 @@
     "пробой сопротивления 275.50 2026-11-11 на объёме ×2.6"
    ],
    "status": "открыт",
-   "current_pct": 3.32,
-   "last_price": 290.98,
+   "current_pct": 3.26,
+   "last_price": 290.8,
    "last_date": "2026-11-12",
    "days": 1,
-   "last_time": "22:51"
+   "last_time": "23:01"
   },
   {
    "id": "2026-11-11-UGLD-buy-ta",
@@ -562,11 +562,11 @@
     "бычья дивергенция (2026-10-30 → 2026-11-03)"
    ],
    "status": "открыт",
-   "current_pct": 0.35,
-   "last_price": 0.6823,
+   "current_pct": 0.44,
+   "last_price": 0.6829,
    "last_date": "2026-11-12",
    "days": 1,
-   "last_time": "22:51"
+   "last_time": "23:01"
   },
   {
    "id": "2026-11-11-NVTK-buy-ta",
@@ -587,11 +587,11 @@
     "пробой сопротивления 1094.47 2026-11-11 на объёме ×2.3"
    ],
    "status": "открыт",
-   "current_pct": 0.04,
-   "last_price": 1134.3,
+   "current_pct": -0.04,
+   "last_price": 1133.5,
    "last_date": "2026-11-12",
    "days": 1,
-   "last_time": "22:51"
+   "last_time": "23:01"
   }
  ],
  "stats": {
@@ -628,5 +628,5 @@
   }
  },
  "updated_utc": "2026-11-12 02:13",
- "updated_live": "2026-11-12 22:51"
+ "updated_live": "2026-11-12 23:01"
 }
