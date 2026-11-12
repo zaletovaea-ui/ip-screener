@@ -109,7 +109,7 @@
     return {
       id: idOf(r), ticker: r.ticker, side: r.side, strategy: r.strategy || "ta", date: r.date,
       name: co[0] || (r.name || r.ticker).replace(/\s*-?\s*а[оп]$/i, "").trim(),
-      sector: co[1] || "", type: r.strategy === "momentum" ? "моментум" : r.strategy === "volume" ? "объёмы" : r.strategy === "oi" ? "открытый_интерес" : "техническая",
+      sector: co[1] || "", type: r.strategy === "momentum" ? "моментум" : r.strategy === "volume" ? "объёмы" : r.strategy === "oi" ? "открытый_интерес" : r.strategy === "mx" ? "фьючерс_против_физлиц" : "техническая",
       rating: r.rating, comment: r.comment || "",
       price: fp(r.close), entry: fp(r.entry_limit ?? r.close * (buy ? 1.01 : 0.99)),
       stop: fp(r.stop), take1: fp(r.take1 ?? r.target), take2: fp(r.take2 ?? r.target),
@@ -125,7 +125,7 @@
     return [
       "🔹🔹", "#идея", "",
       `${d.name} #${d.ticker}`,
-      buy ? "#акция_спекуляция" : "#акция_спекуляция #шорт",
+      d.strategy === "mx" ? (buy ? "#фьючерс_спекуляция" : "#фьючерс_спекуляция #шорт") : buy ? "#акция_спекуляция" : "#акция_спекуляция #шорт",
       d.sector ? `Сектор: #${d.sector.replace(/\s+/g, "_")}` : null,
       `Тип: #${d.type.replace(/\s+/g, "_")}`, "",
       "🔹в чем идея?",
@@ -190,6 +190,7 @@
   function row(d, checked, isSaved) {
     const pill = d.strategy === "momentum" ? '<span class="pill mom-p">Моментум</span>'
       : d.strategy === "oi" ? `<span class="pill oi-p">ОИ физлиц · ${d.side === "buy" ? "лонг" : "шорт"}</span>`
+      : d.strategy === "mx" ? `<span class="pill oi-p">MX · ${d.side === "buy" ? "лонг" : "шорт"}</span>`
       : d.strategy === "volume" ? `<span class="pill vol-p">Объёмы · ${d.side === "buy" ? "покупка" : "продажа"}</span>`
       : d.side === "buy" ? '<span class="pill buy">Покупка</span>' : '<span class="pill sell">Продажа</span>';
     return `<label class="irow${current === d.id ? " cur" : ""}" data-id="${d.id}">
@@ -206,7 +207,7 @@
     const rest = fresh.filter(d => !scan.find(r => idOf(r) === d.id).top);
     document.getElementById("ideas-list").innerHTML =
       (mine.length ? `<div class="ih">Мои идеи (${mine.length})</div>` + mine.map(d => row(d, true, true)).join("") : "") +
-      `<div class="ih">Подборка дня, моментум, объёмы и ОИ физлиц</div>` + (top.map(d => row(d, false)).join("") || '<div class="nm" style="padding:8px 12px">нет</div>') +
+      `<div class="ih">Подборка дня, моментум, объёмы, ОИ физлиц и MX</div>` + (top.map(d => row(d, false)).join("") || '<div class="nm" style="padding:8px 12px">нет</div>') +
       `<div class="ih">Остальные сигналы скана</div>` + rest.map(d => row(d, false)).join("");
     document.querySelectorAll("#ideas-list input[type=checkbox]").forEach(cb => cb.onchange = () => {
       const id = cb.dataset.id;

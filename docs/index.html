@@ -114,14 +114,16 @@
   <div class="wrap">
     <div>
       <div class="logo"><i></i>Invest Privet+</div>
-      <div class="seg" id="seg"><button data-sec="ta" class="on">Технический анализ</button><button data-sec="vol">Аномальные объёмы</button><button data-sec="oi">Открытый интерес физлиц</button></div>
+      <div class="seg" id="seg"><button data-sec="ta" class="on">Технический анализ</button><button data-sec="vol">Аномальные объёмы</button><button data-sec="oi">Открытый интерес физлиц</button><button data-sec="mx">MX</button></div>
       <div class="brand" id="brand">Технический анализ · дневной таймфрейм</div>
       <h1>Скринер акций Мосбиржи</h1>
       <div class="sub" id="asof">Загрузка…</div>
       <div class="sub hidden" id="asof-vol">Загрузка…</div>
       <div class="sub hidden" id="asof-oi">Загрузка…</div>
+      <div class="sub hidden" id="asof-mx">Загрузка…</div>
     </div>
     <div class="mkt" id="mkt"></div>
+    <div class="mkt hidden" id="mkt-mx">Фьючерс MX — всегда против физлиц: если их чистая позиция за 3 дня выросла на <b>10 000 контрактов и больше</b> — шорт, снизилась на 10 000 и больше — лонг, иначе держим. Переворот сразу внутри дня, данные каждые 10 минут. На истории с 2023 года: +163% при просадке −12,7%.</div>
     <div class="mkt hidden" id="mkt-oi">Стратегия против толпы: если физлица за день изменили чистую позицию во фьючерсе на акцию на <b>10% и больше</b> — идея в обратную сторону. Вход на следующий день по открытию. На истории (11.2024–11.2026): ~27 сделок в месяц, 48% прибыльных, профит-фактор 1,43.</div>
     <div class="mkt hidden" id="mkt-vol">Сигнал: оборот к этому времени дня в <b>3+ раза выше нормы</b> (медиана за 20 дней), его инициировали покупатели (продавцы) и цена движется в их сторону. Данные AlgoPack, проверка каждые 15 минут.</div>
   </div>
@@ -145,14 +147,31 @@
     <button data-tab="oi-top" class="on">Сигналы</button>
     <button data-tab="oi-table">Таблица открытого интереса</button>
     <button data-tab="oi-journal">Журнал сигналов</button>
+    <button data-tab="ideas" class="nav-ideas hidden">Формирование идей</button>
+  </nav>
+
+  <nav id="nav-mx" class="hidden">
+    <button data-tab="mx-signals" class="on">Сигналы</button>
+    <button data-tab="mx-journal">Журнал сигналов</button>
     <button data-tab="oi-mx">MX против физлиц</button>
     <button data-tab="ideas" class="nav-ideas hidden">Формирование идей</button>
   </nav>
 
+  <section id="tab-mx-signals" class="hidden">
+    <div class="cards" id="mx-now"></div>
+    <h2>Сделки</h2>
+    <div class="tbl"><table id="mx-events"></table></div>
+    <p class="note">Каждый переворот — две строки: «Закрываем» старую позицию с результатом и «Открываем» новую. Цена — ближний фьючерс MX на момент обновления (каждые 10 минут, 07:00–23:50 МСК).</p>
+  </section>
+
+  <section id="tab-mx-journal" class="hidden">
+    <div class="cards" id="mx-jstats"></div>
+    <h2>Закрытые сделки</h2>
+    <div class="tbl"><table id="mx-trades"></table></div>
+  </section>
+
   <section id="tab-oi-mx" class="hidden">
     <div class="cards" id="mx-cards"></div>
-    <h2 style="margin-top:8px">Сделки (наблюдение)</h2>
-    <div class="tbl" style="margin-bottom:16px"><table id="mx-events"></table></div>
     <div class="card" style="margin-bottom:16px"><div class="k" style="color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.04em">Доходность стратегии с 2023 года, %</div><div id="mx-chart"></div></div>
     <h2>Изменение позиции физлиц в MX по дням</h2>
     <div class="tbl"><table id="mx-rows"></table></div>
@@ -162,8 +181,6 @@
   </section>
 
   <section id="tab-oi-top" class="hidden">
-    <h2>MX против физлиц: сделки</h2>
-    <div class="tbl"><table id="mx-events-top"></table></div>
     <h2>Кандидаты сегодня</h2>
     <div class="tbl"><table id="o-cand"></table></div>
     <h2 class="plate sell">Физлица нарастили лонг → идея на шорт</h2>
@@ -330,6 +347,7 @@ function allTable(rows) {
   const [rep, jr, vol, vjr] = await Promise.all([getJSON("data/latest.json"), getJSON("data/journal.json"),
     getJSON("data/volume.json"), getJSON("data/journal_volume.json")]);
   const [oi, ojr, mx] = await Promise.all([getJSON("data/oi.json"), getJSON("data/journal_oi.json"), getJSON("data/mx.json")]);
+  window.ipMxData = mx;
   if (window.ipMxRender) window.ipMxRender(mx);
   if (window.ipVolumeRender) window.ipVolumeRender(vol, vjr);
   if (window.ipOiRender) window.ipOiRender(oi, ojr);
@@ -345,7 +363,7 @@ function allTable(rows) {
     document.getElementById("t-buy").innerHTML = topTable(top.filter(r => r.side === "buy"));
     document.getElementById("t-sell").innerHTML = topTable(top.filter(r => r.side === "sell"));
     allTable(ta);
-    if (window.ipIdeasInit) window.ipIdeasInit(rep, (window.ipVolumeIdeas ? window.ipVolumeIdeas(vol) : []).concat(window.ipOiIdeas ? window.ipOiIdeas(ojr, oi) : []));
+    if (window.ipIdeasInit) window.ipIdeasInit(rep, (window.ipVolumeIdeas ? window.ipVolumeIdeas(vol) : []).concat(window.ipOiIdeas ? window.ipOiIdeas(ojr, oi) : [], window.ipMxIdeas ? window.ipMxIdeas(window.ipMxData) : []));
     ["f-side", "f-min", "f-q"].forEach(id => document.getElementById(id).addEventListener("input", () => allTable(ta)));
   }
   if (jr) {
@@ -375,6 +393,7 @@ const SECTIONS = {
   ta: { nav: "nav-ta", show: ["asof", "mkt"], brand: "Технический анализ · дневной таймфрейм" },
   vol: { nav: "nav-vol", show: ["asof-vol", "mkt-vol"], brand: "Аномальные объёмы · AlgoPack, каждые 15 минут" },
   oi: { nav: "nav-oi", show: ["asof-oi", "mkt-oi"], brand: "Открытый интерес физлиц · фьючерсы на акции" },
+  mx: { nav: "nav-mx", show: ["asof-mx", "mkt-mx"], brand: "MX · фьючерс на индекс Мосбиржи против физлиц" },
 };
 function showSection(sec) {
   if (!SECTIONS[sec]) sec = "ta";

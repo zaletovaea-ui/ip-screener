@@ -41,8 +41,31 @@
     const last = m.rows[0] || {};
     const d3 = L.d3_now ?? last.d3;
     const prog = Math.min(100, Math.abs(d3 || 0) / P.threshold * 100);
-    document.getElementById("mx-events").innerHTML = events(L, 30);
+    document.getElementById("mx-events").innerHTML = events(L, 50);
     const top = document.getElementById("mx-events-top"); if (top) top.innerHTML = events(L, 4);
+    const now = document.getElementById("mx-now");
+    if (now) now.innerHTML = [
+      ["Позиция сейчас", `${pos(L.position)}<div class="nm" style="margin-top:6px">${L.contract || ""} с ${tm(L.entry_time)}</div>`, true],
+      ["Вход → цена сейчас", `${f(L.entry)} → ${f(L.last_price)}<div class="nm" style="margin-top:6px">на ${L.last_time || ""}</div>`, true],
+      ["Текущая сделка", `<span class="${cl(L.current)}">${pc(L.current)}</span>`],
+      ["Физлица за 3 дня", `<span class="${cl(d3)}">${sg(d3)}</span><div style="height:6px;background:#E2E8F0;border-radius:3px;margin-top:8px;overflow:hidden"><i style="display:block;height:100%;width:${prog}%;background:${prog >= 100 ? "#DC2626" : "#1F5CFF"}"></i></div><div class="nm">переворот при ${d3 >= 0 ? "+" : "−"}${f(P.threshold)} · на ${L.snap_time || ""}</div>`],
+    ].map(([k, v, h]) => `<div class="card"><div class="k">${k}</div><div class="v" style="font-size:${h ? 20 : 24}px">${v}</div></div>`).join("");
+    const tr = (L.trades || []).slice().reverse();
+    const wins = tr.filter(t => t.result > 0).length;
+    const js = document.getElementById("mx-jstats");
+    if (js) js.innerHTML = [
+      ["Закрыто сделок", f(tr.length)],
+      ["Прибыльных", tr.length ? `${wins} из ${tr.length}` : "—"],
+      ["Закрытые сделки, итог", pc(L.closed_return)],
+      ["Вместе с открытой", pc(L.total_return)],
+    ].map(([k, v]) => `<div class="card"><div class="k">${k}</div><div class="v">${v}</div></div>`).join("");
+    const tt = document.getElementById("mx-trades");
+    if (tt) tt.innerHTML = `<tr><th>Позиция</th><th>Контракт</th><th>Открыта</th><th class="num">Вход</th><th>Закрыта</th><th class="num">Выход</th><th class="num">Результат</th></tr>` +
+      (L.position ? `<tr><td>${pos(L.position)} <span class="pill tgt">открыта</span></td><td>${L.contract}</td><td>${tm(L.entry_time)}</td><td class="num">${f(L.entry)}</td><td>—</td><td class="num">${f(L.last_price)}</td><td class="num ${cl(L.current)}">${pc(L.current)}</td></tr>` : "") +
+      (tr.map(t => `<tr><td>${pos(t.side)}</td><td>${t.contract || ""}</td><td>${tm(t.open_time)}</td><td class="num">${f(t.open_price)}</td><td>${tm(t.close_time)}</td><td class="num">${f(t.close_price)}</td><td class="num ${cl(t.result)}">${pc(t.result)}</td></tr>`).join("")
+        || `<tr><td colspan="7" class="nm">Закрытых сделок пока нет — первая закроется при перевороте.</td></tr>`);
+    const as = document.getElementById("asof-mx");
+    if (as) as.textContent = `Обновлено ${tm(L.updated)} · данные каждые 10 минут, 07:00–23:50 МСК`;
     document.getElementById("mx-cards").innerHTML = [
       ["Позиция сейчас", `${pos(L.position || m.position)}<div class="nm" style="margin-top:6px">${L.contract || ""} с ${tm(L.entry_time)} по ${f(L.entry)} · ${pc(L.current)}</div>`, true],
       ["Изменение физлиц за 3 дня", `<span class="${cl(d3)}">${sg(d3)}</span><div style="height:6px;background:#E2E8F0;border-radius:3px;margin-top:8px;overflow:hidden"><i style="display:block;height:100%;width:${prog}%;background:${prog >= 100 ? "#DC2626" : "#1F5CFF"}"></i></div><div class="nm">порог ${f(P.threshold)} контр. · на ${L.snap_time || ""}</div>`],
@@ -66,5 +89,26 @@
       `Правило: если чистая позиция физлиц во фьючерсе MX за ${P.window} торговых дня выросла на ${f(P.threshold)} контрактов и больше — стоим в шорте; снизилась на ${f(P.threshold)} и больше — в лонге; иначе держим текущую позицию. ` +
       `С ${dt(P.live_from)} (наблюдение) переворот делается сразу внутри дня, как только изменение за 3 дня (включая сегодня) пересекает порог, по текущей цене ближнего фьючерса MX; данные обновляются каждые 10 минут. ` +
       `График и итог «с 2023 года» — расчёт на истории: смена позиции по открытию следующего дня, по индексу Мосбиржи, 0,03% на переворот.`;
+  };
+
+  // Идея для вкладки «Формирование идей»: текущая позиция MX.
+  window.ipMxIdeas = (m) => {
+    const L = m && m.live_journal;
+    if (!L || !L.position) return [];
+    const buy = L.position === "long", e = L.last_price || L.entry, P = m.params;
+    const stop = buy ? e * 0.98 : e * 1.02;
+    const d3 = L.d3_now;
+    return [{
+      ticker: L.contract, name: "Фьючерс на индекс Мосбиржи MX", side: buy ? "buy" : "sell", strategy: "mx",
+      date: (L.entry_time || "").slice(0, 10), top: true, count: 1, rating: "",
+      close: e, entry_limit: e, stop, take1: buy ? e * 1.04 : e * 0.96, take2: buy ? e * 1.06 : e * 0.94,
+      comment: `${buy ? "лонг" : "шорт"} против физлиц`,
+      idea: [
+        `Физлица за 3 дня ${d3 < 0 ? "сократили" : "нарастили"} чистую позицию во фьючерсе MX на ${Math.abs(d3 || 0).toLocaleString("ru-RU")} контрактов${Math.abs(d3 || 0) >= P.threshold ? " — это выше нашего порога 10 000" : ""}.`,
+        `Работаем против толпы: физлица ${buy ? "продают индекс" : "покупают индекс"}, мы — ${buy ? "в лонге" : "в шорте"}. На истории с 2023 года такой подход дал +${Math.round(m.total)}% при просадке ${Math.abs(m.maxdd).toLocaleString("ru-RU", { maximumFractionDigits: 1 })}%.`,
+      ],
+      risk: `основной выход — переворот позиции, когда физлица развернутся на 10 000 контрактов за 3 дня. Стоп ${Math.round(stop).toLocaleString("ru-RU")} (2%) — страховка на резкое движение.`,
+      signals: ["MX против физлиц"],
+    }];
   };
 })();
