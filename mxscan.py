@@ -18,7 +18,7 @@ from moexapi import TOKEN, iss, table
 ROOT = Path(__file__).parent
 OUT = ROOT / "docs" / "data" / "mx.json"
 LIVE = ROOT / "docs" / "data" / "mx_live.json"
-M = {"window": 3, "threshold": 10000, "since": "2023-01-01", "live_from": "2026-11-12", "comm": 0.0003}
+M = {"window": 3, "threshold": 10000, "since": "2023-01-01", "live_from": "2026-11-12", "comm": 0.0003, "alert_1d": 7500}
 
 
 def msk_now():
@@ -105,7 +105,9 @@ def update_live(net_closed, closed_days, snap):
         j["events"].append(dict(time=t, action=f"Закрываем {'лонг' if old == 'long' else 'шорт'} MX вручную", side=old, price=price,
                                 contract=j["contract"], result=res, reason=mc.get("note") or "ручной выход из позиции"))
         j.update(position=None, entry=None, entry_time=None, blocked=old)
-    d3 = None
+    d3 = d1 = None
+    if snap and closed_days:
+        d1 = snap["pos"] - net_closed[closed_days[-1] if snap["tradedate"] not in net_closed else closed_days[-2]]
     if snap and len(closed_days) >= M["window"]:
         base = closed_days[-M["window"]] if snap["tradedate"] not in net_closed else closed_days[-M["window"] - 1]
         d3 = snap["pos"] - net_closed[base]
@@ -122,7 +124,7 @@ def update_live(net_closed, closed_days, snap):
     eq = 1.0
     for t in j["trades"]:
         eq *= 1 + t["result"] / 100
-    j.update(last_price=last, last_time=utime, contract_now=secid, current=cur, d3_now=d3,
+    j.update(last_price=last, last_time=utime, contract_now=secid, current=cur, d3_now=d3, d1_now=d1,
              snap_time=(snap or {}).get("tradetime", "")[:5] if snap else None,
              closed_return=round((eq - 1) * 100, 2), total_return=round((eq * (1 + (cur or 0) / 100) - 1) * 100, 2),
              updated=now.strftime("%Y-%m-%d %H:%M"))

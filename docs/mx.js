@@ -41,6 +41,10 @@
     const last = m.rows[0] || {};
     const d3 = L.d3_now ?? last.d3;
     const prog = Math.min(100, Math.abs(d3 || 0) / P.threshold * 100);
+    const AL = P.alert_1d || 7500, d1 = L.d1_now ?? last.d1, hot = Math.abs(d1 || 0) >= AL;
+    const d1card = ["Физлица за день", `<span class="${cl(d1)}">${sg(d1)}</span>` +
+      (hot ? `<div class="alert1d">⚠ резкий сдвиг: физлица ${d1 > 0 ? "покупают" : "продают"} индекс — возможен разворот${L.position ? ", оцените ручной выход" : ""}</div>`
+           : `<div class="nm">внимание при ±${f(AL)} контр. за день</div>`), false, hot];
     document.getElementById("mx-events").innerHTML = events(L, 50);
     const top = document.getElementById("mx-events-top"); if (top) top.innerHTML = events(L, 4);
     const now = document.getElementById("mx-now");
@@ -48,8 +52,9 @@
       ["Позиция сейчас", `${pos(L.position)}<div class="nm" style="margin-top:6px">${L.position ? `${L.contract || ""} с ${tm(L.entry_time)}` : "после ручного выхода — вход по следующему сигналу"}</div>`, true],
       ["Вход → цена сейчас", `${f(L.entry)} → ${f(L.last_price)}<div class="nm" style="margin-top:6px">на ${L.last_time || ""}</div>`, true],
       ["Текущая сделка", `<span class="${cl(L.current)}">${pc(L.current)}</span>${L.position && window.ipCloseBtn ? `<div style="font-size:13px">${window.ipCloseBtn("mx", L.entry_time, L.last_price, L.contract)}</div>` : ""}`],
-      ["Физлица за 3 дня", `<span class="${cl(d3)}">${sg(d3)}</span><div style="height:6px;background:#E2E8F0;border-radius:3px;margin-top:8px;overflow:hidden"><i style="display:block;height:100%;width:${prog}%;background:${prog >= 100 ? "#DC2626" : "#1F5CFF"}"></i></div><div class="nm">переворот при ${d3 >= 0 ? "+" : "−"}${f(P.threshold)} · на ${L.snap_time || ""}</div>`],
-    ].map(([k, v, h]) => `<div class="card"><div class="k">${k}</div><div class="v" style="font-size:${h ? 20 : 24}px">${v}</div></div>`).join("");
+      ["Физлица за 3 дня", `<span class="${cl(d3)}">${sg(d3)}</span><div style="height:6px;background:#E2E8F0;border-radius:3px;margin-top:8px;overflow:hidden"><i style="display:block;height:100%;width:${prog}%;background:${prog >= 100 ? "#DC2626" : "#1F5CFF"}"></i></div><div class="nm">${L.position ? `переворот при ${d3 >= 0 ? "+" : "−"}${f(P.threshold)}` : `вход при ±${f(P.threshold)}`} · на ${L.snap_time || ""}</div>`],
+      d1card,
+    ].map(([k, v, h, a]) => `<div class="card${a ? " hot" : ""}"><div class="k">${k}</div><div class="v" style="font-size:${h ? 20 : 24}px">${v}</div></div>`).join("");
     const tr = (L.trades || []).slice().reverse();
     const wins = tr.filter(t => t.result > 0).length;
     const js = document.getElementById("mx-jstats");
@@ -68,17 +73,18 @@
     if (as) as.textContent = `Обновлено ${tm(L.updated)} · данные каждые 10 минут, 07:00–23:50 МСК`;
     document.getElementById("mx-cards").innerHTML = [
       ["Позиция сейчас", `${pos(L.position || m.position)}<div class="nm" style="margin-top:6px">${L.contract || ""} с ${tm(L.entry_time)} по ${f(L.entry)} · ${pc(L.current)}</div>`, true],
+      d1card,
       ["Изменение физлиц за 3 дня", `<span class="${cl(d3)}">${sg(d3)}</span><div style="height:6px;background:#E2E8F0;border-radius:3px;margin-top:8px;overflow:hidden"><i style="display:block;height:100%;width:${prog}%;background:${prog >= 100 ? "#DC2626" : "#1F5CFF"}"></i></div><div class="nm">порог ${f(P.threshold)} контр. · на ${L.snap_time || ""}</div>`],
       ["С начала наблюдения (12.11.26)", pc(L.total_return ?? m.live_return)],
       ["Итог с 2023 года", pc(m.total)],
       ["Индекс за то же время", pc(m.index_change)],
       ["Макс. просадка", pc(m.maxdd)],
-    ].map(([k, v, h]) => `<div class="card"><div class="k">${k}</div><div class="v" style="font-size:${h ? 20 : 24}px">${v}</div></div>`).join("");
+    ].map(([k, v, h, a]) => `<div class="card${a ? " hot" : ""}"><div class="k">${k}</div><div class="v" style="font-size:${h ? 20 : 24}px">${v}</div></div>`).join("");
     document.getElementById("mx-chart").innerHTML = chart(m.curve, P.live_from) +
       `<div class="nm" style="margin-top:6px">По годам: ${Object.entries(m.by_year).map(([y, v]) => `${y}: <b class="${cl(v)}">${sg(v, 1)}%</b>`).join(" · ")}</div>`;
     document.getElementById("mx-rows").innerHTML = `<tr><th>Дата</th><th class="num">Физлица: лонг</th><th class="num">Шорт</th><th class="num">Чистая позиция</th><th class="num">Изм. за день</th><th class="num">Изм. за 3 дня</th><th>Сигнал</th><th class="num">Индекс</th><th>Позиция стратегии</th></tr>` +
       m.rows.map(r => `<tr><td>${dt(r.date)}${r.intraday ? '<div class="nm">внутри дня</div>' : ""}</td><td class="num">${f(r.long)}</td><td class="num">${f(r.short)}</td>
-        <td class="num"><b>${sg(r.net)}</b></td><td class="num ${cl(r.d1)}">${sg(r.d1)}</td>
+        <td class="num"><b>${sg(r.net)}</b></td><td class="num ${Math.abs(r.d1 || 0) >= AL ? "hl10" : ""}"><span class="${cl(r.d1)}">${sg(r.d1)}</span>${Math.abs(r.d1 || 0) >= AL ? " ⚠" : ""}</td>
         <td class="num ${Math.abs(r.d3 || 0) >= P.threshold ? "hl10" : ""}"><b class="${cl(r.d3)}">${sg(r.d3)}</b></td>
         <td>${r.signal ? pos(r.signal) : ""}</td><td class="num">${f(r.index, 2)}</td><td>${pos(r.pos)}</td></tr>`).join("");
     document.getElementById("mx-flips").innerHTML = `<tr><th>Позиция</th><th>Открыта</th><th class="num">Вход</th><th>Закрыта</th><th class="num">Выход</th><th class="num">Результат</th></tr>` +
