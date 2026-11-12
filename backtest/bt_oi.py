@@ -33,7 +33,8 @@ def mapping():
     rows = table(iss("engines/futures/markets/forts/securities.json",
                      {"iss.only": "securities", "securities.columns": "SECID,ASSETCODE,LOTVOLUME"}), "securities")
     shares = {r["SECID"] for r in table(iss("engines/stock/markets/shares/boards/TQBR/securities.json",
-                                            {"iss.only": "securities", "securities.columns": "SECID"}), "securities")}
+                                            {"iss.only": "securities", "securities.columns": "SECID,SECTYPE"}), "securities")
+              if str(r.get("SECTYPE")) in ("1", "2", "D")}
     m = {}
     for r in rows:
         code, asset = r["SECID"][:2], r["ASSETCODE"]
@@ -154,6 +155,8 @@ def main():
             print("пропуск", code, e)
             continue
         ds = sorted(d for d in oi if d in px)
+        if len(ds) < 60:
+            continue
         pdays = sorted(px)
         pidx = {d: i for i, d in enumerate(pdays)}
         for vname, kind in VARIANTS.items():
