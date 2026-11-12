@@ -1,0 +1,58 @@
+name: Бэктест объёмов
+
+on:
+  workflow_dispatch:
+    inputs:
+      months:
+        description: "Сколько месяцев истории проверять"
+        default: "6"
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      matrix:
+        part: [0, 1, 2, 3, 4, 5, 6]
+    env:
+      MOEX_TOKEN: ${{ secrets.MOEX_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install -q requests certifi numpy
+      - run: python backtest/bt_fetch.py ${{ matrix.part }} 7 ${{ inputs.months }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: part-${{ matrix.part }}
+          path: bt_part_${{ matrix.part }}.npz
+          retention-days: 7
+
+  run:
+    needs: fetch
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install -q numpy
+      - uses: actions/download-artifact@v4
+        with: {path: parts, merge-multiple: true}
+      - name: Расчёт
+        run: |
+          python backtest/bt_run.py parts/*.npz | tee bt_summary.md
+          cat bt_summary.md >> $GITHUB_STEP_SUMMARY
+      - name: Сохранить результат
+        run: |
+          mkdir -p backtest/results
+          cp bt_summary.md backtest/results/summary_$(date -u +%F).md
+          cp bt_trades.csv backtest/results/trades_$(date -u +%F).csv
+          git config user.name "screener-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add backtest/results
+          git commit -m "Бэктест объёмов $(date -u +%F)" || exit 0
+          for i in 1 2 3; do git pull --rebase origin main && git push && break; sleep 5; done
