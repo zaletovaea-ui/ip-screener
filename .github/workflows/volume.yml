@@ -9,7 +9,6 @@ on:
         options: [intraday, nightly]
         default: intraday
   schedule:
-    - cron: "*/15 4-20 * * 1-5"   # каждые 15 минут, 07:00–23:45 МСК, пн–пт
     - cron: "25 21 * * 1-5"       # 00:25 МСК вт–сб: норма объёмов и журнал по закрытому дню
 
 permissions:

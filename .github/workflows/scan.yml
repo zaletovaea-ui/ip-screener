@@ -8,10 +8,11 @@ on:
         type: boolean
         default: false
   schedule:
-    - cron: "5 21 * * 1-5"  # 00:05 МСК вт–сб: дневная свеча закрыта вместе с вечерней сессией
+    - cron: "30 3 * * *"    # 06:30 МСК: проверить, что живое обновление работает (сам скан — в live.yml ночью)
 
 permissions:
   contents: write
+  actions: write
 
 jobs:
   scan:
@@ -24,16 +25,24 @@ jobs:
           python-version: "3.12"
       - run: pip install requests
       - name: Скан
+        if: ${{ github.event_name == 'workflow_dispatch' }}
         env:
           MOEX_TOKEN: ${{ secrets.MOEX_TOKEN }}   # необязательно; без него — публичный ISS
         run: |
           python screener.py
           python -c "import json;j=json.load(open('docs/data/journal.json'));print('Журнал:',j['stats']);[print(s['ticker'],s['side'],s['status'],s.get('current_pct')) for s in j['signals']]"
       - name: Сохранить результат
-        if: ${{ !inputs.dry_run }}
+        if: ${{ github.event_name == 'workflow_dispatch' && !inputs.dry_run }}
         run: |
           git config user.name "screener-bot"
           git config user.email "actions@users.noreply.github.com"
           git add results docs
           git commit -m "Скан $(date -u +%F)" || echo "без изменений"
           git pull --rebase origin main && git push
+      - name: Живое обновление работает?
+        if: ${{ always() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          n=$(gh run list --workflow live.yml --json status --jq '[.[]|select(.status=="in_progress" or .status=="queued")]|length')
+          if [ "$n" = "0" ]; then gh workflow run live.yml --ref main; echo "перезапущено"; fi

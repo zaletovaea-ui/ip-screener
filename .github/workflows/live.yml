@@ -1,0 +1,46 @@
+name: Живое обновление
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: live
+  cancel-in-progress: false
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    env:
+      MOEX_TOKEN: ${{ secrets.MOEX_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install -q requests certifi numpy
+      - name: Норма объёмов из кэша
+        uses: actions/cache/restore@v4
+        with:
+          path: data/vol_profile.json
+          key: vol-profile-${{ github.run_id }}
+          restore-keys: vol-profile-
+      - name: Цикл обновлений
+        run: |
+          git config user.name "screener-bot"
+          git config user.email "actions@users.noreply.github.com"
+          python live_loop.py
+      - name: Сохранить норму объёмов в кэш
+        if: ${{ always() }}
+        uses: actions/cache/save@v4
+        with:
+          path: data/vol_profile.json
+          key: vol-profile-${{ github.run_id }}
+      - name: Перезапуск
+        if: ${{ always() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run live.yml --ref main

@@ -25,15 +25,28 @@
     </svg>`;
   }
 
+  const tm = s => s ? (s.length > 10 ? s.slice(8, 10) + "." + s.slice(5, 7) + " " + s.slice(11) : dt(s)) : "—";
+  function events(L, n) {
+    const ev = ((L && L.events) || []).slice().reverse().slice(0, n);
+    if (!ev.length) return "<tr><td>Сделок пока нет</td></tr>";
+    return `<tr><th>Время</th><th>Действие</th><th>Контракт</th><th class="num">Цена</th><th class="num">Результат</th><th>Причина</th></tr>` +
+      ev.map(e => `<tr><td>${tm(e.time)}</td><td><span class="pill ${e.action.startsWith("Открываем") ? (e.side === "long" ? "buy" : "sell") : "neu"}">${e.action}</span></td>
+        <td>${e.contract || ""}</td><td class="num">${f(e.price)}</td><td class="num ${cl(e.result)}">${e.result != null ? pc(e.result) : ""}</td><td class="cm">${e.reason || ""}</td></tr>`).join("") +
+      (L.position ? `<tr><td colspan="6" class="nm">Сейчас: <b>${L.position === "long" ? "лонг" : "шорт"} ${L.contract}</b> с ${tm(L.entry_time)} по ${f(L.entry)} · цена ${f(L.last_price)} (${L.last_time}) · <b class="${cl(L.current)}">${pc(L.current)}</b> · обновлено ${tm(L.updated)}</td></tr>` : "");
+  }
+
   window.ipMxRender = (m) => {
     if (!m) return;
-    const P = m.params, c = m.current || {};
+    const P = m.params, L = m.live_journal || {};
     const last = m.rows[0] || {};
-    const prog = Math.min(100, Math.abs(last.d3 || 0) / P.threshold * 100);
+    const d3 = L.d3_now ?? last.d3;
+    const prog = Math.min(100, Math.abs(d3 || 0) / P.threshold * 100);
+    document.getElementById("mx-events").innerHTML = events(L, 30);
+    const top = document.getElementById("mx-events-top"); if (top) top.innerHTML = events(L, 4);
     document.getElementById("mx-cards").innerHTML = [
-      ["Позиция сейчас", `${pos(m.position)}<div class="nm" style="margin-top:6px">с ${dt(c.start)} по ${f(c.entry, 0)} · ${pc(c.current)}</div>`, true],
-      ["Изменение физлиц за 3 дня", `<span class="${cl(last.d3)}">${sg(last.d3)}</span><div style="height:6px;background:#E2E8F0;border-radius:3px;margin-top:8px;overflow:hidden"><i style="display:block;height:100%;width:${prog}%;background:${prog >= 100 ? "#DC2626" : "#1F5CFF"}"></i></div><div class="nm">порог ${f(P.threshold)} контр.${m.pending ? " · завтра переворот: " + (m.pending === "long" ? "лонг" : "шорт") : ""}</div>`],
-      ["С начала наблюдения (12.11.26)", pc(m.live_return)],
+      ["Позиция сейчас", `${pos(L.position || m.position)}<div class="nm" style="margin-top:6px">${L.contract || ""} с ${tm(L.entry_time)} по ${f(L.entry)} · ${pc(L.current)}</div>`, true],
+      ["Изменение физлиц за 3 дня", `<span class="${cl(d3)}">${sg(d3)}</span><div style="height:6px;background:#E2E8F0;border-radius:3px;margin-top:8px;overflow:hidden"><i style="display:block;height:100%;width:${prog}%;background:${prog >= 100 ? "#DC2626" : "#1F5CFF"}"></i></div><div class="nm">порог ${f(P.threshold)} контр. · на ${L.snap_time || ""}</div>`],
+      ["С начала наблюдения (12.11.26)", pc(L.total_return ?? m.live_return)],
       ["Итог с 2023 года", pc(m.total)],
       ["Индекс за то же время", pc(m.index_change)],
       ["Макс. просадка", pc(m.maxdd)],
@@ -51,6 +64,7 @@
         <td class="num ${cl(t.result ?? t.current)}">${pc(t.result ?? t.current)}</td></tr>`).join("");
     document.getElementById("mx-rules").textContent =
       `Правило: если чистая позиция физлиц во фьючерсе MX за ${P.window} торговых дня выросла на ${f(P.threshold)} контрактов и больше — стоим в шорте; снизилась на ${f(P.threshold)} и больше — в лонге; иначе держим текущую позицию. ` +
-      `Смена позиции — по открытию следующего дня. Результат по индексу Мосбиржи, с учётом 0,03% на каждый переворот. До ${dt(P.live_from)} — расчёт на истории, с ${dt(P.live_from)} — наблюдение.`;
+      `С ${dt(P.live_from)} (наблюдение) переворот делается сразу внутри дня, как только изменение за 3 дня (включая сегодня) пересекает порог, по текущей цене ближнего фьючерса MX; данные обновляются каждые 10 минут. ` +
+      `График и итог «с 2023 года» — расчёт на истории: смена позиции по открытию следующего дня, по индексу Мосбиржи, 0,03% на переворот.`;
   };
 })();
