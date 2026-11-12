@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-12 23:22",
+ "updated": "2026-11-12 23:32",
  "params": {
   "window": 3,
   "threshold": 10000,
@@ -509,13 +509,13 @@
   {
    "date": "2026-11-12",
    "intraday": true,
-   "net": 22784,
-   "d1": 9122,
-   "d3": -2871,
-   "long": 124017,
-   "short": 101233,
-   "long_num": 5018,
-   "short_num": 3398,
+   "net": 22944,
+   "d1": 9282,
+   "d3": -2711,
+   "long": 123881,
+   "short": 100937,
+   "long_num": 5014,
+   "short_num": 3393,
    "index": 2512.81,
    "pos": 1,
    "signal": null
@@ -5910,10 +5910,10 @@
   ]
  ],
  "live_journal": {
-  "position": "long",
+  "position": null,
   "contract": "MXZ6",
-  "entry": 249000,
-  "entry_time": "2026-11-12 открытие",
+  "entry": null,
+  "entry_time": null,
   "events": [
    {
     "time": "2026-11-12 09:00",
@@ -5922,17 +5922,38 @@
     "price": 249000,
     "contract": "MXZ6",
     "reason": "старт наблюдения: физлица за 3 дня сократили позицию на 18 716 контр."
+   },
+   {
+    "time": "2026-11-12 23:23",
+    "action": "Закрываем лонг MX вручную",
+    "side": "long",
+    "price": 250125.0,
+    "contract": "MXZ6",
+    "result": 0.45,
+    "reason": "вижу смену по ОИ на росте Индекса, попробуем выйти"
    }
   ],
-  "trades": [],
-  "last_price": 250125,
-  "last_time": "23:22",
+  "trades": [
+   {
+    "side": "long",
+    "contract": "MXZ6",
+    "open_time": "2026-11-12 открытие",
+    "open_price": 249000,
+    "close_time": "2026-11-12 23:23",
+    "close_price": 250125.0,
+    "result": 0.45,
+    "manual": true
+   }
+  ],
+  "last_price": 250075,
+  "last_time": "23:32",
   "contract_now": "MXZ6",
-  "current": 0.45,
-  "d3_now": -2871,
-  "snap_time": "23:20",
-  "closed_return": 0.0,
+  "current": null,
+  "d3_now": -2711,
+  "snap_time": "23:30",
+  "closed_return": 0.45,
   "total_return": 0.45,
-  "updated": "2026-11-12 23:22"
+  "updated": "2026-11-12 23:32",
+  "blocked": null
  }
 }
