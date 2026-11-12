@@ -1,2 +1,3 @@
 .ca-bundle.pem
 /data/
+__pycache__/
