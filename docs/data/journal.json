@@ -592,11 +592,108 @@
    "last_date": "2026-11-12",
    "days": 1,
    "last_time": "23:51"
+  },
+  {
+   "id": "2026-11-12-NLMK-sell-ta",
+   "strategy": "ta",
+   "ticker": "NLMK",
+   "name": "НЛМК ао",
+   "side": "sell",
+   "opened": "2026-11-12",
+   "opened_at": "2026-11-12 23:59",
+   "entry": 76.6,
+   "stop": 77.366,
+   "target": 73.11,
+   "stop_pct": -1.0,
+   "target_pct": 4.6,
+   "rating": "⭐⭐",
+   "comment": "сопротивление + ниже EMA200",
+   "signals": [
+    "у сопротивления 76.60 (2 касания, до уровня 0.0%)",
+    "пробой EMA200 77.56 вниз, 3 закрытия ниже"
+   ],
+   "status": "открыт",
+   "current_pct": 0.0,
+   "last_price": 76.6,
+   "last_date": "2026-11-12",
+   "days": 0
+  },
+  {
+   "id": "2026-11-12-MTSS-buy-ta",
+   "strategy": "ta",
+   "ticker": "MTSS",
+   "name": "МТС-ао",
+   "side": "buy",
+   "opened": "2026-11-12",
+   "opened_at": "2026-11-12 23:59",
+   "entry": 182.4,
+   "stop": 177.6555,
+   "target": 218.88,
+   "stop_pct": -2.6,
+   "target_pct": 20.0,
+   "rating": "⭐",
+   "comment": "пробой на объёме",
+   "signals": [
+    "пробой сопротивления 179.45 2026-11-12 на объёме ×2.0"
+   ],
+   "status": "открыт",
+   "current_pct": 0.0,
+   "last_price": 182.4,
+   "last_date": "2026-11-12",
+   "days": 0
+  },
+  {
+   "id": "2026-11-12-VTBR-buy-ta",
+   "strategy": "ta",
+   "ticker": "VTBR",
+   "name": "ВТБ ао",
+   "side": "buy",
+   "opened": "2026-11-12",
+   "opened_at": "2026-11-12 23:59",
+   "entry": 61.99,
+   "stop": 58.4669,
+   "target": 74.388,
+   "stop_pct": -5.7,
+   "target_pct": 20.0,
+   "rating": "⭐",
+   "comment": "пробой на объёме",
+   "signals": [
+    "пробой сопротивления 59.06 2026-11-12 на объёме ×6.9"
+   ],
+   "status": "открыт",
+   "current_pct": 0.0,
+   "last_price": 61.99,
+   "last_date": "2026-11-12",
+   "days": 0
+  },
+  {
+   "id": "2026-11-12-VTBR-buy-momentum",
+   "strategy": "momentum",
+   "ticker": "VTBR",
+   "name": "ВТБ ао",
+   "side": "buy",
+   "opened": "2026-11-12",
+   "opened_at": "2026-11-12 23:59",
+   "entry": 61.99,
+   "stop": 57.7399,
+   "target": 70.4903,
+   "stop_pct": -6.9,
+   "target_pct": 13.7,
+   "rating": "🚀",
+   "comment": "Импульс +6.6% на объёме ×6.9",
+   "signals": [
+    "рост +6.6% за день — первый за 20 дней, объём ×6.9"
+   ],
+   "status": "открыт",
+   "current_pct": 0.0,
+   "last_price": 61.99,
+   "last_date": "2026-11-12",
+   "days": 0
   }
  ],
  "stats": {
-  "total": 22,
-  "open": 12,
+  "total": 26,
+  "open": 16,
   "closed": 10,
   "win_rate": 0.0,
   "avg_result": -1.88,
@@ -608,8 +705,8 @@
   "win_rate_sell": 0.0,
   "by_strategy": {
    "ta": {
-    "total": 22,
-    "open": 12,
+    "total": 25,
+    "open": 15,
     "closed": 10,
     "win_rate": 0.0,
     "avg_result": -1.88,
@@ -621,12 +718,12 @@
     "win_rate_sell": 0.0
    },
    "momentum": {
-    "total": 0,
-    "open": 0,
+    "total": 1,
+    "open": 1,
     "closed": 0
    }
   }
  },
- "updated_utc": "2026-11-12 02:13",
+ "updated_utc": "2026-11-12 21:13",
  "updated_live": "2026-11-12 23:51"
 }

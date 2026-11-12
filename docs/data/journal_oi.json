@@ -25,7 +25,9 @@
    "stop_pct": -4.3,
    "best": 38.83,
    "last_price": 39.34,
-   "current_pct": -1.31
+   "current_pct": -1.31,
+   "processed": "2026-11-12",
+   "last_date": "2026-11-12"
   },
   {
    "ref_price": 0.5273,
@@ -50,9 +52,11 @@
    "stop": 0.496504,
    "days": 0,
    "stop_pct": -6.1,
-   "best": 0.529,
+   "best": 0.55,
    "last_price": 0.55,
-   "current_pct": 3.97
+   "current_pct": 3.97,
+   "processed": "2026-11-12",
+   "last_date": "2026-11-12"
   },
   {
    "ref_price": 298.51,
@@ -79,10 +83,12 @@
    "stop_pct": -1.8,
    "best": 298.49,
    "last_price": 298.79,
-   "current_pct": -0.1
+   "current_pct": -0.1,
+   "processed": "2026-11-12",
+   "last_date": "2026-11-12"
   }
  ],
- "updated_night": "2026-11-12 15:18",
+ "updated_night": "2026-11-13 00:14",
  "stats": {
   "total": 3,
   "open": 3,
