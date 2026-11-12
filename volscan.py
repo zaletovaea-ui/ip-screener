@@ -119,7 +119,8 @@ def trading_dates(n):
     frm = till - dt.timedelta(days=n * 2 + 10)
     rows = table(iss("engines/stock/markets/index/boards/SNDX/securities/IMOEX/candles.json",
                      {"interval": 24, "from": frm.isoformat(), "till": till.isoformat()}), "candles")
-    dates = sorted({str(r["begin"])[:10] for r in rows})
+    # выходные сессии (сб/вс) с малыми оборотами в норму не берём
+    dates = sorted({str(r["begin"])[:10] for r in rows if dt.date.fromisoformat(str(r["begin"])[:10]).weekday() < 5})
     today = msk_now().strftime("%Y-%m-%d")
     if msk_now().strftime("%H:%M") < "23:55":
         dates = [d for d in dates if d < today]
@@ -137,7 +138,7 @@ def update_profile(universe):
             if t in universe and bars:
                 prof["data"].setdefault(t, {})[d] = summarize(bars)
         prof["days"].append(d)
-    prof["days"] = sorted(set(prof["days"]))[-(V["norm_days"] + 5):]
+    prof["days"] = sorted(d for d in set(prof["days"]) if dt.date.fromisoformat(d).weekday() < 5)[-(V["norm_days"] + 5):]
     keep = set(prof["days"])
     for t in list(prof["data"]):
         prof["data"][t] = {d: v for d, v in prof["data"][t].items() if d in keep}
