@@ -96,18 +96,17 @@
     const L = m && m.live_journal;
     if (!L || !L.position) return [];
     const buy = L.position === "long", e = L.last_price || L.entry, P = m.params;
-    const stop = buy ? e * 0.98 : e * 1.02;
     const d3 = L.d3_now;
     return [{
       ticker: L.contract, name: "Фьючерс на индекс Мосбиржи MX", side: buy ? "buy" : "sell", strategy: "mx",
       date: (L.entry_time || "").slice(0, 10), top: true, count: 1, rating: "",
-      close: e, entry_limit: e, stop, take1: buy ? e * 1.04 : e * 0.96, take2: buy ? e * 1.06 : e * 0.94,
+      close: L.entry, last: e, entry_limit: e, stop: null, take1: null, take2: null,
       comment: `${buy ? "лонг" : "шорт"} против физлиц`,
       idea: [
         `Физлица за 3 дня ${d3 < 0 ? "сократили" : "нарастили"} чистую позицию во фьючерсе MX на ${Math.abs(d3 || 0).toLocaleString("ru-RU")} контрактов${Math.abs(d3 || 0) >= P.threshold ? " — это выше нашего порога 10 000" : ""}.`,
         `Работаем против толпы: физлица ${buy ? "продают индекс" : "покупают индекс"}, мы — ${buy ? "в лонге" : "в шорте"}. На истории с 2023 года такой подход дал +${Math.round(m.total)}% при просадке ${Math.abs(m.maxdd).toLocaleString("ru-RU", { maximumFractionDigits: 1 })}%.`,
       ],
-      risk: `основной выход — переворот позиции, когда физлица развернутся на 10 000 контрактов за 3 дня. Стоп ${Math.round(stop).toLocaleString("ru-RU")} (2%) — страховка на резкое движение.`,
+      risk: "физлица могут оказаться правы на сильной новости; стоп не ставим — на истории он ухудшал результат, выходим только переворотом.",
       signals: ["MX против физлиц"],
     }];
   };
