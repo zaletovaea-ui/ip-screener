@@ -56,14 +56,14 @@
     if (js) js.innerHTML = [
       ["Закрыто сделок", f(tr.length)],
       ["Прибыльных", tr.length ? `${wins} из ${tr.length}` : "—"],
-      ["Закрытые сделки, итог", pc(L.closed_return)],
-      ["Вместе с открытой", pc(L.total_return)],
+      ["Итог закрытых сделок", `<span class="${cl(L.closed_return)}">${pc(L.closed_return)}</span>`],
+      ["Итог с учётом открытой", `<span class="${cl(L.total_return)}">${pc(L.total_return)}</span>`],
     ].map(([k, v]) => `<div class="card"><div class="k">${k}</div><div class="v">${v}</div></div>`).join("");
     const tt = document.getElementById("mx-trades");
-    if (tt) tt.innerHTML = `<tr><th>Позиция</th><th>Контракт</th><th>Открыта</th><th class="num">Вход</th><th>Закрыта</th><th class="num">Выход</th><th class="num">Результат</th></tr>` +
-      (L.position ? `<tr><td>${pos(L.position)} <span class="pill tgt">открыта</span></td><td>${L.contract}</td><td>${tm(L.entry_time)}</td><td class="num">${f(L.entry)}</td><td>—</td><td class="num">${f(L.last_price)}</td><td class="num ${cl(L.current)}">${pc(L.current)}</td></tr>` : "") +
+    if (tt) tt.innerHTML = `<tr><th>Позиция</th><th>Контракт</th><th>Открыта</th><th class="num">Вход</th><th>Закрыта</th><th class="num">Выход / сейчас</th><th class="num">Результат</th></tr>` +
+      (L.position ? `<tr><td>${pos(L.position)} <span class="pill tgt">открыта</span></td><td>${L.contract}</td><td>${tm(L.entry_time)}</td><td class="num">${f(L.entry)}</td><td class="nm">ещё открыта</td><td class="num">${f(L.last_price)}<div class="nm">сейчас, ${L.last_time || ""}</div></td><td class="num ${cl(L.current)}">${pc(L.current)}</td></tr>` : "") +
       (tr.map(t => `<tr><td>${pos(t.side)}</td><td>${t.contract || ""}</td><td>${tm(t.open_time)}</td><td class="num">${f(t.open_price)}</td><td>${tm(t.close_time)}</td><td class="num">${f(t.close_price)}</td><td class="num ${cl(t.result)}">${pc(t.result)}</td></tr>`).join("")
-        || `<tr><td colspan="7" class="nm">Закрытых сделок пока нет — первая закроется при перевороте.</td></tr>`);
+        || `<tr><td colspan="7" class="nm">Закрытых сделок пока нет — текущая закроется при перевороте.</td></tr>`);
     const as = document.getElementById("asof-mx");
     if (as) as.textContent = `Обновлено ${tm(L.updated)} · данные каждые 10 минут, 07:00–23:50 МСК`;
     document.getElementById("mx-cards").innerHTML = [
