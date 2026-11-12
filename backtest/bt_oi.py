@@ -77,15 +77,23 @@ def z(series, i, k=LOOK):
     return (series[i] - np.mean(hist)) / sd if sd > 0 else None
 
 
-VARIANTS = {
-    "1. Скачок за день (z ≥ 2 к обычным изменениям)": "z1",
-    "2. Доля: изменение ≥ 5% от позиции физлиц": "rel",
-    "3. Накопление за 3 дня (z ≥ 2)": "z3",
-    "4. Толпа: число физлиц в лонге/шорте (z ≥ 2)": "crowd",
+SIGNALS = {
+    "доля ≥3%": dict(kind="rel", thr=0.03),
+    "доля ≥5%": dict(kind="rel", thr=0.05),
+    "доля ≥10%": dict(kind="rel", thr=0.10),
+    "доля ≥5% + против цены": dict(kind="rel", thr=0.05, against_price=True),
+    "доля ≥5% + фильтр рынка": dict(kind="rel", thr=0.05, market=True),
+    "доля ≥5% + против цены + рынок": dict(kind="rel", thr=0.05, against_price=True, market=True),
 }
+EXITS = {
+    "A: без тейка, 10 дн.": dict(take=None, max_days=10),
+    "F: без тейка, 15 дн.": dict(take=None, max_days=15),
+    "E: тейк 8%, 15 дн.": dict(take=0.08, max_days=15),
+}
+VARIANTS = {f"{sn} | {en}": (sp, ep) for sn, sp in SIGNALS.items() for en, ep in EXITS.items()}
 
 
-def signals(ds, oi, kind):
+def signals(ds, oi, kind, thr=0.05):
     net = np.array([oi[d]["FIZ"]["pos"] for d in ds], dtype=float)
     gross = np.array([oi[d]["FIZ"]["pos_long"] - oi[d]["FIZ"]["pos_short"] for d in ds], dtype=float)
     nl = np.array([oi[d]["FIZ"]["pos_long_num"] for d in ds], dtype=float)
@@ -104,7 +112,7 @@ def signals(ds, oi, kind):
             side = None if zz is None else ("sell" if zz >= ZK else "buy" if zz <= -ZK else None)
         elif kind == "rel":
             r = d1[i] / gross[i - 1] if gross[i - 1] else 0
-            side = "sell" if r >= 0.05 else "buy" if r <= -0.05 else None
+            side = "sell" if r >= thr else "buy" if r <= -thr else None
         elif kind == "crowd":
             zl, zs = z(dl, i), z(dsh, i)
             if zl is not None and zl >= ZK and (zs is None or zs < ZK):
@@ -116,8 +124,8 @@ def signals(ds, oi, kind):
     return out
 
 
-def trade(px, days, i, side):
-    """Вход по открытию дня days[i+1]; стоп 1.5 ATR; трейлинг 1.4% с 5-го дня; 10 дней."""
+def trade(px, days, i, side, take=None, max_days=MAX_DAYS):
+    """Вход по открытию дня days[i+1]; стоп 1.5 ATR; трейлинг 1.4% с 5-го дня; тейк (доля) и срок — параметры."""
     if i + 1 >= len(days):
         return None
     buy = side == "buy"
@@ -128,12 +136,16 @@ def trade(px, days, i, side):
     stop = e - STOP_ATR * atr if buy else e + STOP_ATR * atr
     res = lambda p: ((p / e - 1) if buy else (1 - p / e)) * 100  # noqa: E731
     best, trailing = e, False
+    tk = (e * (1 + take) if buy else e * (1 - take)) if take else None
     for n, k in enumerate(range(i + 1, len(days)), 1):
         c = px[days[k]]
         if (buy and c["l"] <= stop) or (not buy and c["h"] >= stop):
             p = min(stop, c["o"]) if buy else max(stop, c["o"])
             return dict(exit_date=days[k], days=n, exit="трейлинг" if trailing else "стоп", result=res(p))
-        if n >= MAX_DAYS:
+        if tk and ((buy and c["h"] >= tk) or (not buy and c["l"] <= tk)):
+            p = max(tk, c["o"]) if buy else min(tk, c["o"])
+            return dict(exit_date=days[k], days=n, exit="тейк", result=res(p))
+        if n >= max_days:
             return dict(exit_date=days[k], days=n, exit="истёк", result=res(c["c"]))
         best = max(best, c["c"]) if buy else min(best, c["c"])
         if n >= TRAIL_FROM:
@@ -143,7 +155,17 @@ def trade(px, days, i, side):
     return None
 
 
+REG = {}
+
+
 def main():
+    global REG
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from bt_run2 import market_regime
+    try:
+        REG = market_regime()
+    except Exception as e:  # noqa
+        print("индекс:", e)
     m = mapping()
     print("Фьючерсы на акции:", len(m), sorted(f"{k}→{v[0]}" for k, v in m.items()))
     test_from = (dt.date.today() - dt.timedelta(days=int(YEARS * 365))).isoformat()
@@ -159,12 +181,24 @@ def main():
             continue
         pdays = sorted(px)
         pidx = {d: i for i, d in enumerate(pdays)}
-        for vname, kind in VARIANTS.items():
+        sig_cache = {}
+        for vname, (sp, ep) in VARIANTS.items():
+            key = (sp["kind"], sp["thr"])
+            if key not in sig_cache:
+                sig_cache[key] = signals(ds, oi, sp["kind"], sp["thr"])
             busy = ""
-            for d, (side, delta) in sorted(signals(ds, oi, kind).items()):
+            for d, (side, delta) in sorted(sig_cache[key].items()):
                 if d < test_from or d <= busy:
                     continue
-                t = trade(px, pdays, pidx[d], side)
+                i = pidx[d]
+                if sp.get("against_price") and i > 0:
+                    chg = px[d]["c"] / px[pdays[i - 1]]["c"] - 1
+                    if not ((side == "sell" and chg < 0) or (side == "buy" and chg > 0)):
+                        continue
+                if sp.get("market") and d in REG:
+                    if (side == "buy" and not REG[d]) or (side == "sell" and REG[d]):
+                        continue
+                t = trade(px, pdays, i, side, ep["take"], ep["max_days"])
                 if not t:
                     continue
                 trades.append(dict(variant=vname, ticker=share, code=code, side=side, date=d,
@@ -172,8 +206,8 @@ def main():
                 busy = t["exit_date"]
     ndays = YEARS * 250
     print(f"\nПериод: {test_from} … {dt.date.today()}\n")
-    print("| Вариант | Сторона | Сделок | В месяц | Прибыльных | Средний | Медиана | Профит-фактор | Ср. дней |")
-    print("|---|---|---|---|---|---|---|---|---|")
+    print("| Вариант | Сторона | Сделок | В месяц | Прибыльных | Средний | Медиана | Профит-фактор | Ср. дней | Тейк/стоп/трейл/срок |")
+    print("|---|---|---|---|---|---|---|---|---|---|")
     for v in VARIANTS:
         for sd in ("buy", "sell", "all"):
             ts = [t for t in trades if t["variant"] == v and (sd == "all" or t["side"] == sd)]
@@ -182,18 +216,15 @@ def main():
             r = np.array([t["result"] for t in ts])
             pf = r[r > 0].sum() / -r[r < 0].sum() if (r < 0).any() else float("inf")
             print(f"| {v} | {sd} | {len(ts)} | {len(ts) / ndays * 21:.1f} | {np.mean(r > 0) * 100:.0f}% | {r.mean():+.2f}% | "
-                  f"{np.median(r):+.2f}% | {pf:.2f} | {np.mean([t['days'] for t in ts]):.1f} |")
+                  f"{np.median(r):+.2f}% | {pf:.2f} | {np.mean([t['days'] for t in ts]):.1f} | "
+                  f"{sum(t['exit'] == 'тейк' for t in ts)}/{sum(t['exit'] == 'стоп' for t in ts)}/{sum(t['exit'] == 'трейлинг' for t in ts)}/{sum(t['exit'] == 'истёк' for t in ts)} |")
+    print()
     for v in VARIANTS:
         y = defaultdict(list)
         for t in trades:
             if t["variant"] == v:
-                y[t["date"][:4] + ("-H1" if t["date"][5:7] <= "06" else "-H2")].append(t["result"])
-        print(v[:2], "по полугодиям (сделок, средний %):", {k: (len(x), round(float(np.mean(x)), 2)) for k, x in sorted(y.items())})
-    best = defaultdict(list)
-    for t in trades:
-        if t["variant"].startswith("1"):
-            best[t["ticker"]].append(t["result"])
-    print("Вариант 1 по бумагам (сделок, средний %):", {k: (len(x), round(float(np.mean(x)), 2)) for k, x in sorted(best.items(), key=lambda kv: -len(kv[1]))[:15]})
+                y[t["date"][:4] + ("-1" if t["date"][5:7] <= "06" else "-2")].append(t["result"])
+        print(v, "| полугодия (сделок, средний %):", {k: (len(x), round(float(np.mean(x)), 2)) for k, x in sorted(y.items())})
 
 
 if __name__ == "__main__":
