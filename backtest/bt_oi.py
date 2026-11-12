@@ -78,17 +78,15 @@ def z(series, i, k=LOOK):
 
 
 SIGNALS = {
-    "доля ≥3%": dict(kind="rel", thr=0.03),
-    "доля ≥5%": dict(kind="rel", thr=0.05),
     "доля ≥10%": dict(kind="rel", thr=0.10),
-    "доля ≥5% + против цены": dict(kind="rel", thr=0.05, against_price=True),
-    "доля ≥5% + фильтр рынка": dict(kind="rel", thr=0.05, market=True),
-    "доля ≥5% + против цены + рынок": dict(kind="rel", thr=0.05, against_price=True, market=True),
+    "деньги ≥100 млн": dict(kind="rel", thr=0.0, rub=100e6),
+    "деньги ≥150 млн": dict(kind="rel", thr=0.0, rub=150e6),
+    "деньги ≥300 млн": dict(kind="rel", thr=0.0, rub=300e6),
+    "деньги ≥150 млн И доля ≥10%": dict(kind="rel", thr=0.10, rub=150e6),
+    "деньги ≥150 млн ИЛИ доля ≥10%": dict(kind="rel", thr=0.10, rub=150e6, any=True),
 }
 EXITS = {
-    "A: без тейка, 10 дн.": dict(take=None, max_days=10),
-    "F: без тейка, 15 дн.": dict(take=None, max_days=15),
-    "E: тейк 8%, 15 дн.": dict(take=0.08, max_days=15),
+    "без тейка, 10 дн.": dict(take=None, max_days=10),
 }
 VARIANTS = {f"{sn} | {en}": (sp, ep) for sn, sp in SIGNALS.items() for en, ep in EXITS.items()}
 
@@ -183,14 +181,26 @@ def main():
         pidx = {d: i for i, d in enumerate(pdays)}
         sig_cache = {}
         for vname, (sp, ep) in VARIANTS.items():
-            key = (sp["kind"], sp["thr"])
+            key = ("rel", 1e-9)
             if key not in sig_cache:
-                sig_cache[key] = signals(ds, oi, sp["kind"], sp["thr"])
+                sig_cache[key] = signals(ds, oi, "rel", 1e-9)
             busy = ""
             for d, (side, delta) in sorted(sig_cache[key].items()):
                 if d < test_from or d <= busy:
                     continue
                 i = pidx[d]
+                prv = ds[ds.index(d) - 1]
+                gross = oi[prv]["FIZ"]["pos_long"] - oi[prv]["FIZ"]["pos_short"]
+                relv = abs(delta) / gross if gross else 0
+                rubv = abs(delta) * lot * px[d]["c"]
+                ok_rel = relv >= sp["thr"] if sp["thr"] > 0 else None
+                ok_rub = rubv >= sp["rub"] if sp.get("rub") else None
+                if sp.get("any"):
+                    ok = bool(ok_rel) or bool(ok_rub)
+                else:
+                    ok = all(x for x in (ok_rel, ok_rub) if x is not None)
+                if not ok:
+                    continue
                 if sp.get("against_price") and i > 0:
                     chg = px[d]["c"] / px[pdays[i - 1]]["c"] - 1
                     if not ((side == "sell" and chg < 0) or (side == "buy" and chg > 0)):
@@ -219,6 +229,12 @@ def main():
                   f"{np.median(r):+.2f}% | {pf:.2f} | {np.mean([t['days'] for t in ts]):.1f} | "
                   f"{sum(t['exit'] == 'тейк' for t in ts)}/{sum(t['exit'] == 'стоп' for t in ts)}/{sum(t['exit'] == 'трейлинг' for t in ts)}/{sum(t['exit'] == 'истёк' for t in ts)} |")
     print()
+    for v in VARIANTS:
+        c = defaultdict(list)
+        for t in trades:
+            if t["variant"] == v:
+                c[t["ticker"]].append(t["result"])
+        print(v, "| бумаг:", len(c), "| чаще всего:", {k: (len(x), round(float(np.mean(x)), 2)) for k, x in sorted(c.items(), key=lambda kv: -len(kv[1]))[:8]})
     for v in VARIANTS:
         y = defaultdict(list)
         for t in trades:
