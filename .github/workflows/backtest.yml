@@ -6,12 +6,20 @@ on:
       months:
         description: "Сколько месяцев истории проверять"
         default: "6"
+      script:
+        description: "Какой расчёт: bt_run.py (вход внутри дня) или bt_run2.py (сигнал по дню, вход на следующий день)"
+        default: "bt_run.py"
+      reuse_run:
+        description: "Номер прошлого запуска, чьи загруженные данные взять (пусто — скачать заново)"
+        default: ""
 
 permissions:
   contents: write
+  actions: read
 
 jobs:
   fetch:
+    if: ${{ inputs.reuse_run == '' }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
     strategy:
@@ -33,24 +41,30 @@ jobs:
 
   run:
     needs: fetch
+    if: ${{ always() && (needs.fetch.result == 'success' || needs.fetch.result == 'skipped') }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
-      - run: pip install -q numpy
+      - run: pip install -q numpy requests
       - uses: actions/download-artifact@v4
-        with: {path: parts, merge-multiple: true}
+        with:
+          path: parts
+          merge-multiple: true
+          run-id: ${{ inputs.reuse_run || github.run_id }}
+          github-token: ${{ github.token }}
       - name: Расчёт
         run: |
-          python backtest/bt_run.py parts/*.npz | tee bt_summary.md
+          python backtest/${{ inputs.script }} parts/*.npz | tee bt_summary.md
           cat bt_summary.md >> $GITHUB_STEP_SUMMARY
       - name: Сохранить результат
         run: |
           mkdir -p backtest/results
-          cp bt_summary.md backtest/results/summary_$(date -u +%F).md
-          cp bt_trades.csv backtest/results/trades_$(date -u +%F).csv
+          N=$(basename ${{ inputs.script }} .py)
+          cp bt_summary.md backtest/results/summary_${N}_$(date -u +%F).md
+          cp bt*_trades.csv backtest/results/trades_${N}_$(date -u +%F).csv
           git config user.name "screener-bot"
           git config user.email "actions@users.noreply.github.com"
           git add backtest/results
