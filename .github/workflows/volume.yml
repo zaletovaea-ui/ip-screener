@@ -53,6 +53,6 @@ jobs:
         run: |
           git config user.name "screener-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add docs/data/volume.json docs/data/journal_volume.json
+          git add -A docs/data
           git commit -m "Объёмы $MODE $(date -u +%F' '%H:%M)" || exit 0
           for i in 1 2 3; do git pull --rebase origin main && git push && break; sleep 5; done
