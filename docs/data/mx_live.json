@@ -14,13 +14,13 @@
   }
  ],
  "trades": [],
- "last_price": 250225,
- "last_time": "20:54",
+ "last_price": 250350,
+ "last_time": "21:04",
  "contract_now": "MXZ6",
- "current": 0.49,
- "d3_now": -5011,
- "snap_time": "20:50",
+ "current": 0.54,
+ "d3_now": -4966,
+ "snap_time": "21:00",
  "closed_return": 0.0,
- "total_return": 0.49,
- "updated": "2026-11-12 20:54"
+ "total_return": 0.54,
+ "updated": "2026-11-12 21:04"
 }
