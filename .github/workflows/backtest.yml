@@ -24,7 +24,7 @@ jobs:
     timeout-minutes: 120
     strategy:
       matrix:
-        part: [0, 1, 2, 3, 4, 5, 6]
+        part: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
     env:
       MOEX_TOKEN: ${{ secrets.MOEX_TOKEN }}
     steps:
@@ -32,7 +32,7 @@ jobs:
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
       - run: pip install -q requests certifi numpy
-      - run: python backtest/bt_fetch.py ${{ matrix.part }} 7 ${{ inputs.months }}
+      - run: python backtest/bt_fetch.py ${{ matrix.part }} 12 ${{ inputs.months }}
       - uses: actions/upload-artifact@v4
         with:
           name: part-${{ matrix.part }}
