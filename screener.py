@@ -56,32 +56,8 @@ UNIVERSE_FALLBACK = [
     "ASTR", "UPRO", "LEAS", "SVCB", "UGLD", "MTLR", "RTKM", "SELG", "FLOT", "GAZP",
 ]
 
-TOKEN = os.environ.get("MOEX_TOKEN", "").strip()
-BASE = "https://apim.moex.com/iss" if TOKEN else "https://iss.moex.com/iss"
-S = requests.Session()
-if TOKEN:
-    S.headers["Authorization"] = f"Bearer {TOKEN}"
-S.headers["User-Agent"] = "ip-screener/1.0"
+from moexapi import TOKEN, BASE, S, iss, table  # noqa: E402
 
-
-def iss(path, params=None):
-    params = dict(params or {})
-    params.setdefault("iss.meta", "off")
-    for attempt in range(4):
-        try:
-            r = S.get(f"{BASE}/{path}", params=params, timeout=(10, 20))
-            r.raise_for_status()
-            return r.json()
-        except Exception as e:  # noqa
-            if attempt == 3:
-                raise
-            time.sleep(2 * (attempt + 1))
-
-
-def table(js, name):
-    t = js.get(name, {})
-    cols = t.get("columns", [])
-    return [dict(zip(cols, row)) for row in t.get("data", [])]
 
 
 # ---------------- Загрузка данных ----------------

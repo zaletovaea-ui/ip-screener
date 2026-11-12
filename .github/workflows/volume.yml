@@ -1,0 +1,58 @@
+name: Аномальные объёмы
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "intraday — поиск сигналов, nightly — обновить норму объёмов и журнал"
+        type: choice
+        options: [intraday, nightly]
+        default: intraday
+  schedule:
+    - cron: "*/15 4-20 * * 1-5"   # каждые 15 минут, 07:00–23:45 МСК, пн–пт
+    - cron: "25 21 * * 1-5"       # 00:25 МСК вт–сб: норма объёмов и журнал по закрытому дню
+
+permissions:
+  contents: write
+
+concurrency:
+  group: volume
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      MOEX_TOKEN: ${{ secrets.MOEX_TOKEN }}
+      MODE: ${{ inputs.mode || (github.event.schedule == '25 21 * * 1-5' && 'nightly') || 'intraday' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q requests certifi
+      - name: Норма объёмов из кэша
+        uses: actions/cache/restore@v4
+        with:
+          path: data/vol_profile.json
+          key: vol-profile-${{ github.run_id }}
+          restore-keys: vol-profile-
+      - name: Профиль пуст — строим (первый запуск)
+        run: |
+          if [ ! -s data/vol_profile.json ] && [ "$MODE" = "intraday" ]; then python volscan.py nightly; echo "BUILT=1" >> $GITHUB_ENV; fi
+      - name: Расчёт
+        run: python volscan.py $MODE
+      - name: Сохранить норму в кэш
+        if: ${{ env.MODE == 'nightly' || env.BUILT == '1' }}
+        uses: actions/cache/save@v4
+        with:
+          path: data/vol_profile.json
+          key: vol-profile-${{ github.run_id }}
+      - name: Сохранить результат
+        run: |
+          git config user.name "screener-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add docs/data/volume.json docs/data/journal_volume.json
+          git commit -m "Объёмы $MODE $(date -u +%F' '%H:%M)" || exit 0
+          for i in 1 2 3; do git pull --rebase origin main && git push && break; sleep 5; done
