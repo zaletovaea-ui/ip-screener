@@ -372,17 +372,6 @@ function showSection(sec) {
   showTab(nav, cur.dataset.tab);
   try { localStorage.setItem("ipSec", sec); } catch (e) {}
 }
-document.querySelectorAll("#seg button").forEach(b => b.classList.toggle("on", b.dataset.sec === sec));
-  document.getElementById("nav-ta").classList.toggle("hidden", vol);
-  document.getElementById("nav-vol").classList.toggle("hidden", !vol);
-  ["asof", "mkt"].forEach(id => document.getElementById(id).classList.toggle("hidden", vol));
-  ["asof-vol", "mkt-vol"].forEach(id => document.getElementById(id).classList.toggle("hidden", !vol));
-  document.getElementById("brand").textContent = vol ? "Аномальные объёмы · AlgoPack, каждые 15 минут" : "Технический анализ · дневной таймфрейм";
-  const nav = document.getElementById(vol ? "nav-vol" : "nav-ta");
-  const cur = nav.querySelector("button.on") || nav.querySelector("button");
-  showTab(nav, cur.dataset.tab);
-  try { localStorage.setItem("ipSec", sec); } catch (e) {}
-}
 document.querySelectorAll("#seg button").forEach(b => b.onclick = () => showSection(b.dataset.sec));
 try { const sv = localStorage.getItem("ipSec"); if (sv && sv !== "ta") showSection(sv); } catch (e) {}
 
