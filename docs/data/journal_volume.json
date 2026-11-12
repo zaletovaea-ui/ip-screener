@@ -18,9 +18,9 @@
    "comment": "Объём ×3.1 нормы, покупатели 59%",
    "status": "открыт",
    "days": 0,
-   "last_price": 143.4,
+   "last_price": 143,
    "last_date": "2026-11-12",
-   "current_pct": 0.03
+   "current_pct": -0.24
   }
  ],
  "stats": {
@@ -47,5 +47,5 @@
   "against_share": 0.6,
   "cooldown": 7
  },
- "updated": "2026-11-12 17:33"
+ "updated": "2026-11-12 17:43"
 }
