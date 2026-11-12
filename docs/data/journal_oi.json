@@ -24,8 +24,8 @@
    "days": 0,
    "stop_pct": -4.3,
    "best": 38.83,
-   "last_price": 39.32,
-   "current_pct": -1.26
+   "last_price": 39.41,
+   "current_pct": -1.49
   },
   {
    "ref_price": 0.5273,
@@ -51,8 +51,8 @@
    "days": 0,
    "stop_pct": -6.1,
    "best": 0.529,
-   "last_price": 0.5497,
-   "current_pct": 3.91
+   "last_price": 0.5502,
+   "current_pct": 4.01
   },
   {
    "ref_price": 298.51,
