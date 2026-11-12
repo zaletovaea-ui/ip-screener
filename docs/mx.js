@@ -45,9 +45,9 @@
     const top = document.getElementById("mx-events-top"); if (top) top.innerHTML = events(L, 4);
     const now = document.getElementById("mx-now");
     if (now) now.innerHTML = [
-      ["Позиция сейчас", `${pos(L.position)}<div class="nm" style="margin-top:6px">${L.contract || ""} с ${tm(L.entry_time)}</div>`, true],
+      ["Позиция сейчас", `${pos(L.position)}<div class="nm" style="margin-top:6px">${L.position ? `${L.contract || ""} с ${tm(L.entry_time)}` : "после ручного выхода — вход по следующему сигналу"}</div>`, true],
       ["Вход → цена сейчас", `${f(L.entry)} → ${f(L.last_price)}<div class="nm" style="margin-top:6px">на ${L.last_time || ""}</div>`, true],
-      ["Текущая сделка", `<span class="${cl(L.current)}">${pc(L.current)}</span>`],
+      ["Текущая сделка", `<span class="${cl(L.current)}">${pc(L.current)}</span>${L.position && window.ipCloseBtn ? `<div style="font-size:13px">${window.ipCloseBtn("mx", L.entry_time, L.last_price, L.contract)}</div>` : ""}`],
       ["Физлица за 3 дня", `<span class="${cl(d3)}">${sg(d3)}</span><div style="height:6px;background:#E2E8F0;border-radius:3px;margin-top:8px;overflow:hidden"><i style="display:block;height:100%;width:${prog}%;background:${prog >= 100 ? "#DC2626" : "#1F5CFF"}"></i></div><div class="nm">переворот при ${d3 >= 0 ? "+" : "−"}${f(P.threshold)} · на ${L.snap_time || ""}</div>`],
     ].map(([k, v, h]) => `<div class="card"><div class="k">${k}</div><div class="v" style="font-size:${h ? 20 : 24}px">${v}</div></div>`).join("");
     const tr = (L.trades || []).slice().reverse();
@@ -62,7 +62,7 @@
     const tt = document.getElementById("mx-trades");
     if (tt) tt.innerHTML = `<tr><th>Позиция</th><th>Контракт</th><th>Открыта</th><th class="num">Вход</th><th>Закрыта</th><th class="num">Выход / сейчас</th><th class="num">Результат</th></tr>` +
       (L.position ? `<tr><td>${pos(L.position)} <span class="pill tgt">открыта</span></td><td>${L.contract}</td><td>${tm(L.entry_time)}</td><td class="num">${f(L.entry)}</td><td class="nm">ещё открыта</td><td class="num">${f(L.last_price)}<div class="nm">сейчас, ${L.last_time || ""}</div></td><td class="num ${cl(L.current)}">${pc(L.current)}</td></tr>` : "") +
-      (tr.map(t => `<tr><td>${pos(t.side)}</td><td>${t.contract || ""}</td><td>${tm(t.open_time)}</td><td class="num">${f(t.open_price)}</td><td>${tm(t.close_time)}</td><td class="num">${f(t.close_price)}</td><td class="num ${cl(t.result)}">${pc(t.result)}</td></tr>`).join("")
+      (tr.map(t => `<tr><td>${pos(t.side)}${t.manual ? ' <span class="pill neu">вручную</span>' : ""}</td><td>${t.contract || ""}</td><td>${tm(t.open_time)}</td><td class="num">${f(t.open_price)}</td><td>${tm(t.close_time)}</td><td class="num">${f(t.close_price)}</td><td class="num ${cl(t.result)}">${pc(t.result)}</td></tr>`).join("")
         || `<tr><td colspan="7" class="nm">Закрытых сделок пока нет — текущая закроется при перевороте.</td></tr>`);
     const as = document.getElementById("asof-mx");
     if (as) as.textContent = `Обновлено ${tm(L.updated)} · данные каждые 10 минут, 07:00–23:50 МСК`;

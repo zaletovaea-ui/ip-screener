@@ -17,6 +17,7 @@ import sys
 import datetime as dt
 from pathlib import Path
 
+import manual
 from moexapi import TOKEN, iss, table
 
 ROOT = Path(__file__).parent
@@ -134,7 +135,7 @@ def pnl(side, e, p):
 
 
 def stats(sigs):
-    closed = [s for s in sigs if s["status"] not in ("открыт", "ждёт входа")]
+    closed = [s for s in sigs if s["status"] not in ("открыт", "ждёт входа", "отменён")]
     out = {"total": len(sigs), "open": sum(s["status"] == "открыт" for s in sigs),
            "pending": sum(s["status"] == "ждёт входа" for s in sigs), "closed": len(closed)}
     if closed:
@@ -204,6 +205,7 @@ def run(mode):
     rows = build_table(m, md, cur, prev, week, label)
     j = load_json(JOURNAL, {"signals": []})
     sigs = j["signals"]
+    manual.apply(sigs, "oi")
     if mode == "intraday":
         for s in sigs:
             if s["status"] in ("ждёт входа", "открыт"):

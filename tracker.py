@@ -12,6 +12,8 @@ import json
 import datetime as dt
 from pathlib import Path
 
+import manual
+
 MAX_DAYS = 20
 COOLDOWN = 7  # календарных дней без повторного входа после стопа
 PATH = Path(__file__).parent / "docs" / "data" / "journal.json"
@@ -73,7 +75,7 @@ def check(sig, bars, intraday=None):
             sig.update(status="стоп" if hit_stop else "цель", closed=b["date"], close_price=px,
                        result_pct=pnl(sig["side"], sig["entry"], px), days=i)
             return
-        if i >= MAX_DAYS:
+        if i >= MAX_DAYS and b["date"] < msk_now().strftime("%Y-%m-%d"):
             sig.update(status="истёк", closed=b["date"], close_price=b["c"],
                        result_pct=pnl(sig["side"], sig["entry"], b["c"]), days=i)
             return
@@ -122,6 +124,7 @@ def msk_now():
 def update(report, bars_by_ticker, loader, intraday_loader=None):
     j = load()
     sigs = j["signals"]
+    manual.apply(sigs, "ta")
     # 1) проверяем открытые
     for s in sigs:
         if s["status"] != "открыт":
@@ -169,3 +172,24 @@ def update(report, bars_by_ticker, loader, intraday_loader=None):
     j["updated_utc"] = dt.datetime.utcnow().strftime("%Y-%m-%d %H:%M")
     PATH.parent.mkdir(parents=True, exist_ok=True)
     PATH.write_text(json.dumps(j, ensure_ascii=False, indent=1), encoding="utf-8")
+
+
+def refresh(loader):
+    """Обновление в течение дня: ручные закрытия, текущие цены, стопы и цели по дневной свече сегодняшнего дня."""
+    j = load()
+    sigs = j["signals"]
+    n = manual.apply(sigs, "ta")
+    for s in sigs:
+        if s["status"] != "открыт":
+            continue
+        try:
+            bars = loader(TQBR.format(s["ticker"]))
+        except Exception:  # noqa
+            continue
+        check(s, bars)
+        if s["status"] == "открыт":
+            s["last_time"] = msk_now().strftime("%H:%M")
+    j["stats"] = stats_all(sigs)
+    j["updated_live"] = msk_now().strftime("%Y-%m-%d %H:%M")
+    PATH.write_text(json.dumps(j, ensure_ascii=False, indent=1), encoding="utf-8")
+    return n

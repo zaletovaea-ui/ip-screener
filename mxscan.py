@@ -12,6 +12,7 @@ import sys
 import datetime as dt
 from pathlib import Path
 
+import manual
 from moexapi import TOKEN, iss, table
 
 ROOT = Path(__file__).parent
@@ -93,11 +94,27 @@ def update_live(net_closed, closed_days, snap):
     # перенос на следующий контракт при экспирации
     if j["position"] and j["contract"] != secid:
         close_open(j["position"], last, f"перенос позиции {j['contract']} → {secid}")
+    # ручное закрытие с сайта: выходим из позиции, повторный вход — только по новому сигналу
+    mc = manual.closes("mx").get(j.get("entry_time"))
+    if mc and j["position"]:
+        old, price = j["position"], float(mc.get("price") or last)
+        res = round(((price / j["entry"] - 1) if old == "long" else (1 - price / j["entry"])) * 100, 2)
+        t = mc.get("time") or now.strftime("%Y-%m-%d %H:%M")
+        j["trades"].append(dict(side=old, contract=j["contract"], open_time=j["entry_time"], open_price=j["entry"],
+                                close_time=t, close_price=price, result=res, manual=True))
+        j["events"].append(dict(time=t, action=f"Закрываем {'лонг' if old == 'long' else 'шорт'} MX вручную", side=old, price=price,
+                                contract=j["contract"], result=res, reason=mc.get("note") or "ручной выход из позиции"))
+        j.update(position=None, entry=None, entry_time=None, blocked=old)
     d3 = None
     if snap and len(closed_days) >= M["window"]:
         base = closed_days[-M["window"]] if snap["tradedate"] not in net_closed else closed_days[-M["window"] - 1]
         d3 = snap["pos"] - net_closed[base]
         want = "short" if d3 >= M["threshold"] else "long" if d3 <= -M["threshold"] else None
+        if j.get("blocked"):  # после ручного выхода не возвращаемся в ту же сторону, пока сигнал не обновится
+            if want is None or want != j["blocked"]:
+                j["blocked"] = None
+            else:
+                want = None
         if want and want != j["position"]:
             crowd = "нарастили лонг" if d3 > 0 else "нарастили шорт"
             close_open(want, last, f"физлица за 3 дня {crowd}: {d3:+,} контр. (порог {M['threshold']:,})".replace(",", " "))

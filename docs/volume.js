@@ -43,7 +43,7 @@
         <td class="num">${px(s.stop)}${s.trailing ? '<div class="nm">трейлинг</div>' : `<div class="nm">${pc(s.stop_pct)}</div>`}</td>
         <td class="num">${px(s.last_price)}</td>
         <td><span style="display:inline-block;width:70px;height:6px;border-radius:3px;background:#E2E8F0;vertical-align:middle;overflow:hidden"><i style="display:block;height:100%;width:${Math.min(100, days / max * 100)}%;background:var(--blue)"></i></span> ${days} из ${max}</td>
-        <td class="num ${cl(s.current_pct)}">${pc(s.current_pct)}</td><td class="cm">${s.comment || ""}</td></tr>`;
+        <td class="num ${cl(s.current_pct)}">${pc(s.current_pct)}${window.ipCloseBtn ? window.ipCloseBtn("volume", s.id, s.last_price, s.ticker) : ""}</td><td class="cm">${s.comment || ""}</td></tr>`;
       }).join("");
   }
 

@@ -101,6 +101,10 @@
   .out{white-space:pre-wrap;background:var(--canvas);border:1px solid var(--border);border-radius:12px;padding:14px;font:14px/20px var(--sans);margin:0}
   .btn{border:1px solid var(--border);background:#fff;color:var(--navy);border-radius:10px;height:40px;padding:0 14px;font:600 13px/16px var(--sans);cursor:pointer}
   .btn:hover{background:var(--hover)}
+  .mc{display:block;margin:6px 0 0 auto;border:1px solid var(--border);background:#fff;color:var(--down-text);border-radius:6px;height:26px;padding:0 10px;font:600 12px/14px var(--sans);cursor:pointer}
+  .mc:hover{background:#FEF2F2}
+  .ownerbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:16px 0 0;padding:10px 14px;border:1px solid var(--border);border-radius:10px;background:#fff;font-size:13px;color:var(--navy)}
+  .ownerbar input{flex:1;min-width:220px;height:36px;border:1px solid #CBD5E1;border-radius:8px;padding:0 10px}
   #cp-post{background:var(--lime);border-color:var(--lime);color:var(--navy)}
   #cp-post:hover{background:#A3E635}
   .btn.tk{color:var(--up)} .btn.st{color:var(--down-text)}
@@ -114,7 +118,7 @@
   <div class="wrap">
     <div>
       <div class="logo"><i></i>Invest Privet+</div>
-      <div class="seg" id="seg"><button data-sec="ta" class="on">Технический анализ</button><button data-sec="vol">Аномальные объёмы</button><button data-sec="oi">Открытый интерес физлиц</button><button data-sec="mx">MX</button></div>
+      <div class="seg" id="seg"><button data-sec="ta" class="on">Технический анализ</button><button data-sec="vol">Аномальные объёмы</button><button data-sec="oi">ОИ идеи акций</button><button data-sec="mx">MX ОИ</button></div>
       <div class="brand" id="brand">Технический анализ · дневной таймфрейм</div>
       <h1>Скринер акций Мосбиржи</h1>
       <div class="sub" id="asof">Загрузка…</div>
@@ -125,7 +129,7 @@
     <div class="mkt" id="mkt"></div>
     <div class="mkt hidden" id="mkt-mx">Фьючерс MX — всегда против физлиц: если их чистая позиция за 3 дня выросла на <b>10 000 контрактов и больше</b> — шорт, снизилась на 10 000 и больше — лонг, иначе держим. Переворот сразу внутри дня, данные каждые 10 минут. На истории с 2023 года: +163% при просадке −12,7%.</div>
     <div class="mkt hidden" id="mkt-oi">Стратегия против толпы: если физлица за день изменили чистую позицию во фьючерсе на акцию на <b>10% и больше</b> — идея в обратную сторону. Вход на следующий день по открытию. На истории (11.2024–11.2026): ~27 сделок в месяц, 48% прибыльных, профит-фактор 1,43.</div>
-    <div class="mkt hidden" id="mkt-vol">Сигнал: оборот к этому времени дня в <b>3+ раза выше нормы</b> (медиана за 20 дней), его инициировали покупатели (продавцы) и цена движется в их сторону. Данные AlgoPack, проверка каждые 15 минут.</div>
+    <div class="mkt hidden" id="mkt-vol">Сигнал: оборот к этому времени дня в <b>3+ раза выше нормы</b> (медиана за 20 дней), его инициировали покупатели (продавцы) и цена движется в их сторону. Проверка каждые 10 минут.</div>
   </div>
 </header>
 
@@ -249,7 +253,7 @@
     <div class="tbl"><table id="t-open"></table></div>
     <h2>Закрытые сигналы</h2>
     <div class="tbl"><table id="t-closed"></table></div>
-    <p class="note">Журнал обновляется каждую торговую ночь по закрытым свечам. Сигнал закрывается, когда цена касается стопа или цели (если в один день задеты оба — считается стоп), либо через 20 торговых дней по цене закрытия.</p>
+    <p class="note">Журнал обновляется каждые 10 минут в течение торгов (текущая цена, стопы и цели) и ночью по закрытым свечам. Сигнал закрывается, когда цена касается стопа или цели (если в один день задеты оба — считается стоп), либо через 20 торговых дней по цене закрытия.</p>
   </section>
 
   <section id="tab-all" class="hidden">
@@ -272,12 +276,12 @@
 
   <footer>
     <b style="color:var(--navy)">Invest Privet+</b> · investprivet.online<br>
-    Данные: Мосбиржа. Технический анализ — дневные свечи, обновление каждую торговую ночь в 00:05 МСК. Аномальные объёмы — AlgoPack (SuperCandles), каждые 15 минут с 07:00 до 23:45 МСК.<br>
     Не является индивидуальной инвестиционной рекомендацией. Каждый сетап — вероятность, а не гарантия; всегда используйте стоп.
   </footer>
 </div>
 
 <script src="config.js"></script>
+<script src="owner.js"></script>
 <script src="ideas.js"></script>
 <script src="volume.js"></script>
 <script src="oi.js"></script>
@@ -322,13 +326,13 @@ function journalRows(rows, closed) {
     : `<tr><th>Тикер</th><th>Направление</th><th>Открыт</th><th class="num">Вход</th><th class="num">Стоп</th><th class="num">Цель</th><th class="num">Сейчас</th><th class="num">Дней</th><th class="num">Результат</th><th>Комментарий</th></tr>`;
   return head + rows.map(s => closed
     ? `<tr><td>${tk(s.ticker, s.name)}</td><td>${side(s.side, s.strategy)}</td><td>${date(s.opened)}</td><td class="num">${fmt(s.entry)}</td>
-       <td><span class="pill ${s.status === "цель" ? "tgt" : s.status === "стоп" ? "sell" : "neu"}">${s.status}</span></td>
+       <td><span class="pill ${s.status === "цель" ? "tgt" : s.status === "стоп" ? "sell" : "neu"}">${s.status}</span>${s.close_note ? `<div class="nm">${s.close_note}</div>` : ""}</td>
        <td>${date(s.closed)}</td><td class="num">${s.days}</td><td class="num ${cls(s.result_pct)}">${pct(s.result_pct, true)}</td><td class="cm">${s.comment || ""}</td></tr>`
     : `<tr><td>${tk(s.ticker, s.name)}</td><td>${side(s.side, s.strategy)}</td><td>${date(s.opened)}</td><td class="num">${fmt(s.entry)}</td>
        <td class="num">${fmt(s.stop, dec(s.entry))} <span class="nm">${pct(s.stop_pct)}</span></td>
        <td class="num">${fmt(s.target, dec(s.entry))} <span class="nm">+${fmt(s.target_pct, 1)}%</span></td>
-       <td class="num">${fmt(s.last_price)}</td><td class="num">${s.days ?? 0}</td>
-       <td class="num ${cls(s.current_pct)}">${pct(s.current_pct, true)}</td><td class="cm">${s.comment || ""}</td></tr>`).join("");
+       <td class="num">${fmt(s.last_price)}${s.last_time && s.last_date === new Date(Date.now() + 3 * 3600e3).toISOString().slice(0, 10) ? `<div class="nm">${s.last_time}</div>` : ""}</td><td class="num">${s.days ?? 0}</td>
+       <td class="num ${cls(s.current_pct)}">${pct(s.current_pct, true)}${window.ipCloseBtn ? window.ipCloseBtn("ta", s.id, s.last_price, s.ticker) : ""}</td><td class="cm">${s.comment || ""}</td></tr>`).join("");
 }
 
 function allTable(rows) {
@@ -392,7 +396,7 @@ function showTab(nav, tab) {
 document.querySelectorAll("nav button").forEach(b => b.onclick = () => showTab(b.closest("nav"), b.dataset.tab));
 const SECTIONS = {
   ta: { nav: "nav-ta", show: ["asof", "mkt"], brand: "Технический анализ · дневной таймфрейм" },
-  vol: { nav: "nav-vol", show: ["asof-vol", "mkt-vol"], brand: "Аномальные объёмы · AlgoPack, каждые 15 минут" },
+  vol: { nav: "nav-vol", show: ["asof-vol", "mkt-vol"], brand: "Аномальные объёмы · каждые 10 минут" },
   oi: { nav: "nav-oi", show: ["asof-oi", "mkt-oi"], brand: "Открытый интерес физлиц · фьючерсы на акции" },
   mx: { nav: "nav-mx", show: ["asof-mx", "mkt-mx"], brand: "MX · фьючерс на индекс Мосбиржи против физлиц" },
 };

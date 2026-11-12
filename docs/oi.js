@@ -21,7 +21,7 @@
         <td>${s.status === "ждёт входа" ? '<span class="pill neu">вход по открытию</span>' : `<span class="pill ${s.status === "открыт" ? "tgt" : (s.result_pct > 0 ? "tgt" : "sell")}">${s.status}</span>`}</td>
         <td class="num">${s.entry ? px(s.entry) + `<div class="nm">${dt(s.opened)}</div>` : "—"}</td>
         <td class="num">${s.stop ? px(s.stop) + `<div class="nm">${s.trailing ? "трейлинг" : pc(s.stop_pct)}</div>` : "—"}</td>
-        <td class="num ${cl(s.result_pct ?? s.current_pct)}">${s.result_pct != null ? pc(s.result_pct) : s.current_pct != null ? pc(s.current_pct) : "—"}</td></tr>`).join("");
+        <td class="num ${cl(s.result_pct ?? s.current_pct)}">${s.result_pct != null ? pc(s.result_pct) : s.current_pct != null ? pc(s.current_pct) : "—"}${(s.status === "открыт" || s.status === "ждёт входа") && window.ipCloseBtn ? window.ipCloseBtn("oi", s.id, s.last_price || s.ref_price, s.ticker) : ""}</td></tr>`).join("");
   }
 
   function table(rows, onlySide) {

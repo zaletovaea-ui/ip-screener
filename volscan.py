@@ -19,6 +19,7 @@ import sys
 import datetime as dt
 from pathlib import Path
 
+import manual
 from moexapi import TOKEN, iss, table, paged
 
 ROOT = Path(__file__).parent
@@ -320,6 +321,7 @@ def intraday():
     # журнал
     j = load_json(JOURNAL, {"signals": []})
     sigs = j["signals"]
+    manual.apply(sigs, "volume")
     for s in sigs:
         if s["status"] == "открыт" and s["ticker"] in by:
             after = s["opened_at"][11:16] if s["opened"] == today else "00:00"
@@ -370,6 +372,7 @@ def nightly():
     universe = shares()
     prof = update_profile(universe)
     j = load_json(JOURNAL, {"signals": []})
+    manual.apply(j["signals"], "volume")
     for s in j["signals"]:
         days = sorted(d for d in prof["data"].get(s["ticker"], {}) if d >= s["opened"])
         for d in days:

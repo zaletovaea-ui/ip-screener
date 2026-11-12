@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Живое обновление в течение дня: каждые 10 минут (07:00–23:50 МСК, пн–пт) — объёмы, ОИ физлиц, MX.
+"""Живое обновление в течение дня: каждые 10 минут (07:00–23:50 МСК, пн–пт) — журнал ТА, объёмы, ОИ физлиц, MX.
 Работает ~5 ч 40 мин, затем workflow перезапускает сам себя. Каждое обновление сразу публикуется (git push)."""
 import subprocess
 import sys
@@ -50,12 +50,14 @@ while time.time() - start < LIMIT:
     t0 = time.time()
     now = msk()
     if nightly_due(now):
+        sh("git", "pull", "-q", "--rebase", "-X", "theirs", "origin", "main")
         for script in (["python", "screener.py"], ["python", "volscan.py", "nightly"], ["python", "oiscan.py", "nightly"], ["python", "mxscan.py"]):
             sh(*script)
         MARK.write_text(now.strftime("%Y-%m-%d"))
         publish(f"Ночной пересчёт {now:%Y-%m-%d %H:%M}")
     elif trading(now):
-        for script in (["python", "volscan.py", "intraday"], ["python", "oiscan.py", "intraday"], ["python", "mxscan.py"]):
+        sh("git", "pull", "-q", "--rebase", "-X", "theirs", "origin", "main")  # ручные закрытия с сайта
+        for script in (["python", "ta_live.py"], ["python", "volscan.py", "intraday"], ["python", "oiscan.py", "intraday"], ["python", "mxscan.py"]):
             sh(*script)
         publish(f"Живое обновление {now:%Y-%m-%d %H:%M}")
     else:

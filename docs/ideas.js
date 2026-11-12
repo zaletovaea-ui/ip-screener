@@ -114,7 +114,7 @@
       price: fp(r.close), entry: fp(r.entry_limit ?? r.close * (buy ? 1.01 : 0.99)),
       stop: fp(r.stop), take1: fp(r.take1 ?? r.target), take2: fp(r.take2 ?? r.target),
       share: "5", idea: (r.idea || r.signals || []).join(" "), risk: r.risk || "",
-      link: "", take1_done: false, note: "", exit: r.strategy === "mx" ? fp(r.last ?? r.close) : "",
+      link: "", take1_done: false, note: "", exit: fp(r.last ?? r.close),
     };
   }
 
@@ -170,6 +170,19 @@
     const lines = ["❗️СТОП", "",
       `#${d.ticker} В ${ideaRef(d).replace("рамках спекулятивной идеи", "рамках отдельной спекулятивной идеи")} по акциям ${d.name} сработал стоп на уровне ${level} руб.${d.take1_done ? " (безубыток после первого тейка)" : ""}`, "",
       `Общий результат спекуляции ${sgn(res)}%`];
+    if (d.note) lines.push("", d.note);
+    return lines.join("\n");
+  }
+
+  function msgExit(d) {
+    const buy = d.side === "buy", e = +d.price, x = +d.exit, mx = d.strategy === "mx";
+    let res = buy ? pc(e, x) : -pc(e, x);
+    if (!mx && d.take1_done) res = ((buy ? pc(e, +d.take1) : -pc(e, +d.take1)) + res) / 2;
+    const lines = ["🚪 ВЫХОД ИЗ ПОЗИЦИИ", ""];
+    if (mx) lines.push(`#${d.ticker} В ${ideaRef(d)} по фьючерсу на индекс Мосбиржи закрываем ${buy ? "лонг" : "шорт"} вручную по ${d.exit} пунктов.`, "",
+      `Результат ${sgn(res)}%. Позицию не переворачиваем — ждём следующего сигнала.`);
+    else lines.push(`#${d.ticker} В ${ideaRef(d)} по акциям ${d.name} закрываем ${d.take1_done ? "оставшуюся " : ""}позицию по ${d.exit} руб.`, "",
+      `Общий результат спекуляции ${sgn(res)}%`, "Доля 0%. Не забудьте снять стоп лосс.");
     if (d.note) lines.push("", d.note);
     return lines.join("\n");
   }
@@ -250,10 +263,11 @@
   function renderPanel() {
     const box = document.getElementById("ideas-panel");
     const d = current && saved[current] && !saved[current].deleted ? saved[current] : null;
+    if (d && (d.exit == null || d.exit === "")) d.exit = d.price;
     if (!d) { box.innerHTML = '<div class="empty">Поставьте галочку у бумаги слева — здесь появится идея: вход, стоп, тейки и готовый пост.</div>'; return; }
     box.innerHTML = `
       <div class="ph"><div><b class="pt">${d.ticker}</b> <span class="nm">${esc(d.name)} · сигнал от ${d.date.split("-").reverse().join(".")}</span></div></div>
-      <div class="fg">${(d.strategy === "mx" ? F.filter(([k]) => !["stop", "take1", "take2"].includes(k)).concat([["exit", "Цена переворота, пунктов"]]) : F).map(([k, l]) => `<label class="f"><span>${l}</span><input data-k="${k}" value="${esc(d[k])}"></label>`).join("")}</div>
+      <div class="fg">${(d.strategy === "mx" ? F.filter(([k]) => !["stop", "take1", "take2"].includes(k)).concat([["exit", "Цена переворота / выхода, пунктов"]]) : F.concat([["exit", "Цена выхода, руб."]])).map(([k, l]) => `<label class="f"><span>${l}</span><input data-k="${k}" value="${esc(d[k])}"></label>`).join("")}</div>
       <label class="f"><span>🔹 В чем идея</span><textarea data-k="idea" rows="5">${esc(d.idea)}</textarea></label>
       <label class="f"><span>Риски</span><textarea data-k="risk" rows="2">${esc(d.risk)}</textarea></label>
       <div class="ibar"><b>Пост идеи</b><button class="btn" id="cp-post">Скопировать</button></div>
@@ -261,8 +275,8 @@
       <h3 class="ih2">Сопровождение</h3>
       <label class="f"><span>Ссылка на пост идеи в Telegram (вставьте после публикации)</span><input data-k="link" value="${esc(d.link)}" placeholder="https://t.me/c/..."></label>
       <label class="f"><span>Комментарий к сообщению (необязательно)</span><input data-k="note" value="${esc(d.note)}" placeholder="Например: закрываем на новостях, возможен откат"></label>
-      ${d.strategy === "mx" ? `<div class="acts"><button class="btn tk" data-m="fl">🔄 Переворот</button></div>` : `<label class="chk"><input type="checkbox" data-k="take1_done" ${d.take1_done ? "checked" : ""}> Тейк 1 уже сработал (стоп перенесён в безубыток)</label>
-      <div class="acts"><button class="btn tk" data-m="t1">📌 Тейк 1</button><button class="btn tk" data-m="t2">📌 Тейк 2</button><button class="btn st" data-m="st">❗️ Стоп</button></div>`}
+      ${d.strategy === "mx" ? `<div class="acts"><button class="btn tk" data-m="fl">🔄 Переворот</button><button class="btn" data-m="ex">🚪 Выход из позиции</button></div>` : `<label class="chk"><input type="checkbox" data-k="take1_done" ${d.take1_done ? "checked" : ""}> Тейк 1 уже сработал (стоп перенесён в безубыток)</label>
+      <div class="acts"><button class="btn tk" data-m="t1">📌 Тейк 1</button><button class="btn tk" data-m="t2">📌 Тейк 2</button><button class="btn st" data-m="st">❗️ Стоп</button><button class="btn" data-m="ex">🚪 Выход из позиции</button></div>`}
       <div id="msg-wrap" class="hidden"><div class="ibar"><b id="msg-title"></b><button class="btn" id="cp-msg">Скопировать</button></div><pre class="out" id="out-msg"></pre></div>`;
     const upd = () => { document.getElementById("out-post").textContent = post(d); };
     box.querySelectorAll("[data-k]").forEach(el => el.oninput = el.onchange = () => {
@@ -273,8 +287,8 @@
     const showMsg = m => {
       lastMsg = m;
       document.getElementById("msg-wrap").classList.remove("hidden");
-      document.getElementById("msg-title").textContent = m === "fl" ? "Сообщение: переворот" : m === "st" ? "Сообщение: стоп" : `Сообщение: тейк ${m === "t1" ? 1 : 2}`;
-      document.getElementById("out-msg").textContent = m === "fl" ? msgFlip(d) : m === "st" ? msgStop(d) : msgTake(d, m === "t1" ? 1 : 2);
+      document.getElementById("msg-title").textContent = m === "ex" ? "Сообщение: выход из позиции" : m === "fl" ? "Сообщение: переворот" : m === "st" ? "Сообщение: стоп" : `Сообщение: тейк ${m === "t1" ? 1 : 2}`;
+      document.getElementById("out-msg").textContent = m === "ex" ? msgExit(d) : m === "fl" ? msgFlip(d) : m === "st" ? msgStop(d) : msgTake(d, m === "t1" ? 1 : 2);
     };
     box.querySelectorAll("[data-m]").forEach(b => b.onclick = () => showMsg(b.dataset.m));
     document.getElementById("cp-post").onclick = e => copy(post(d), e.target);
