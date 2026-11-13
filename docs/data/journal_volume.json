@@ -18,9 +18,9 @@
    "comment": "Объём ×3.1 нормы, покупатели 59%",
    "status": "открыт",
    "days": 0,
-   "last_price": 144.05,
+   "last_price": 143.7,
    "last_date": "2026-11-13",
-   "current_pct": 0.49
+   "current_pct": 0.24
   },
   {
    "id": "2026-11-12-HYDR-buy-volume",
@@ -40,14 +40,36 @@
    "comment": "Объём ×3.0 нормы, покупатели 58%",
    "status": "открыт",
    "days": 0,
-   "last_price": 0.5503,
+   "last_price": 0.5488,
    "last_date": "2026-11-13",
-   "current_pct": 0.05
+   "current_pct": -0.22
+  },
+  {
+   "id": "2026-11-13-SGZH-buy-volume",
+   "strategy": "volume",
+   "ticker": "SGZH",
+   "name": "Сегежа",
+   "side": "buy",
+   "opened": "2026-11-13",
+   "opened_at": "2026-11-13 08:01",
+   "entry": 0.8385,
+   "stop": 0.823362,
+   "stop_pct": -1.8,
+   "target": null,
+   "ratio": 3.8,
+   "buy_share": 61,
+   "change_pct": 1.76,
+   "comment": "Объём ×3.8 нормы, покупатели 61%",
+   "status": "открыт",
+   "days": 0,
+   "last_price": 0.8385,
+   "last_date": "2026-11-13",
+   "current_pct": 0.0
   }
  ],
  "stats": {
-  "total": 2,
-  "open": 2,
+  "total": 3,
+  "open": 3,
   "closed": 0
  },
  "params": {
@@ -69,5 +91,5 @@
   "against_share": 0.6,
   "cooldown": 7
  },
- "updated": "2026-11-13 07:51"
+ "updated": "2026-11-13 08:01"
 }
