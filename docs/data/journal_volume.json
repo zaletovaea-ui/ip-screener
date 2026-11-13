@@ -18,9 +18,9 @@
    "comment": "Объём ×3.1 нормы, покупатели 59%",
    "status": "открыт",
    "days": 0,
-   "last_price": 143.95,
+   "last_price": 144,
    "last_date": "2026-11-13",
-   "current_pct": 0.42
+   "current_pct": 0.45
   },
   {
    "id": "2026-11-12-HYDR-buy-volume",
@@ -40,9 +40,9 @@
    "comment": "Объём ×3.0 нормы, покупатели 58%",
    "status": "открыт",
    "days": 0,
-   "last_price": 0.5452,
+   "last_price": 0.5465,
    "last_date": "2026-11-13",
-   "current_pct": -0.87
+   "current_pct": -0.64
   },
   {
    "id": "2026-11-13-SGZH-buy-volume",
@@ -88,9 +88,9 @@
    "comment": "Объём ×6.3 нормы, покупатели 59%",
    "status": "открыт",
    "days": 0,
-   "last_price": 11.37,
+   "last_price": 11.375,
    "last_date": "2026-11-13",
-   "current_pct": 0.8
+   "current_pct": 0.84
   },
   {
    "id": "2026-11-13-NMTP-buy-volume",
@@ -110,9 +110,9 @@
    "comment": "Объём ×4.1 нормы, покупатели 82%",
    "status": "открыт",
    "days": 0,
-   "last_price": 7.23,
+   "last_price": 7.21,
    "last_date": "2026-11-13",
-   "current_pct": 0.84
+   "current_pct": 0.56
   },
   {
    "id": "2026-11-13-MBNK-buy-volume",
@@ -132,9 +132,9 @@
    "comment": "Объём ×6.8 нормы, покупатели 83%",
    "status": "открыт",
    "days": 0,
-   "last_price": 989.5,
+   "last_price": 991,
    "last_date": "2026-11-13",
-   "current_pct": -0.25
+   "current_pct": -0.1
   },
   {
    "id": "2026-11-13-ETLN-sell-volume",
@@ -154,14 +154,36 @@
    "comment": "Объём ×3.0 нормы, покупатели 40%",
    "status": "открыт",
    "days": 0,
-   "last_price": 24.42,
+   "last_price": 24.44,
    "last_date": "2026-11-13",
-   "current_pct": 0.65
+   "current_pct": 0.57
+  },
+  {
+   "id": "2026-11-13-MVID-buy-volume",
+   "strategy": "volume",
+   "ticker": "MVID",
+   "name": "М.Видео",
+   "side": "buy",
+   "opened": "2026-11-13",
+   "opened_at": "2026-11-13 10:22",
+   "entry": 55.3,
+   "stop": 52.337,
+   "stop_pct": -5.4,
+   "target": null,
+   "ratio": 5.2,
+   "buy_share": 64,
+   "change_pct": 4.93,
+   "comment": "Объём ×5.2 нормы, покупатели 64%",
+   "status": "открыт",
+   "days": 0,
+   "last_price": 55.3,
+   "last_date": "2026-11-13",
+   "current_pct": 0.0
   }
  ],
  "stats": {
-  "total": 7,
-  "open": 6,
+  "total": 8,
+  "open": 7,
   "closed": 1,
   "win_rate": 0.0,
   "avg_result": -1.81,
@@ -190,5 +212,5 @@
   "against_share": 0.6,
   "cooldown": 7
  },
- "updated": "2026-11-13 10:12"
+ "updated": "2026-11-13 10:22"
 }
