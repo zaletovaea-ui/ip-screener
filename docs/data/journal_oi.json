@@ -24,8 +24,8 @@
    "days": 0,
    "stop_pct": -4.3,
    "best": 38.83,
-   "last_price": 39.17,
-   "current_pct": -0.88,
+   "last_price": 39.2,
+   "current_pct": -0.95,
    "processed": "2026-11-12",
    "last_date": "2026-11-12"
   },
@@ -53,8 +53,8 @@
    "days": 0,
    "stop_pct": -6.1,
    "best": 0.55,
-   "last_price": 0.5489,
-   "current_pct": 3.76,
+   "last_price": 0.5483,
+   "current_pct": 3.65,
    "processed": "2026-11-12",
    "last_date": "2026-11-12"
   },
