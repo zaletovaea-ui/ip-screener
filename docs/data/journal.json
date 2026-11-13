@@ -18,12 +18,12 @@
     "откат к EMA200 292.17 (+0.1%), наклон вверх — откат в восходящем тренде"
    ],
    "status": "открыт",
-   "current_pct": 2.55,
-   "last_price": 299.88,
+   "current_pct": 2.53,
+   "last_price": 299.81,
    "last_date": "2026-11-13",
    "days": 2,
    "opened_at": "2026-11-11 10:30",
-   "last_time": "22:52"
+   "last_time": "23:02"
   },
   {
    "id": "2026-11-11-RTKM-buy",
@@ -70,12 +70,12 @@
     "на поддержке 3361.50 (4 касания, до уровня 0.8%)"
    ],
    "status": "открыт",
-   "current_pct": 1.39,
-   "last_price": 3435.5,
+   "current_pct": 1.51,
+   "last_price": 3439.5,
    "last_date": "2026-11-13",
    "days": 2,
    "opened_at": "2026-11-11 10:30",
-   "last_time": "22:52"
+   "last_time": "23:02"
   },
   {
    "id": "2026-11-11-RUAL-buy",
@@ -121,12 +121,12 @@
     "на поддержке 5059.50 (2 касания, до уровня 1.6%)"
    ],
    "status": "открыт",
-   "current_pct": 2.96,
-   "last_price": 5294.0,
+   "current_pct": 2.86,
+   "last_price": 5289.0,
    "last_date": "2026-11-13",
    "days": 2,
    "opened_at": "2026-11-11 10:30",
-   "last_time": "22:52"
+   "last_time": "23:02"
   },
   {
    "id": "2026-11-11-T-sell",
@@ -289,12 +289,12 @@
     "на поддержке 1.32 (2 касания, до уровня 1.2%)"
    ],
    "status": "открыт",
-   "current_pct": 2.37,
-   "last_price": 1.363,
+   "current_pct": 2.48,
+   "last_price": 1.3645,
    "last_date": "2026-11-13",
    "days": 2,
    "opened_at": "2026-11-11 11:33",
-   "last_time": "22:52"
+   "last_time": "23:02"
   },
   {
    "id": "2026-11-11-BAZA-sell-ta",
@@ -315,12 +315,12 @@
     "медвежья дивергенция (2026-10-29 → 2026-11-02)"
    ],
    "status": "открыт",
-   "current_pct": -0.79,
-   "last_price": 151.08,
+   "current_pct": 0.93,
+   "last_price": 148.5,
    "last_date": "2026-11-13",
    "days": 2,
    "opened_at": "2026-11-11 11:42",
-   "last_time": "22:52"
+   "last_time": "23:02"
   },
   {
    "id": "2026-11-11-HEAD-sell-ta",
@@ -342,12 +342,12 @@
     "пробой поддержки 2777.33 2026-11-10 на объёме ×1.7"
    ],
    "status": "открыт",
-   "current_pct": 1.52,
-   "last_price": 2721.0,
+   "current_pct": 1.48,
+   "last_price": 2722.0,
    "last_date": "2026-11-13",
    "days": 2,
    "opened_at": "2026-11-11 15:43",
-   "last_time": "22:52"
+   "last_time": "23:02"
   },
   {
    "id": "2026-11-11-SMLT-sell-ta",
@@ -520,7 +520,7 @@
    "last_price": 710.8,
    "last_date": "2026-11-13",
    "days": 2,
-   "last_time": "22:52"
+   "last_time": "23:02"
   },
   {
    "id": "2026-11-11-T-buy-ta",
@@ -542,11 +542,11 @@
     "пробой сопротивления 275.50 2026-11-11 на объёме ×2.6"
    ],
    "status": "открыт",
-   "current_pct": 4.01,
-   "last_price": 292.92,
+   "current_pct": 4.22,
+   "last_price": 293.5,
    "last_date": "2026-11-13",
    "days": 2,
-   "last_time": "22:52"
+   "last_time": "23:02"
   },
   {
    "id": "2026-11-11-UGLD-buy-ta",
@@ -572,7 +572,7 @@
    "last_price": 0.698,
    "last_date": "2026-11-13",
    "days": 2,
-   "last_time": "22:52"
+   "last_time": "23:02"
   },
   {
    "id": "2026-11-11-NVTK-buy-ta",
@@ -593,11 +593,11 @@
     "пробой сопротивления 1094.47 2026-11-11 на объёме ×2.3"
    ],
    "status": "открыт",
-   "current_pct": -0.17,
-   "last_price": 1132.0,
+   "current_pct": -0.18,
+   "last_price": 1131.9,
    "last_date": "2026-11-13",
    "days": 2,
-   "last_time": "22:52"
+   "last_time": "23:02"
   },
   {
    "id": "2026-11-12-NLMK-sell-ta",
@@ -647,11 +647,11 @@
     "пробой сопротивления 179.45 2026-11-12 на объёме ×2.0"
    ],
    "status": "открыт",
-   "current_pct": 1.18,
-   "last_price": 184.55,
+   "current_pct": 1.26,
+   "last_price": 184.7,
    "last_date": "2026-11-13",
    "days": 1,
-   "last_time": "22:52"
+   "last_time": "23:02"
   },
   {
    "id": "2026-11-12-VTBR-buy-ta",
@@ -676,7 +676,7 @@
    "last_price": 62.38,
    "last_date": "2026-11-13",
    "days": 1,
-   "last_time": "22:52"
+   "last_time": "23:02"
   },
   {
    "id": "2026-11-12-VTBR-buy-momentum",
@@ -701,7 +701,7 @@
    "last_price": 62.38,
    "last_date": "2026-11-13",
    "days": 1,
-   "last_time": "22:52"
+   "last_time": "23:02"
   }
  ],
  "stats": {
@@ -738,5 +738,5 @@
   }
  },
  "updated_utc": "2026-11-12 21:13",
- "updated_live": "2026-11-13 22:52"
+ "updated_live": "2026-11-13 23:02"
 }
