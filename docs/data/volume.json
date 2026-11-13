@@ -1,6 +1,6 @@
 {
  "date": "2026-11-13",
- "updated": "2026-11-13 07:01",
+ "updated": "2026-11-13 07:11",
  "source": "AlgoPack tradestats",
  "params": {
   "norm_days": 20,
@@ -23,5 +23,40 @@
  },
  "norm_days": 23,
  "signals": [],
- "anomalies": []
+ "anomalies": [
+  {
+   "ticker": "VTBR",
+   "name": "ВТБ",
+   "side": null,
+   "ratio": 20.3,
+   "buy_share": 48,
+   "change_pct": -0.57,
+   "range_pos": 12,
+   "price": 61.635,
+   "value_mln": 1136.3,
+   "net_today_mln": -40.0,
+   "net30_mln": 584.1,
+   "day_high": 62.465,
+   "day_low": 61.525,
+   "time": "07:10",
+   "updated": "07:12"
+  },
+  {
+   "ticker": "FIXR",
+   "name": "Фикс Прайс",
+   "side": null,
+   "ratio": 18.8,
+   "buy_share": 60,
+   "change_pct": 1.06,
+   "range_pos": 54,
+   "price": 0.6294,
+   "value_mln": 158.9,
+   "net_today_mln": 25.3,
+   "net30_mln": 253.3,
+   "day_high": 0.635,
+   "day_low": 0.6228,
+   "time": "07:10",
+   "updated": "07:12"
+  }
+ ]
 }
