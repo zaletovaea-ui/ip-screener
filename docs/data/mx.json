@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-13 00:14",
+ "updated": "2026-11-13 04:59",
  "params": {
   "window": 3,
   "threshold": 10000,
@@ -5954,7 +5954,7 @@
   "snap_time": "23:50",
   "closed_return": 0.45,
   "total_return": 0.45,
-  "updated": "2026-11-13 00:14",
+  "updated": "2026-11-13 04:59",
   "blocked": null,
   "d1_now": 9174
  }
