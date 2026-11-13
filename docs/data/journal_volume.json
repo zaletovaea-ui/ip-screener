@@ -40,9 +40,9 @@
    "comment": "Объём ×3.0 нормы, покупатели 58%",
    "status": "открыт",
    "days": 0,
-   "last_price": 0.5476,
+   "last_price": 0.5465,
    "last_date": "2026-11-13",
-   "current_pct": -0.44
+   "current_pct": -0.64
   },
   {
    "id": "2026-11-13-SGZH-buy-volume",
@@ -88,9 +88,9 @@
    "comment": "Объём ×6.3 нормы, покупатели 59%",
    "status": "открыт",
    "days": 0,
-   "last_price": 11.145,
+   "last_price": 11.08,
    "last_date": "2026-11-13",
-   "current_pct": -1.2
+   "current_pct": -1.77
   },
   {
    "id": "2026-11-13-NMTP-buy-volume",
@@ -132,9 +132,9 @@
    "comment": "Объём ×6.8 нормы, покупатели 83%",
    "status": "открыт",
    "days": 0,
-   "last_price": 1003,
+   "last_price": 1004.5,
    "last_date": "2026-11-13",
-   "current_pct": 1.11
+   "current_pct": 1.26
   },
   {
    "id": "2026-11-13-ETLN-sell-volume",
@@ -176,9 +176,9 @@
    "comment": "Объём ×5.2 нормы, покупатели 64%",
    "status": "открыт",
    "days": 0,
-   "last_price": 54.15,
+   "last_price": 53.95,
    "last_date": "2026-11-13",
-   "current_pct": -2.08
+   "current_pct": -2.44
   },
   {
    "id": "2026-11-13-BELU-buy-volume",
@@ -198,9 +198,9 @@
    "comment": "Объём ×5.7 нормы, покупатели 68%",
    "status": "открыт",
    "days": 0,
-   "last_price": 282,
+   "last_price": 281.4,
    "last_date": "2026-11-13",
-   "current_pct": 0.28
+   "current_pct": 0.07
   },
   {
    "id": "2026-11-13-PRMD-buy-volume",
@@ -220,9 +220,9 @@
    "comment": "Объём ×4.1 нормы, покупатели 77%",
    "status": "открыт",
    "days": 0,
-   "last_price": 451.05,
+   "last_price": 451.7,
    "last_date": "2026-11-13",
-   "current_pct": 1.22
+   "current_pct": 1.37
   },
   {
    "id": "2026-11-13-RENI-buy-volume",
@@ -264,9 +264,9 @@
    "comment": "Объём ×3.0 нормы, покупатели 60%",
    "status": "открыт",
    "days": 0,
-   "last_price": 343.1,
+   "last_price": 343.7,
    "last_date": "2026-11-13",
-   "current_pct": -0.55
+   "current_pct": -0.38
   }
  ],
  "stats": {
@@ -300,5 +300,5 @@
   "against_share": 0.6,
   "cooldown": 7
  },
- "updated": "2026-11-13 15:52"
+ "updated": "2026-11-13 16:02"
 }
