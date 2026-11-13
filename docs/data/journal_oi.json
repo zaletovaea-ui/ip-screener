@@ -21,13 +21,13 @@
    "opened": "2026-11-12",
    "entry": 38.83,
    "stop": 40.496071,
-   "days": 0,
+   "days": 1,
    "stop_pct": -4.3,
    "best": 38.83,
    "last_price": 39.2,
    "current_pct": -0.95,
-   "processed": "2026-11-12",
-   "last_date": "2026-11-12"
+   "processed": "2026-11-13",
+   "last_date": "2026-11-13"
   },
   {
    "ref_price": 0.5273,
@@ -50,13 +50,13 @@
    "opened": "2026-11-12",
    "entry": 0.529,
    "stop": 0.496504,
-   "days": 0,
+   "days": 1,
    "stop_pct": -6.1,
    "best": 0.55,
    "last_price": 0.5484,
    "current_pct": 3.67,
-   "processed": "2026-11-12",
-   "last_date": "2026-11-12"
+   "processed": "2026-11-13",
+   "last_date": "2026-11-13"
   },
   {
    "ref_price": 298.51,
@@ -79,20 +79,58 @@
    "opened": "2026-11-12",
    "entry": 298.49,
    "stop": 303.971429,
-   "days": 0,
+   "days": 1,
    "stop_pct": -1.8,
    "best": 298.49,
    "last_price": 299.93,
    "current_pct": -0.48,
-   "processed": "2026-11-12",
-   "last_date": "2026-11-12"
+   "processed": "2026-11-13",
+   "last_date": "2026-11-13"
+  },
+  {
+   "ref_price": 1079.6,
+   "atr": 17.485714285714284,
+   "net": 187692,
+   "long": 212740,
+   "short": 25048,
+   "id": "2026-11-13-TRNFP-buy-oi",
+   "strategy": "oi",
+   "ticker": "TRNFP",
+   "name": "Транснф ап",
+   "code": "TN",
+   "side": "buy",
+   "signal_date": "2026-11-13",
+   "status": "ждёт входа",
+   "rel_pct": -11.7,
+   "d_net": -28786,
+   "d_net_mln": -31.1,
+   "comment": "Физлица нарастили шорт: -28 786 контр. (-11.7% позиции)"
+  },
+  {
+   "ref_price": 62.295,
+   "atr": 1.3735714285714284,
+   "net": 365618,
+   "long": 459840,
+   "short": 94222,
+   "id": "2026-11-13-VTBR-sell-oi",
+   "strategy": "oi",
+   "ticker": "VTBR",
+   "name": "ВТБ ао",
+   "code": "VB",
+   "side": "sell",
+   "signal_date": "2026-11-13",
+   "status": "ждёт входа",
+   "rel_pct": 10.1,
+   "d_net": 56788,
+   "d_net_mln": 353.8,
+   "comment": "Физлица нарастили лонг: +56 788 контр. (+10.1% позиции)"
   }
  ],
- "updated_night": "2026-11-13 04:59",
+ "updated_night": "2026-11-14 00:16",
  "stats": {
-  "total": 3,
+  "total": 5,
   "open": 3,
-  "pending": 0,
+  "pending": 2,
   "closed": 0
  },
  "params": {

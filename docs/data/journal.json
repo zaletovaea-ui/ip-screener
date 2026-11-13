@@ -702,11 +702,183 @@
    "last_date": "2026-11-13",
    "days": 1,
    "last_time": "23:52"
+  },
+  {
+   "id": "2026-11-13-SVCB-buy-ta",
+   "strategy": "ta",
+   "ticker": "SVCB",
+   "name": "Совкомбанк",
+   "side": "buy",
+   "opened": "2026-11-13",
+   "opened_at": "2026-11-13 23:59",
+   "entry": 10.85,
+   "stop": 10.6326,
+   "target": 11.245,
+   "stop_pct": -2.0,
+   "target_pct": 3.6,
+   "rating": "⭐⭐",
+   "comment": "EMA200 + пробой на объёме",
+   "signals": [
+    "откат к EMA200 10.84 (+0.1%), наклон вниз — слабее",
+    "пробой сопротивления 10.74 2026-11-12 на объёме ×2.2, был ретест уровня"
+   ],
+   "status": "открыт",
+   "current_pct": 0.0,
+   "last_price": 10.85,
+   "last_date": "2026-11-13",
+   "days": 0
+  },
+  {
+   "id": "2026-11-13-MOEX-buy-ta",
+   "strategy": "ta",
+   "ticker": "MOEX",
+   "name": "МосБиржа",
+   "side": "buy",
+   "opened": "2026-11-13",
+   "opened_at": "2026-11-13 23:59",
+   "entry": 167.4,
+   "stop": 164.2979,
+   "target": 172.8933,
+   "stop_pct": -1.9,
+   "target_pct": 3.3,
+   "rating": "⭐⭐",
+   "comment": "поддержка + пробой на объёме",
+   "signals": [
+    "на поддержке 165.96 (4 касания, до уровня 0.9%)",
+    "пробой сопротивления 159.19 2026-11-11 на объёме ×2.4"
+   ],
+   "status": "открыт",
+   "current_pct": 0.0,
+   "last_price": 167.4,
+   "last_date": "2026-11-13",
+   "days": 0
+  },
+  {
+   "id": "2026-11-13-SELG-sell-ta",
+   "strategy": "ta",
+   "ticker": "SELG",
+   "name": "Селигдар",
+   "side": "sell",
+   "opened": "2026-11-13",
+   "opened_at": "2026-11-13 23:59",
+   "entry": 38.29,
+   "stop": 41.915,
+   "target": 32.195,
+   "stop_pct": -9.5,
+   "target_pct": 15.9,
+   "rating": "⭐⭐",
+   "comment": "ниже EMA200 + дивергенция RSI",
+   "signals": [
+    "пробой EMA200 40.30 вниз, 5 закрытия ниже",
+    "медвежья дивергенция (2026-10-29 → 2026-11-05)"
+   ],
+   "status": "открыт",
+   "current_pct": 0.0,
+   "last_price": 38.29,
+   "last_date": "2026-11-13",
+   "days": 0
+  },
+  {
+   "id": "2026-11-13-TATNP-buy-ta",
+   "strategy": "ta",
+   "ticker": "TATNP",
+   "name": "Татнфт 3ап",
+   "side": "buy",
+   "opened": "2026-11-13",
+   "opened_at": "2026-11-13 23:59",
+   "entry": 584.1,
+   "stop": 575.19,
+   "target": 594.0,
+   "stop_pct": -1.5,
+   "target_pct": 1.7,
+   "rating": "⭐⭐",
+   "comment": "поддержка + разворот RSI",
+   "signals": [
+    "на поддержке 581.00 (2 касания, до уровня 0.5%)",
+    "RSI вышел из перепроданности (28 → 37, 2026-11-11)"
+   ],
+   "status": "открыт",
+   "current_pct": 0.0,
+   "last_price": 584.1,
+   "last_date": "2026-11-13",
+   "days": 0
+  },
+  {
+   "id": "2026-11-13-BELU-buy-momentum",
+   "strategy": "momentum",
+   "ticker": "BELU",
+   "name": "НоваБев ао",
+   "side": "buy",
+   "opened": "2026-11-13",
+   "opened_at": "2026-11-13 23:59",
+   "entry": 289.4,
+   "stop": 269.645,
+   "target": 328.91,
+   "stop_pct": -6.8,
+   "target_pct": 13.7,
+   "rating": "🚀",
+   "comment": "Импульс +6.6% на объёме ×6.2",
+   "signals": [
+    "рост +6.6% за день — первый за 20 дней, объём ×6.2"
+   ],
+   "status": "открыт",
+   "current_pct": 0.0,
+   "last_price": 289.4,
+   "last_date": "2026-11-13",
+   "days": 0
+  },
+  {
+   "id": "2026-11-13-PRMD-buy-momentum",
+   "strategy": "momentum",
+   "ticker": "PRMD",
+   "name": "iПРОМОМЕД",
+   "side": "buy",
+   "opened": "2026-11-13",
+   "opened_at": "2026-11-13 23:59",
+   "entry": 453.5,
+   "stop": 427.253,
+   "target": 505.994,
+   "stop_pct": -5.8,
+   "target_pct": 11.6,
+   "rating": "🚀",
+   "comment": "Импульс +5.2% на объёме ×8.2",
+   "signals": [
+    "рост +5.2% за день — первый за 20 дней, объём ×8.2"
+   ],
+   "status": "открыт",
+   "current_pct": 0.0,
+   "last_price": 453.5,
+   "last_date": "2026-11-13",
+   "days": 0
+  },
+  {
+   "id": "2026-11-13-ENPG-buy-momentum",
+   "strategy": "momentum",
+   "ticker": "ENPG",
+   "name": "ЭН+ГРУП ао",
+   "side": "buy",
+   "opened": "2026-11-13",
+   "opened_at": "2026-11-13 23:59",
+   "entry": 346.8,
+   "stop": 327.554,
+   "target": 385.292,
+   "stop_pct": -5.5,
+   "target_pct": 11.1,
+   "rating": "🚀",
+   "comment": "Импульс +5.1% на объёме ×3.5",
+   "signals": [
+    "рост +5.1% за день — первый за 20 дней, объём ×3.5"
+   ],
+   "status": "открыт",
+   "current_pct": 0.0,
+   "last_price": 346.8,
+   "last_date": "2026-11-13",
+   "days": 0
   }
  ],
  "stats": {
-  "total": 26,
-  "open": 13,
+  "total": 33,
+  "open": 20,
   "closed": 13,
   "win_rate": 7.7,
   "avg_result": -1.41,
@@ -718,8 +890,8 @@
   "win_rate_sell": 0.0,
   "by_strategy": {
    "ta": {
-    "total": 25,
-    "open": 12,
+    "total": 29,
+    "open": 16,
     "closed": 13,
     "win_rate": 7.7,
     "avg_result": -1.41,
@@ -731,12 +903,12 @@
     "win_rate_sell": 0.0
    },
    "momentum": {
-    "total": 1,
-    "open": 1,
+    "total": 4,
+    "open": 4,
     "closed": 0
    }
   }
  },
- "updated_utc": "2026-11-12 21:13",
+ "updated_utc": "2026-11-13 21:15",
  "updated_live": "2026-11-13 23:52"
 }
