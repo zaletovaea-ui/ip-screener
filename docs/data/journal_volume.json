@@ -18,9 +18,9 @@
    "comment": "Объём ×3.1 нормы, покупатели 59%",
    "status": "открыт",
    "days": 0,
-   "last_price": 144.45,
+   "last_price": 144.4,
    "last_date": "2026-11-13",
-   "current_pct": 0.77
+   "current_pct": 0.73
   },
   {
    "id": "2026-11-12-HYDR-buy-volume",
@@ -40,9 +40,9 @@
    "comment": "Объём ×3.0 нормы, покупатели 58%",
    "status": "открыт",
    "days": 0,
-   "last_price": 0.5498,
+   "last_price": 0.5482,
    "last_date": "2026-11-13",
-   "current_pct": -0.04
+   "current_pct": -0.33
   },
   {
    "id": "2026-11-13-SGZH-buy-volume",
@@ -62,9 +62,9 @@
    "comment": "Объём ×3.8 нормы, покупатели 61%",
    "status": "открыт",
    "days": 0,
-   "last_price": 0.831,
+   "last_price": 0.8295,
    "last_date": "2026-11-13",
-   "current_pct": -0.89
+   "current_pct": -1.07
   },
   {
    "id": "2026-11-13-SVCB-buy-volume",
@@ -84,14 +84,36 @@
    "comment": "Объём ×6.3 нормы, покупатели 59%",
    "status": "открыт",
    "days": 0,
-   "last_price": 11.3,
+   "last_price": 11.275,
    "last_date": "2026-11-13",
-   "current_pct": 0.18
+   "current_pct": -0.04
+  },
+  {
+   "id": "2026-11-13-NMTP-buy-volume",
+   "strategy": "volume",
+   "ticker": "NMTP",
+   "name": "НМТП",
+   "side": "buy",
+   "opened": "2026-11-13",
+   "opened_at": "2026-11-13 09:21",
+   "entry": 7.17,
+   "stop": 6.9849,
+   "stop_pct": -2.6,
+   "target": null,
+   "ratio": 4.1,
+   "buy_share": 82,
+   "change_pct": 2.14,
+   "comment": "Объём ×4.1 нормы, покупатели 82%",
+   "status": "открыт",
+   "days": 0,
+   "last_price": 7.17,
+   "last_date": "2026-11-13",
+   "current_pct": 0.0
   }
  ],
  "stats": {
-  "total": 4,
-  "open": 4,
+  "total": 5,
+  "open": 5,
   "closed": 0
  },
  "params": {
@@ -113,5 +135,5 @@
   "against_share": 0.6,
   "cooldown": 7
  },
- "updated": "2026-11-13 09:11"
+ "updated": "2026-11-13 09:21"
 }
