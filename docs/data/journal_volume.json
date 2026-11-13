@@ -40,9 +40,9 @@
    "comment": "Объём ×3.0 нормы, покупатели 58%",
    "status": "открыт",
    "days": 0,
-   "last_price": 0.5478,
+   "last_price": 0.548,
    "last_date": "2026-11-13",
-   "current_pct": -0.4
+   "current_pct": -0.36
   },
   {
    "id": "2026-11-13-SGZH-buy-volume",
@@ -62,9 +62,9 @@
    "comment": "Объём ×3.8 нормы, покупатели 61%",
    "status": "открыт",
    "days": 0,
-   "last_price": 0.8315,
+   "last_price": 0.8325,
    "last_date": "2026-11-13",
-   "current_pct": -0.83
+   "current_pct": -0.72
   }
  ],
  "stats": {
@@ -91,5 +91,5 @@
   "against_share": 0.6,
   "cooldown": 7
  },
- "updated": "2026-11-13 08:31"
+ "updated": "2026-11-13 08:41"
 }
