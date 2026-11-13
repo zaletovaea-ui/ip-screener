@@ -18,9 +18,9 @@
    "comment": "Объём ×3.1 нормы, покупатели 59%",
    "status": "открыт",
    "days": 0,
-   "last_price": 143.7,
+   "last_price": 143.9,
    "last_date": "2026-11-13",
-   "current_pct": 0.24
+   "current_pct": 0.38
   },
   {
    "id": "2026-11-12-HYDR-buy-volume",
@@ -40,9 +40,9 @@
    "comment": "Объём ×3.0 нормы, покупатели 58%",
    "status": "открыт",
    "days": 0,
-   "last_price": 0.5485,
+   "last_price": 0.5478,
    "last_date": "2026-11-13",
-   "current_pct": -0.27
+   "current_pct": -0.4
   },
   {
    "id": "2026-11-13-SGZH-buy-volume",
@@ -62,9 +62,9 @@
    "comment": "Объём ×3.8 нормы, покупатели 61%",
    "status": "открыт",
    "days": 0,
-   "last_price": 0.8365,
+   "last_price": 0.8315,
    "last_date": "2026-11-13",
-   "current_pct": -0.24
+   "current_pct": -0.83
   }
  ],
  "stats": {
@@ -91,5 +91,5 @@
   "against_share": 0.6,
   "cooldown": 7
  },
- "updated": "2026-11-13 08:21"
+ "updated": "2026-11-13 08:31"
 }
