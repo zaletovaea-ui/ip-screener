@@ -32,6 +32,7 @@ nav{display:flex;gap:4px;padding:10px 20px 0;flex-wrap:wrap;border-bottom:1px so
 nav button{border:none;border-bottom:3px solid transparent;border-radius:0;background:none;padding:10px 12px;color:var(--sec)}
 nav button.on{color:var(--blue);border-bottom-color:var(--blue);font-weight:700}
 main{padding:20px;max-width:1280px;margin:0 auto}
+@media(min-width:1500px){main{max-width:1560px}}
 .grid{display:grid;gap:14px}
 .k4{grid-template-columns:repeat(4,1fr)}
 @media(max-width:960px){.k4{grid-template-columns:repeat(2,1fr)}}
@@ -100,6 +101,30 @@ td .sub{display:block;font-size:11px;color:var(--muted);line-height:14px}
 .k4b{grid-template-columns:repeat(4,1fr)}
 @media(max-width:960px){.k4b{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:460px){.k4b{grid-template-columns:1fr}}
+
+/* полноэкранный режим и мобильная версия */
+#btnFull{display:none}
+body.club #btnFull{display:inline-block}
+.fs-exit #btnFull{display:none!important}
+@media(max-width:600px){
+ main{padding:12px}
+ header{padding:10px 12px;gap:8px}
+ header h1{font-size:18px}
+ header h1 small{display:none}
+ header .upd{font-size:11px;width:100%;order:3}
+ nav{flex-wrap:nowrap;overflow-x:auto;padding:4px 8px 0;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+ nav::-webkit-scrollbar{display:none}
+ nav button{white-space:nowrap;padding:10px 8px;flex:0 0 auto}
+ .card{padding:12px;border-radius:10px}
+ .card h3{font-size:16px;line-height:22px}
+ .krate{padding:10px 12px;gap:4px 12px}
+ .krate .kv{font-size:18px}
+ .kpi .v{font-size:22px}
+ th,td{padding:6px 6px;font-size:12px}
+ .tw table th:first-child,.tw table td:first-child{position:sticky;left:0;background:var(--surface);z-index:1;box-shadow:1px 0 0 var(--border)}
+ .tw table th:first-child{z-index:2}
+ button{padding:7px 10px}
+}
 </style>
 </head>
 <body>
@@ -107,6 +132,7 @@ td .sub{display:block;font-size:11px;color:var(--muted);line-height:14px}
   <h1><span id="ttl"></span><small>INVEST PRIVET+</small></h1>
   <span class="upd" id="upd"></span>
   <span class="sp"></span>
+  <button class="ghost" id="btnFull">⛶ На весь экран</button>
   <button class="ghost" id="btnReload">⟳ Обновить из таблицы</button>
   <button class="ghost" id="btnSettings">⚙</button>
 </header>
@@ -658,12 +684,26 @@ $('#txQ').oninput=()=>P&&renderTx();
 ['#refQ','#refHeld','#refAct'].forEach(id=>{ $(id).oninput=()=>P&&renderRef(); $(id).onchange=()=>P&&renderRef(); });
 $('#btnReload').onclick=()=>load(true);
 function clubCode(){ const c=cfg(); if(!c.url||!c.tok) return ''; const u=location.origin+location.pathname+'?club=1&u='+encodeURIComponent(c.url)+'&k='+encodeURIComponent(c.tok);
-  return `<iframe src="${u}" style="width:100%;height:1900px;border:0" loading="lazy"></iframe>`; }
+  const id='ip-'+FRAME_KEY;
+  return `<iframe id="${id}" src="${u}" style="width:100%;height:1900px;border:0;display:block" allow="fullscreen" allowfullscreen loading="lazy"></iframe>\n<script>(function(){var f=document.getElementById('${id}');function fit(){f.style.width='100%';var r=f.getBoundingClientRect();var w=document.documentElement.clientWidth-r.left-24;if(w>r.width+40){f.style.width=Math.min(w,1700)+'px';}}fit();window.addEventListener('resize',fit);window.addEventListener('message',function(e){var d=e.data;if(d&&d.ipFrame==='${FRAME_KEY}'&&d.h){f.style.height=(d.h+8)+'px';}});})();<\/script>`; }
 function openSettings(){ const c=cfg(); $('#sUrl').value=c.url; $('#sTok').value=c.tok; $('#gcCode').value=clubCode(); $('#settings').classList.remove('hide'); }
 $('#gcCopy').onclick=async()=>{ await navigator.clipboard.writeText($('#gcCode').value); $('#gcCopy').textContent='Скопировано ✓'; setTimeout(()=>$('#gcCopy').textContent='Скопировать код',1500); };
 $('#btnSettings').onclick=openSettings; $('#sCancel').onclick=()=>$('#settings').classList.add('hide');
 $('#sSave').onclick=()=>{ store.set(LS('url'),$('#sUrl').value.trim()); store.set(LS('tok'),$('#sTok').value.trim()); store.del(LS('cache')); $('#settings').classList.add('hide'); load(true); };
 if(location.hash){ const b=document.querySelector(`#tabs button[data-t="${location.hash.slice(1)}"]`); if(b) setTimeout(()=>b.click(),0); }
+const FRAME_KEY = CFG.key;
+/* ===== полный экран и авто-высота на Геткурсе ===== */
+const IN_FRAME = (()=>{ try{ return window.self!==window.top; }catch(e){ return true; } })();
+$('#btnFull').onclick=async()=>{
+  const el=document.documentElement;
+  if(document.fullscreenElement){ try{ await document.exitFullscreen(); }catch(e){} return; }
+  try{ if(el.requestFullscreen){ await el.requestFullscreen(); return; } }catch(e){}
+  window.open(location.href,'_blank');
+};
+document.addEventListener('fullscreenchange',()=>{ $('#btnFull').textContent=document.fullscreenElement?'✕ Свернуть':'⛶ На весь экран'; });
+function postHeight(){ if(!IN_FRAME) return; try{ parent.postMessage({ipFrame:FRAME_KEY, h:Math.ceil(document.body.getBoundingClientRect().height)},'*'); }catch(e){} }
+try{ new ResizeObserver(()=>postHeight()).observe(document.body); }catch(e){ setInterval(postHeight,1500); }
+window.addEventListener('load',postHeight);
 load(false);
 </script>
 </body>
