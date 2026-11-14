@@ -425,7 +425,7 @@ function renderClosed(){
 /* ===== конструктор поста ===== */
 const STORE_KEY=LS('post');
 let S=JSON.parse(localStorage.getItem(STORE_KEY)||'null')||{};
-S=Object.assign({mode:'rebal', reason:'', sells:[], buys:[], mbuys:[], divs:[], contrib:20000, leftover:'', leftoverNote:'ребалансировки, покупка LQDT', mcomment:'', getcourse:'', ov:{}}, S);
+S=Object.assign({mode:'rebal', reason:'', sells:[], buys:[], msells:[], mbuys:[], divs:[], contrib:20000, leftover:'', leftoverNote:'ребалансировки, покупка LQDT', mcomment:'', getcourse:'', ov:{}}, S);
 const DESC=JSON.parse(localStorage.getItem(LS('desc'))||'{}');
 function save(){ localStorage.setItem(STORE_KEY, JSON.stringify(S)); localStorage.setItem(LS('desc'), JSON.stringify(DESC)); }
 function priceRange(s){ const m=String(s||'').replace(/\s/g,'').replace(/,/g,'.').split(/[-–—]/).map(parseFloat).filter(isFinite); return m; }
@@ -437,8 +437,9 @@ function tickerOptions(sel, onlyHeld){
   const list = onlyHeld? P.pos.map(p=>p.t) : [...new Set([...P.pos.map(p=>p.t), ...Object.keys(P.base)])];
   return '<option value="">—</option>'+list.map(t=>`<option value="${t}" ${t===sel?'selected':''}>${t} · ${esc(nameOf(t))}</option>`).join('');
 }
+const isSellK=k=>k==='sells'||k==='msells';
 function legRow(kind,i,o){
-  const isSell=kind==='sells';
+  const isSell=isSellK(kind);
   return `<div class="leg" data-kind="${kind}" data-i="${i}">
    <div><label>Тикер</label><select data-f="t">${tickerOptions(o.t,isSell)}</select></div>
    <div><label>${isSell?'Подпись (необязательно)':'Описание после тикера'}</label><input data-f="desc" value="${esc(o.desc||'')}" placeholder="${isSell?'Полная продажа …':'Фонд на индекс … / идея …'}"></div>
@@ -451,7 +452,7 @@ function legRow(kind,i,o){
 function legCalc(kind,o){
   if(!P||!o.t) return '';
   const h=held(o.t), p=maxP(o.price), q=num(o.q), sum=q*p;
-  if(kind==='sells'){ const rest=h?Math.max(0,h.q-q):0; return `В портфеле ${h?fmt(h.q):0} шт. · сумма ${fmt(sum,2)} ₽ · останется ${fmt(rest)} шт. (${fmt(rest*p/P.total*100,0)}%)`; }
+  if(isSellK(kind)){ const rest=h?Math.max(0,h.q-q):0; return `В портфеле ${h?fmt(h.q):0} шт. · сумма ${fmt(sum,2)} ₽ · останется ${fmt(rest)} шт. (${fmt(rest*p/P.total*100,0)}%)`; }
   const base=(h?h.val:0)+sum, tot=P.total+(S.mode==='month'?num(S.contrib)||0:0);
   return `${h?`Уже в портфеле: ${fmt(h.q)} шт. на ${fmt(h.val)} ₽ · `:''}сумма ${fmt(sum)} ₽ · доля после покупки ~${fmt(base/tot*100,0)}%`;
 }
@@ -473,7 +474,8 @@ function renderForm(){
     h+=`<div style="margin-top:8px"><label>Ссылка на Геткурс (необязательно)</label><input id="f_gc" value="${esc(S.getcourse)}"></div>`;
     h+=`<div class="sec">Дивиденды за месяц</div><div id="divs">${S.divs.map((d,i)=>`<div class="row" style="grid-template-columns:1fr 140px 32px;margin-bottom:6px" data-div="${i}"><input data-df="n" value="${esc(d.n)}" placeholder="ГМК Норникель"><input data-df="a" type="number" step="0.01" value="${d.a??''}" placeholder="руб."><button class="small" data-ddel="${i}">✕</button></div>`).join('')}</div><button class="small" id="addDiv">+ дивиденд</button>`;
     h+=`<div class="sec">Пополнение</div><div class="row" style="grid-template-columns:1fr 1fr 2fr"><div><label>Взнос, ₽</label><input id="f_contrib" type="number" value="${S.contrib}"></div><div><label>Остатки, ₽</label><input id="f_left" type="number" value="${S.leftover}"></div><div><label>Откуда остатки</label><input id="f_leftn" value="${esc(S.leftoverNote)}"></div></div>`;
-    h+=`<div class="muted" style="margin-top:6px" id="freeCalc"></div>`;
+    h+=`<div class="sec">🔴 Продажа (если совмещаем с ребалансировкой)</div><div id="legs_msells">${S.msells.map((o,i)=>legRow('msells',i,o)).join('')}</div><button class="small" data-add="msells">+ продажа</button>`;
+    h+=`<div class="muted" style="margin-top:10px" id="freeCalc"></div>`;
     h+=`<div class="sec">🟢 Покупка</div><div id="legs_mbuys">${S.mbuys.map((o,i)=>legRow('mbuys',i,o)).join('')}</div><button class="small" data-add="mbuys">+ покупка</button>`;
     h+=`<div style="margin-top:10px"><label>Комментарий после покупок</label><textarea id="f_mc" placeholder="Ждём встречу в Абу-Даби…">${esc(S.mcomment)}</textarea></div>`;
   }
@@ -483,16 +485,17 @@ function renderForm(){
 function updCalcs(){ document.querySelectorAll('.leg').forEach(el=>{ const k=el.dataset.kind, o=S[k][+el.dataset.i]; el.querySelector('[data-calc]').textContent=legCalc(k,o); });
   const fc=$('#freeCalc'); if(fc) fc.textContent=`Свободно для покупок: ${fmt(freeCash(),2)} ₽`; }
 function divSum(){ return S.divs.reduce((s,d)=>s+(num(d.a)||0),0); }
-function freeCash(){ return divSum()+(num(S.contrib)||0)+(num(S.leftover)||0); }
+function sellSum(list){ return list.filter(o=>o.t).reduce((s,o)=>s+(num(o.q)||0)*(num(o.price)||0),0); }
+function freeCash(){ return divSum()+(num(S.contrib)||0)+(num(S.leftover)||0)+sellSum(S.msells); }
 function bindForm(){
   const f=$('#form');
   f.querySelectorAll('.leg').forEach(el=>{ const k=el.dataset.kind, i=+el.dataset.i, o=S[k][i];
     el.querySelectorAll('[data-f]').forEach(inp=>{ inp.oninput=inp.onchange=()=>{ const fld=inp.dataset.f; o[fld]=inp.value;
       if(fld==='t'){ const h=held(o.t); const pr=priceOf(o.t); if(isFinite(pr)) o.price=String(pr).replace('.',',');
-        if(k==='sells'&&h) o.q=h.q; if(k!=='sells'&&DESC[o.t]) o.desc=DESC[o.t]; o.sum=''; save(); renderForm(); return; }
+        if(isSellK(k)&&h) o.q=h.q; if(!isSellK(k)&&DESC[o.t]) o.desc=DESC[o.t]; o.sum=''; save(); renderForm(); return; }
       if(fld==='sum'){ const p=maxP(o.price); if(isFinite(p)&&num(o.sum)>0){ o.q=Math.floor(num(o.sum)/p); el.querySelector('[data-f=q]').value=o.q; } }
       if(fld==='q'||fld==='price'){ o.sum=''; el.querySelector('[data-f=sum]').value=''; }
-      if(fld==='desc'&&k!=='sells'&&o.t) DESC[o.t]=o.desc;
+      if(fld==='desc'&&!isSellK(k)&&o.t) DESC[o.t]=o.desc;
       save(); updCalcs(); renderPost(); }; });
     el.querySelector('[data-del]').onclick=()=>{ S[k].splice(i,1); save(); renderForm(); renderPost(); };
   });
@@ -504,7 +507,12 @@ function bindForm(){
   f.querySelectorAll('[data-div]').forEach(r=>{ const i=+r.dataset.div; r.querySelectorAll('[data-df]').forEach(e=>e.oninput=()=>{ S.divs[i][e.dataset.df]=e.value; save(); updCalcs(); renderPost(); }); });
   f.querySelectorAll('[data-ddel]').forEach(b=>b.onclick=()=>{ S.divs.splice(+b.dataset.ddel,1); save(); renderForm(); renderPost(); });
   const ad=$('#addDiv'); if(ad) ad.onclick=()=>{ S.divs.push({n:'',a:''}); save(); renderForm(); };
-  $('#clearPost').onclick=()=>{ if(!confirm('Очистить форму?')) return; Object.assign(S,{reason:'',sells:[],buys:[],mbuys:[],divs:[],leftover:'',mcomment:'',ov:{}}); save(); renderForm(); renderPost(); };
+  $('#clearPost').onclick=()=>{ if(!confirm('Очистить форму?')) return; Object.assign(S,{reason:'',sells:[],buys:[],msells:[],mbuys:[],divs:[],leftover:'',mcomment:'',ov:{}}); save(); renderForm(); renderPost(); };
+}
+function sellBlock(list){
+  return list.filter(o=>o.t).map(o=>{ const h=held(o.t), p=num(o.price), q=num(o.q), rest=h?Math.max(0,h.q-q):0;
+    const cap=o.desc||(h&&rest===0?`Полная продажа ${nameOf(o.t)}`:`Частичная продажа ${nameOf(o.t)}`);
+    return `${cap}\n#${o.t}\n\n${fmt(q)} по цене ${priceTxt(o.price)} руб = ${fmt(q*p,2)} руб остаток ${fmt(rest*p/P.total*100,0)}%`; }).join('\n\n');
 }
 function buyBlock(list){
   return list.filter(o=>o.t).map(o=>{ const h=held(o.t), p=maxP(o.price), q=num(o.q); const sum=q*p;
@@ -519,9 +527,7 @@ function buildPost(){
     if(S.reason.trim()) t+=`Обоснование: ${S.reason.trim()}\n\n`;
     t+='#портфельростидоход\n';
     const sells=S.sells.filter(o=>o.t);
-    if(sells.length){ t+='\n🔴ПРОДАЖА\n\n'+sells.map(o=>{ const h=held(o.t), p=num(String(o.price).replace(',','.')), q=num(o.q), rest=h?Math.max(0,h.q-q):0;
-      const cap=o.desc||(h&&rest===0?`Полная продажа ${nameOf(o.t)}`:`Частичная продажа ${nameOf(o.t)}`);
-      return `${cap}\n#${o.t}\n\n${fmt(q)} по цене ${priceTxt(o.price)} руб = ${fmt(q*p,2)} руб остаток ${fmt(rest*p/P.total*100,0)}%`; }).join('\n\n')+'\n'; }
+    if(sells.length) t+='\n🔴ПРОДАЖА\n\n'+sellBlock(sells)+'\n';
     const b=buyBlock(S.buys); if(b) t+='\n🟢 ПОКУПКА\n\n'+b+'\n';
     t+='\nПо факту совершения сделок предоставим скриншот и ссылку на Геткурс.\n\n'+DISCLAIMER;
     return t;
@@ -540,7 +546,10 @@ function buildPost(){
   const dv=S.divs.filter(d=>d.n&&num(d.a)>0);
   if(dv.length) t+=`▪️ В течение месяца поступали дивиденды от ${dv.map(d=>`${d.n} ${fmt(num(d.a),2)} руб.`).join(', ')}\n`;
   t+=`▪️ Вносим ежемесячное пополнение ${fmt(num(S.contrib)||0)} руб.\n\n`;
-  t+= num(S.leftover)>0 ? `С учетом остатков от сделок в течение месяца (${S.leftoverNote}) свободно для покупок ${fmt(freeCash())} руб.\n` : `Свободно для покупок ${fmt(freeCash())} руб.\n`;
+  const ms=S.msells.filter(o=>o.t);
+  if(ms.length) t+='🔴ПРОДАЖА\n\n'+sellBlock(ms)+'\n\n';
+  const basis=[ms.length?'продаж':'', num(S.leftover)>0?`остатков от сделок в течение месяца (${S.leftoverNote})`:''].filter(Boolean).join(' и ');
+  t+= basis ? `С учетом ${basis} свободно для покупок ${fmt(freeCash())} руб.\n` : `Свободно для покупок ${fmt(freeCash())} руб.\n`;
   const b=buyBlock(S.mbuys); if(b) t+='\n🟢 ПОКУПКА\n\n'+b+'\n';
   if(S.mcomment.trim()) t+='\n'+S.mcomment.trim()+'\n';
   t+='\n'+DISCLAIMER;
