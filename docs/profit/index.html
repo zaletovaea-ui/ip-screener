@@ -149,7 +149,7 @@ td .sub{display:block;font-size:11px;color:var(--muted);line-height:14px}
       <div class="muted" style="font-size:13px;margin:-4px 0 12px">Параметры выпусков из нашего справочника: тип и размер купона, график выплат, оферты, амортизация, особенности. Цена и доходность — актуальные данные Московской биржи на момент открытия страницы.</div>
       <div class="fl" style="margin-bottom:10px"><input id="refQ" placeholder="Поиск: название, ISIN…" style="max-width:280px"><label style="margin:0"><input type="checkbox" id="refHeld" style="width:auto"> только бумаги в портфеле</label><label style="margin:0"><input type="checkbox" id="refAct" style="width:auto" checked> скрыть погашенные</label></div>
       <div class="tw" id="refTable" style="max-height:none"></div>
-      <div class="fn">Источник: лист «Справочник по облигациям». КС — ключевая ставка ЦБ; RUONIA — ставка межбанковского кредитования «овернайт»; ПК — постоянный (фиксированный) купон; флоатер — плавающий купон.</div>
+      <div class="fn"><span id="refSrc"></span> КС — ключевая ставка ЦБ; RUONIA — ставка межбанковского кредитования «овернайт»; ПК — постоянный (фиксированный) купон; флоатер — плавающий купон.</div>
     </div>
   </section>
 
@@ -519,7 +519,8 @@ function renderStatic(){
   const deals=CFG.txMode==='deals';
   $('#txTab').textContent=deals?'Сделки':'Покупки'; $('#txH1').textContent=deals?'Сделки по месяцам':'Покупки по месяцам';
   $('#txH2').textContent=deals?'Все сделки':'Все покупки по текущим позициям';
-  $('#txNote').textContent=`Источник: лист «${CFG.sheets.tx}». Цена облигаций — в % от номинала.`; }
+  $('#txNote').textContent=`Источник: лист «${CFG.sheets.tx}». Цена облигаций — в % от номинала.`;
+  $('#refSrc').textContent=`Источник: лист «${CFG.sheets.ref}».`; }
 renderStatic();
 function renderKey(){ const it=P.it;
   $('#krate').innerHTML = isFinite(it.key)?`<span class="kl">Текущая ключевая ставка ЦБ</span><span class="kv">${fmt(it.key,2)}%</span>`+
