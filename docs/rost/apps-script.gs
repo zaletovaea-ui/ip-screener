@@ -1,12 +1,14 @@
 /**
  * Помощник «Рост и доход» — отдаёт данные портфеля сайту.
- * Вставляется в таблицу: Расширения → Apps Script.
+ * ОТДЕЛЬНЫЙ проект на script.google.com (не трогает скрипты внутри таблицы).
+ * Только читает таблицу, ничего в ней не меняет.
  * 1) Запустите функцию setup() один раз — в журнале появится ключ.
  * 2) Развернуть → Новое развертывание → Веб-приложение:
  *    «Запуск от имени: я», «Доступ: все». Скопируйте URL.
  * 3) На сайте нажмите ⚙ и вставьте URL и ключ.
  * Без ключа скрипт ничего не отдаёт.
  */
+const SHEET_ID = '1x8ddsI65ldrkJKEwwU5oVoJE6N69ruuk0BJXlFmwMYY';
 const SHEETS = ['Summary', 'All', 'Transactions', 'Closed Deals', 'Пополнения',
                 'Portfolio Log', 'Тейки для идей', 'Base'];
 
@@ -15,7 +17,7 @@ function doGet(e) {
   if (!token || !e || !e.parameter || e.parameter.token !== token) {
     return out_({ error: 'unauthorized' });
   }
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = SpreadsheetApp.openById(SHEET_ID);
   const tz = ss.getSpreadsheetTimeZone();
   const res = { updated: new Date().toISOString(), sheets: {} };
   SHEETS.forEach(function (name) {
