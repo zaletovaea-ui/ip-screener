@@ -470,6 +470,7 @@ function renderPositions(){
   const bonds=P.pos.filter(x=>x.kind==='bond').map(x=>Object.assign(x,{_ret:x.sb.ret,_got:x.sb.got,_rate:rating(x.sb.rating),_date:x.offer||x.mat}));
   sortable($('#bondTable'),[
     {k:'name',h:'Облигация',l:1,f:o=>`<b>${esc(o.name)}</b><span class="sub">${esc(o.t)} · ${esc(o.cat)}</span>${isFloat(o)?'<span class="tag fl" style="margin:3px 0 0">плавающий купон</span>':''}`},
+    {k:'status',h:'Статус',l:1,f:o=>stBadge(o.status)},
     {k:'q',h:'Шт',f:o=>fmt(o.q)},
     {k:'avg',h:'Ср. цена, %',f:o=>fmt(o.avg,2)},
     {k:'pricePct',h:'Цена, %',f:o=>fmt(o.pricePct,2)},
@@ -481,12 +482,12 @@ function renderPositions(){
     {k:'_date',h:'Оферта / погашение',f:o=>o.offer?`оферта ${ruDate(o.offer)}<span class="sub">погаш. ${ruDate(o.mat)}</span>`:ruDate(o.mat)},
     {k:'dur',h:'Дюрация, лет',f:o=>fmt(o.dur,2)},
     {k:'_rate',h:'Рейтинг*',l:1,f:o=>esc(o._rate)},
-    {k:'_ret',h:'Полная дох.*',f:o=>isFinite(o._ret)?badge(o._ret,fmtP(o._ret)):'—'},
-    {k:'status',h:'Статус',f:o=>stBadge(o.status)}
+    {k:'_ret',h:'Полная дох.*',f:o=>isFinite(o._ret)?badge(o._ret,fmtP(o._ret)):'—'}
   ], bonds, {k:'share',d:-1});
   const st=P.pos.filter(x=>x.kind==='stock').map(x=>Object.assign(x,{_ret:x.sb.ret,_dy:x.sb.dy,_dr:x.sb.drate}));
   sortable($('#stockTable'),[
     {k:'name',h:'Акция',l:1,f:o=>`<b>${esc(o.name)}</b><span class="sub">${esc(o.t)}</span>`},
+    {k:'status',h:'Статус',l:1,f:o=>stBadge(o.status)},
     {k:'q',h:'Шт',f:o=>fmt(o.q)},
     {k:'avg',h:'Ср. цена, ₽',f:o=>fmtPrice(o.avg)},
     {k:'price',h:'Цена, ₽',f:o=>fmtPrice(o.price)},
@@ -495,8 +496,7 @@ function renderPositions(){
     {k:'share',h:'Доля',f:o=>fmt(o.share,2)+'%'},
     {k:'_dy',h:'Див. дох.*',f:o=>isFinite(o._dy)?fmt(o._dy,2)+'%':'—'},
     {k:'_ret',h:'Полная дох.*',f:o=>isFinite(o._ret)?badge(o._ret,fmtP(o._ret)):'—'},
-    {k:'_dr',h:'Див. рейтинг*',f:o=>isFinite(o._dr)?fmt(o._dr):'—'},
-    {k:'status',h:'Статус',f:o=>stBadge(o.status)}
+    {k:'_dr',h:'Див. рейтинг*',f:o=>isFinite(o._dr)?fmt(o._dr):'—'}
   ], st, {k:'share',d:-1});
   $('#sbNote2').textContent=sbLine();
 }
