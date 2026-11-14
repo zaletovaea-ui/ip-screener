@@ -189,11 +189,11 @@ const BOARDS = ['TQOB','TQCB','TQIR','TQOD','TQOY','TQRD','TQOE','TQIY','TQPI'];
 /* ===== утилиты ===== */
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-function num(v){ if(typeof v==='number') return v; if(v==null||v==='') return NaN;
+function num(v){ if(typeof v==='number') return v; if(typeof v==='boolean') return NaN; if(v==null||v==='') return NaN;
   const s=String(v).replace(/−/g,'-').replace(/[р₽\s ]/g,'').replace(/[^0-9,.\-]/g,'').replace(',','.'); return s===''?NaN:parseFloat(s); }
-function fmt(n,d=0){ if(!isFinite(n)) return '—'; return n.toLocaleString('ru-RU',{minimumFractionDigits:d,maximumFractionDigits:d}).replace(/ /g,' ').replace(/ /g,' '); }
-function fmtP(n,d=2,sign=true){ if(!isFinite(n)) return '—'; return (sign&&n>0?'+':'')+fmt(n,d)+'%'; }
-function fmtPrice(n){ if(!isFinite(n)) return '—'; const d = n<10?4:(n<100?2:(Number.isInteger(n)?0:2)); return fmt(n,d).replace(/(,\d*?)0+$/,'$1').replace(/,$/,''); }
+function fmt(n,d=0){ if(typeof n!=='number'||!isFinite(n)) return '—'; return n.toLocaleString('ru-RU',{minimumFractionDigits:d,maximumFractionDigits:d}).replace(/ /g,' ').replace(/ /g,' '); }
+function fmtP(n,d=2,sign=true){ if(typeof n!=='number'||!isFinite(n)) return '—'; return (sign&&n>0?'+':'')+fmt(n,d)+'%'; }
+function fmtPrice(n){ if(typeof n!=='number'||!isFinite(n)) return '—'; const d = n<10?4:(n<100?2:(Number.isInteger(n)?0:2)); return fmt(n,d).replace(/(,\d*?)0+$/,'$1').replace(/,$/,''); }
 function cls(n){ return n>0?'up':(n<0?'down':''); }
 function badge(n,txt){ return `<span class="badge ${n>0?'b-up':(n<0?'b-down':'b-n')}">${n>0?'▲ ':(n<0?'▼ ':'')}${txt}</span>`; }
 const D = s => new Date(s+'T00:00:00');
@@ -285,7 +285,7 @@ function issRows(block){ if(!block||!block.columns) return []; const c=block.col
 function pickBoard(rows, secid){ const rs=rows.filter(r=>r.SECID===secid); if(!rs.length) return null;
   for(const b of BOARDS){ const r=rs.find(x=>x.BOARDID===b); if(r) return r; } return rs[0]; }
 const okDate = s => s && s!=='0000-00-00' ? String(s).slice(0,10) : null;
-const fin = (...a) => { for(const v of a){ const n=typeof v==='number'?v:parseFloat(v); if(isFinite(n)&&n!==0) return n; } return NaN; };
+const fin = (...a) => { for(const v of a){ if(v==null||v==='') continue; const n=typeof v==='number'?v:parseFloat(v); if(isFinite(n)&&n!==0) return n; } return NaN; };
 async function issJson(u){ const r=await fetch(u); if(!r.ok) throw new Error('ISS '+r.status); return r.json(); }
 async function loadMarket(){
   const bonds=P.pos.filter(x=>x.kind==='bond').map(x=>x.t), stocks=P.pos.filter(x=>x.kind==='stock').map(x=>x.t);
@@ -428,7 +428,7 @@ function build(){
   const yb=new Date(); yb.setFullYear(yb.getFullYear()-1); yb.setDate(yb.getDate()-10);
   loadIdx(START<iso(yb)?START:iso(yb)).then(()=>render()).catch(()=>{ IDX=null; render(); });
 }
-function render(){ if(!P) return; M=metrics(); renderKey(); renderOverview(); renderPositions(); renderCalendar(); renderTx(); }
+function render(){ if(!P) return; M=metrics(); for(const f of [renderKey,renderOverview,renderPositions,renderCalendar,renderTx]){ try{ f(); }catch(e){ console.error(f.name,e); if(!CLUB) msg('Ошибка в блоке «'+f.name+'»: '+esc(e.message)); } } }
 function renderKey(){ const it=P.it;
   $('#krate').innerHTML = isFinite(it.key)?`<span class="kl">Текущая ключевая ставка ЦБ</span><span class="kv">${fmt(it.key,2)}%</span>`+
     `<span class="kl">${it.keyDate?'решение от '+ruDate(it.keyDate):''}${it.keyNext?' · следующее заседание '+ruDate(it.keyNext):''}</span>`:'';
