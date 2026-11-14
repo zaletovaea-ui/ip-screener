@@ -100,7 +100,7 @@ pre.post{white-space:pre-wrap;background:#F1F5F9;border:1px solid var(--border);
     <div class="grid k4" id="kpis"></div>
     <div class="grid k2" style="margin-top:14px">
       <div class="card"><h3>Результаты против индекса MCFTR (индекс Мосбиржи полной доходности)</h3><div id="perf"></div><div class="muted" style="font-size:12px;margin-top:8px">XIRR — среднегодовая доходность с учётом дат взносов.<br>* Расчёт ориентировочный: возможны отклонения ±1–2% в большую или меньшую сторону.</div><div id="top5"></div></div>
-      <div class="card"><h3>Структура портфеля</h3><div style="height:230px"><canvas id="chStruct"></canvas></div></div>
+      <div class="card"><h3>Структура портфеля</h3><div style="height:230px"><canvas id="chStruct"></canvas></div><div id="structTbl" style="margin-top:16px"></div></div>
     </div>
     <div class="card" style="margin-top:14px"><h3>Стоимость портфеля и внесённые средства</h3><div style="height:320px"><canvas id="chLog"></canvas></div></div>
     <div class="card" style="margin-top:14px"><h3>По секторам</h3><div style="height:260px"><canvas id="chSect"></canvas></div></div>
@@ -331,6 +331,10 @@ function renderOverview(){
   $('#top5').innerHTML = top.length ? `<h3 style="margin-top:20px">Топ-${top.length} лучших сделок за год</h3><table><tr><th class="l">Компания</th><th>Доходность</th><th>Дней в сделке</th></tr>`+
     top.map(x=>{ const days=Math.round(x.days); return `<tr><td class="l"><b>${esc(nameOf(x.t))}</b> <span class="muted">${x.t}</span><div class="muted" style="font-size:11px">${ruDate(x.d1)} → ${ruDate(x.d2)}</div></td><td>${badge(x.ret,fmtP(x.ret,1))}</td><td>${isFinite(days)?fmt(days):'—'}</td></tr>`; }).join('')+'</table>' : '';
   const parts=[['Акции и фонды акций',m.eq],['Рублёвая ликвидность',m.rub],['Юаневая ликвидность',m.yuan],['Золото',m.gold]].filter(x=>x[1]>0.05);
+  const sw=['#1F5CFF','#0F2042','#B6F03A','#94A3B8'];
+  $('#structTbl').innerHTML='<table><tr><th class="l">Класс активов</th><th>Доля</th><th>Сумма, ₽</th></tr>'+
+    parts.map((x,i)=>`<tr><td class="l"><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:${sw[i]};margin-right:8px"></span>${x[0]}</td><td>${fmt(x[1],1)}%</td><td>${fmt(x[1]/100*m.cur)}</td></tr>`).join('')+
+    `<tr><td class="l"><b>Итого</b></td><td><b>100%</b></td><td><b>${fmt(m.cur)}</b></td></tr></table>`;
   chart('chStruct',{type:'doughnut',data:{labels:parts.map(x=>x[0]),datasets:[{data:parts.map(x=>+x[1].toFixed(1)),backgroundColor:['#1F5CFF','#0F2042','#B6F03A','#94A3B8'],borderColor:'#fff'}]},
     options:{maintainAspectRatio:false,plugins:{legend:{position:'right'},tooltip:{callbacks:{label:c=>`${c.label}: ${fmt(c.raw,1)}%`}}}}});
   // лог
