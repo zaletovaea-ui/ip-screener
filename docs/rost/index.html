@@ -78,7 +78,10 @@ pre.post{white-space:pre-wrap;background:#F1F5F9;border:1px solid var(--border);
 .an{border:1px solid var(--border);border-radius:12px;padding:12px 14px;background:var(--canvas)}
 .an-h{margin-bottom:6px}.an-t{color:var(--sec);font-size:14px;line-height:21px}
 .note{background:var(--navy);color:#fff;border-radius:12px;padding:12px 16px;margin:12px 0 4px;border-left:6px solid var(--lime)}
-@media(max-width:700px){.leg,.leg.buy{grid-template-columns:1fr 1fr}.k2{grid-template-columns:1fr}}
+.strat{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.st-i .l{color:var(--muted);font-size:12px}.st-i .v{font-weight:600;font-size:16px;margin-top:2px}.st-i .s{color:var(--sec);font-size:13px;line-height:19px;margin-top:2px}
+.st-i+.st-i{border-left:1px solid var(--border);padding-left:16px}
+@media(max-width:700px){.st-i+.st-i{border-left:none;padding-left:0}.leg,.leg.buy{grid-template-columns:1fr 1fr}.k2{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -100,6 +103,12 @@ pre.post{white-space:pre-wrap;background:#F1F5F9;border:1px solid var(--border);
   <div id="msg"></div>
 
   <section id="t-overview">
+    <div class="card strat" style="margin-bottom:14px">
+      <div class="st-i"><div class="l">Дата начала ведения стратегии</div><div class="v">2 августа 2024 г.</div></div>
+      <div class="st-i"><div class="l">Риск-профиль</div><div class="v">Умеренно-агрессивный</div><div class="s">умеренно-консервативный при сочетании стратегий с облигациями</div></div>
+      <div class="st-i"><div class="l">Срок</div><div class="v">от 3–5 лет</div></div>
+      <div class="st-i"><div class="l">Коротко о стратегии</div><div class="s" style="color:var(--navy)">Первоначальный капитал 400&nbsp;000&nbsp;руб., ежемесячные пополнения портфеля на 20&nbsp;000&nbsp;руб. Высокая доля акций.</div></div>
+    </div>
     <div class="grid k4" id="kpis"></div>
     <div class="grid k2" style="margin-top:14px">
       <div class="card"><h3>Результаты против индекса MCFTR (индекс Мосбиржи полной доходности)</h3><div id="perf"></div><div class="muted" style="font-size:12px;margin-top:8px">XIRR — среднегодовая доходность с учётом дат взносов.<br>* Расчёт ориентировочный: возможны отклонения ±1–2% в большую или меньшую сторону.</div><div id="top5"></div></div>
