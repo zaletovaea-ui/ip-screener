@@ -150,6 +150,11 @@ body.club #btnSettings,body.club #btnReload,body.club #tabs [data-t=post],body.c
 
 
   <section id="t-tx" class="hide">
+    <div class="grid k4" id="txKpi"></div>
+    <div class="grid k2" style="margin:14px 0">
+      <div class="card"><h3>Сделок по месяцам</h3><div style="height:240px"><canvas id="chTx"></canvas></div></div>
+      <div class="card"><h3>Топ-5 торгуемых бумаг</h3><div id="txTop"></div><div class="muted" style="font-size:12px;margin-top:8px">Без фондов рублёвой ликвидности (LQDT и др.) — это парковка денег, а не торговые идеи.</div></div>
+    </div>
     <div class="card"><h3>Все сделки</h3>
       <div class="fl" style="margin-bottom:10px"><input id="txQ" placeholder="Поиск: тикер, название, дата…" style="max-width:320px"></div>
       <div class="tw" id="txTable"></div></div>
@@ -350,7 +355,7 @@ function build(){
   const yb=new Date(); yb.setFullYear(yb.getFullYear()-1); yb.setDate(yb.getDate()-10);
   loadIdx(from<iso(yb)?from:iso(yb)).then(()=>{ render(); renderPost(); }).catch(()=>{ IDX=null; render(); });
 }
-function render(){ if(!P) return; renderOverview(); renderPositions(); renderTx(); renderClosed(); }
+function render(){ if(!P) return; renderOverview(); renderPositions(); renderTxStats(); renderTx(); renderClosed(); }
 
 function renderOverview(){
   const m=metrics(); M=m;
@@ -411,6 +416,30 @@ function renderPositions(){
     {k:'val',h:'Стоимость, ₽',f:o=>fmt(o.val)},{k:'ret',h:'Доходность*',f:o=>badge(o.ret,fmtP(o.ret,1))},
     {k:'share',h:'Доля',f:o=>`${fmt(o.share,1)}%`},
     {k:'sector',h:'Сектор',l:1}],P.pos,{k:'share',d:-1});
+}
+function renderTxStats(){
+  const T=P.tx; if(!T.length){ $('#txKpi').innerHTML=''; $('#txTop').innerHTML=''; return; }
+  const d0=T.map(x=>x.d).sort()[0], d1=iso(new Date());
+  const days=Math.max(1,(D(d1)-D(d0))/864e5), months=days/30.44, weeks=days/7;
+  const buys=T.filter(x=>String(x.type).startsWith('Пок')).length, sells=T.length-buys;
+  const eqT=T.filter(x=>kindOf(x.t)!=='rub');
+  $('#txKpi').innerHTML=`
+   <div class="card kpi hero"><div class="l">Всего сделок</div><div class="v">${fmt(T.length)}</div><div class="s">с ${ruDate(d0)} · покупок ${fmt(buys)}, продаж ${fmt(sells)}</div></div>
+   <div class="card kpi"><div class="l">В среднем в месяц</div><div class="v">${fmt(T.length/months,1)}</div><div class="s">без фондов ликвидности — ${fmt(eqT.length/months,1)}</div></div>
+   <div class="card kpi"><div class="l">В среднем в неделю</div><div class="v">${fmt(T.length/weeks,1)}</div><div class="s">без фондов ликвидности — ${fmt(eqT.length/weeks,1)}</div></div>
+   <div class="card kpi"><div class="l">Торговалось бумаг</div><div class="v">${fmt(new Set(T.map(x=>x.t)).size)}</div><div class="s">разных тикеров за всё время</div></div>`;
+  // по месяцам
+  const bm={}; let m=d0.slice(0,7); const end=d1.slice(0,7);
+  while(m<=end){ bm[m]=[0,0]; let [y,mm]=m.split('-').map(Number); mm++; if(mm>12){mm=1;y++;} m=`${y}-${String(mm).padStart(2,'0')}`; }
+  T.forEach(x=>{ const k=x.d.slice(0,7); if(bm[k]) bm[k][String(x.type).startsWith('Пок')?0:1]++; });
+  const ks=Object.keys(bm), MN=['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+  chart('chTx',{type:'bar',data:{labels:ks.map(k=>MN[+k.slice(5)-1]+' '+k.slice(2,4)),datasets:[{label:'Покупки',data:ks.map(k=>bm[k][0]),backgroundColor:'#1F5CFF',borderRadius:3},{label:'Продажи',data:ks.map(k=>bm[k][1]),backgroundColor:'#0F2042',borderRadius:3}]},
+    options:{maintainAspectRatio:false,scales:{x:{stacked:true,grid:{display:false},ticks:{maxRotation:0,autoSkip:true,maxTicksLimit:14}},y:{stacked:true,ticks:{precision:0},grid:{color:'#E2E8F0'}}},plugins:{legend:{position:'bottom'}}}});
+  // топ торгуемых
+  const g={}; eqT.forEach(x=>{ const o=g[x.t]||(g[x.t]={t:x.t,n:0,b:0,s:0,sum:0}); o.n++; String(x.type).startsWith('Пок')?o.b++:o.s++; o.sum+=num(x.sum)||0; });
+  const top=Object.values(g).sort((a,b)=>b.n-a.n||b.sum-a.sum).slice(0,5);
+  $('#txTop').innerHTML='<table><tr><th class="l">Бумага</th><th>Сделок</th><th>Покупок / продаж</th><th>Оборот, ₽</th></tr>'+
+    top.map((o,i)=>`<tr><td class="l"><span class="muted">${i+1}.</span> <b>${esc(nameOf(o.t))}</b> <span class="muted">${o.t}</span></td><td><b>${o.n}</b></td><td>${o.b} / ${o.s}</td><td>${fmt(o.sum)}</td></tr>`).join('')+'</table>';
 }
 function renderTx(){
   const q=$('#txQ').value.trim().toLowerCase();
