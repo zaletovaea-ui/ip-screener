@@ -106,7 +106,7 @@ pre.post{white-space:pre-wrap;background:#F1F5F9;border:1px solid var(--border);
   </section>
 
   <section id="t-positions" class="hide">
-    <div class="card"><h3>Позиции</h3><div class="tw" id="posTable" style="max-height:none"></div>
+    <div class="card"><h3>Позиции</h3><div class="muted" style="font-size:12px;margin:-4px 0 12px">* Доходность — текущая, от средней цены покупки по открытой позиции. Без учёта метода ФИФО и ранее закрытых сделок по эмитенту.</div><div class="tw" id="posTable" style="max-height:none"></div>
     </div>
   </section>
 
@@ -362,7 +362,7 @@ function renderPositions(){
     {k:'name',h:'Эмитент',l:1,f:o=>`<b>${esc(o.name)}</b> <span class="muted">${o.t}</span>`},
     {k:'status',h:'Статус',l:1,f:o=>stBadge(o.status)},
     {k:'q',h:'Кол-во',f:o=>fmt(o.q)},{k:'avg',h:'Средняя',f:o=>fmtPrice(o.avg)},{k:'price',h:'Текущая',f:o=>fmtPrice(o.price)},
-    {k:'val',h:'Стоимость, ₽',f:o=>fmt(o.val)},{k:'ret',h:'Доходность',f:o=>badge(o.ret,fmtP(o.ret,1))},
+    {k:'val',h:'Стоимость, ₽',f:o=>fmt(o.val)},{k:'ret',h:'Доходность*',f:o=>badge(o.ret,fmtP(o.ret,1))},
     {k:'share',h:'Доля',f:o=>`${fmt(o.share,1)}%`},
     {k:'sector',h:'Сектор',l:1}],P.pos,{k:'share',d:-1});
 }
