@@ -88,7 +88,6 @@ pre.post{white-space:pre-wrap;background:#F1F5F9;border:1px solid var(--border);
 <nav id="tabs">
   <button data-t="overview" class="on">Обзор</button>
   <button data-t="positions">Позиции</button>
-  <button data-t="takes">Тейки и доборы</button>
   <button data-t="tx">Сделки</button>
   <button data-t="closed">Закрытые сделки</button>
   <button data-t="post">✍️ Пост о сделках</button>
@@ -111,11 +110,6 @@ pre.post{white-space:pre-wrap;background:#F1F5F9;border:1px solid var(--border);
     <div class="muted" style="font-size:12px;margin-top:8px">Полоска — текущая доля, чёрная риска — целевая доля из листа Base.</div></div>
   </section>
 
-  <section id="t-takes" class="hide">
-    <div class="card"><h3>Тейки и уровни добора</h3>
-      <div class="fl" style="margin-bottom:10px"><label style="margin:0">Подсвечивать, если до уровня меньше</label><input id="takeThr" type="number" value="3" style="width:70px"> %</div>
-      <div class="tw" id="takesTable"></div></div>
-  </section>
 
   <section id="t-tx" class="hide">
     <div class="card"><h3>Все сделки</h3>
@@ -310,7 +304,7 @@ function build(){
   const yb=new Date(); yb.setFullYear(yb.getFullYear()-1); yb.setDate(yb.getDate()-10);
   loadIdx(from<iso(yb)?from:iso(yb)).then(()=>{ render(); renderPost(); }).catch(()=>{ IDX=null; render(); });
 }
-function render(){ if(!P) return; renderOverview(); renderPositions(); renderTakes(); renderTx(); renderClosed(); }
+function render(){ if(!P) return; renderOverview(); renderPositions(); renderTx(); renderClosed(); }
 
 function renderOverview(){
   const m=metrics(); M=m;
@@ -371,18 +365,6 @@ function renderPositions(){
     {k:'share',h:'Доля',f:o=>`${fmt(o.share,1)}%`},
     {k:'target',h:'Цель / отклонение',f:o=>isFinite(o.target)?`<div class="fl" style="justify-content:flex-end"><div class="bar"><i style="width:${Math.min(100,o.share/Math.max(o.target,o.share)*100)}%"></i><b style="left:${Math.min(100,o.target/Math.max(o.target,o.share)*100)}%"></b></div> ${fmt(o.target,0)}% <span class="${cls(o.share-o.target)}">(${o.share-o.target>0?'+':''}${fmt(o.share-o.target,1)})</span></div>`:'<span class="muted">—</span>'},
     {k:'sector',h:'Сектор',l:1},{k:'status',h:'Статус',l:1,f:o=>stBadge(o.status)}],P.pos,{k:'share',d:-1});
-}
-function renderTakes(){
-  const thr=num($('#takeThr').value)||3;
-  const rows=P.takes.map(x=>{ const pr=priceOf(x.t); const dist=v=>isFinite(v)&&isFinite(pr)?(v/pr-1)*100:NaN;
-    const o={...x,pr,ret:(pr/x.entry-1)*100,d1:dist(x.t1),d2:dist(x.t2),d3:dist(x.t3),dAdd:dist(x.add),held:!!P.pos.find(p=>p.t===x.t)};
-    o._hl=[o.d1,o.d2,o.d3].some(d=>isFinite(d)&&Math.abs(d)<=thr)||(isFinite(o.dAdd)&&Math.abs(o.dAdd)<=thr); return o; });
-  const lv=(v,d)=>isFinite(v)?`${fmtPrice(v)} <span class="muted" style="font-size:11px">${fmtP(d,1)}</span>`:'<span class="muted">—</span>';
-  sortable($('#takesTable'),[
-    {k:'name',h:'Компания',l:1,f:o=>`<b>${esc(o.name)}</b> <span class="muted">${o.t}</span>${o.held?' <span class="badge b-blue">в портфеле</span>':''}`},
-    {k:'entry',h:'Вход',f:o=>fmtPrice(o.entry)},{k:'pr',h:'Текущая',f:o=>fmtPrice(o.pr)},{k:'ret',h:'От входа',f:o=>badge(o.ret,fmtP(o.ret,1))},
-    {k:'d1',h:'Тейк 1',f:o=>lv(o.t1,o.d1)},{k:'d2',h:'Тейк 2',f:o=>lv(o.t2,o.d2)},{k:'d3',h:'Тейк 3',f:o=>lv(o.t3,o.d3)},
-    {k:'dAdd',h:'Добор −20%',f:o=>lv(o.add,o.dAdd)},{k:'lv',h:'Тех. уровни',l:1},{k:'note',h:'Комментарий',l:1,f:o=>`<span class="muted" style="white-space:normal">${esc(o.note)}</span>`}],rows,{k:'d1',d:1});
 }
 function renderTx(){
   const q=$('#txQ').value.trim().toLowerCase();
@@ -534,7 +516,7 @@ document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{ document.qu
   document.querySelectorAll('main>section').forEach(s=>s.classList.toggle('hide',s.id!=='t-'+b.dataset.t)); if(b.dataset.t==='post') renderForm(); location.hash=b.dataset.t; });
 document.querySelectorAll('#mode button').forEach(b=>b.onclick=()=>{ S.mode=b.dataset.m; save(); renderForm(); renderPost(); });
 $('#copy').onclick=async()=>{ await navigator.clipboard.writeText($('#out').textContent); $('#copy').textContent='Скопировано ✓'; setTimeout(()=>$('#copy').textContent='Скопировать',1500); };
-$('#txQ').oninput=()=>P&&renderTx(); $('#clQ').oninput=()=>P&&renderClosed(); $('#clNoLq').onchange=()=>P&&renderClosed(); $('#takeThr').oninput=()=>P&&renderTakes();
+$('#txQ').oninput=()=>P&&renderTx(); $('#clQ').oninput=()=>P&&renderClosed(); $('#clNoLq').onchange=()=>P&&renderClosed();
 $('#btnReload').onclick=()=>load(true);
 function openSettings(){ const c=cfg(); $('#sUrl').value=c.url; $('#sTok').value=c.tok; $('#settings').classList.remove('hide'); }
 $('#btnSettings').onclick=openSettings; $('#sCancel').onclick=()=>$('#settings').classList.add('hide');
