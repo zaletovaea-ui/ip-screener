@@ -81,6 +81,7 @@ pre.post{white-space:pre-wrap;background:#F1F5F9;border:1px solid var(--border);
 .strat{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
 .st-i .l{color:var(--muted);font-size:12px}.st-i .v{font-weight:600;font-size:16px;margin-top:2px}.st-i .s{color:var(--sec);font-size:13px;line-height:19px;margin-top:2px}
 .st-i+.st-i{border-left:1px solid var(--border);padding-left:16px}
+body.club #btnSettings,body.club #btnReload,body.club #tabs [data-t=post],body.club #t-post{display:none!important}
 @media(max-width:700px){.st-i+.st-i{border-left:none;padding-left:0}.leg,.leg.buy{grid-template-columns:1fr 1fr}.k2{grid-template-columns:1fr}}
 </style>
 </head>
@@ -179,6 +180,10 @@ pre.post{white-space:pre-wrap;background:#F1F5F9;border:1px solid var(--border);
   <label>URL веб-приложения</label><input id="sUrl" placeholder="https://script.google.com/macros/s/…/exec">
   <label style="margin-top:10px">Ключ</label><input id="sTok" type="password">
   <div class="fl" style="margin-top:14px;justify-content:flex-end"><button id="sCancel">Отмена</button><button class="blue" id="sSave">Сохранить и загрузить</button></div>
+  <h3 style="margin-top:22px">Код для Геткурса</h3>
+  <p class="muted" style="margin-top:0;font-size:13px">Версия для клуба: без «Поста о сделках» и настроек, данные обновляются при каждом открытии. Вставьте код в блок «HTML-код» на странице Геткурса.</p>
+  <textarea id="gcCode" readonly style="min-height:90px;font-size:12px"></textarea>
+  <div class="fl" style="margin-top:8px;justify-content:flex-end"><button class="primary" id="gcCopy">Скопировать код</button></div>
 </div></div>
 
 <script>
@@ -189,6 +194,7 @@ const YUAN_MONEY = ['CNYM','AKMB','TLCB','BCNY','YUAN'];
 const GOLD = ['GOLD','AKGD','TGLD','SBGD','GLDN'];
 const STRATEGY_LINK = 'https://t.me/c/1747940543/1344';
 const LS = k => 'rid_' + k;
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}},del(k){try{localStorage.removeItem(k)}catch(e){}}};
 
 /* ===== утилиты ===== */
 const $ = s => document.querySelector(s);
@@ -207,20 +213,23 @@ function normDate(v){ if(!v) return null; if(typeof v==='string'){ if(/^\d{4}-\d
 
 /* ===== загрузка ===== */
 let RAW=null, P=null, IDX=null;
-function cfg(){ return {url:localStorage.getItem(LS('url'))||'', tok:localStorage.getItem(LS('tok'))||''}; }
+const Q=new URLSearchParams(location.search); const CLUB=Q.get('club')==='1';
+if(CLUB) document.body.classList.add('club');
+function cfg(){ if(CLUB) return {url:Q.get('u')||'', tok:Q.get('k')||''}; return {url:store.get(LS('url'))||'', tok:store.get(LS('tok'))||''}; }
+const CACHE_KEY=LS(CLUB?'ccache':'cache');
 async function load(force){
   const c=cfg();
-  if(!c.url||!c.tok){ openSettings(); msg('Подключите таблицу: нажмите ⚙ и вставьте адрес скрипта и ключ.'); return; }
-  const cached = localStorage.getItem(LS('cache'));
+  if(!c.url||!c.tok){ if(CLUB){ msg('Данные портфеля временно недоступны.'); return; } openSettings(); msg('Подключите таблицу: нажмите ⚙ и вставьте адрес скрипта и ключ.'); return; }
+  let cached=null; try{ cached=store.get(CACHE_KEY); }catch(e){}
   if(cached && !force){ try{ RAW=JSON.parse(cached); build(); }catch(e){} }
   try{
     msg(RAW?'':'Загружаю данные из таблицы…');
     const r = await fetch(c.url+(c.url.includes('?')?'&':'?')+'token='+encodeURIComponent(c.tok));
     const j = await r.json();
     if(j.error) throw new Error(j.error==='unauthorized'?'Неверный ключ':j.error);
-    RAW=j; try{ localStorage.setItem(LS('cache'), JSON.stringify(j)); }catch(e){}
+    RAW=j; try{ store.set(CACHE_KEY, JSON.stringify(j)); }catch(e){}
     msg(''); build();
-  }catch(e){ msg('Не удалось загрузить таблицу: '+esc(e.message)+(RAW?' Показаны последние сохранённые данные.':'')); }
+  }catch(e){ msg(CLUB?(RAW?'':'Не удалось загрузить данные портфеля, попробуйте обновить страницу позже.'):'Не удалось загрузить таблицу: '+esc(e.message)+(RAW?' Показаны последние сохранённые данные.':'')); }
 }
 function msg(t){ $('#msg').innerHTML = t?`<div class="warn">${t}</div>`:''; }
 
@@ -311,7 +320,7 @@ function metrics(){
 }
 /* ===== индекс MCFTR с Мосбиржи ===== */
 async function loadIdx(from){
-  const key=LS('mcftr'); let c=null; try{ c=JSON.parse(localStorage.getItem(key)||'null'); }catch(e){}
+  const key=LS('mcftr'); let c=null; try{ c=JSON.parse(store.get(key)||'null'); }catch(e){}
   const today=iso(new Date());
   if(c && c.from<=from && c.fetched===today){ IDX=c.rows; return; }
   const rows=[]; let start=0;
@@ -319,7 +328,7 @@ async function loadIdx(from){
     const u=`https://iss.moex.com/iss/history/engines/stock/markets/index/securities/MCFTR.json?from=${from}&iss.meta=off&history.columns=TRADEDATE,CLOSE&start=${start}`;
     const j=await (await fetch(u)).json(); const d=j.history.data; if(!d.length) break;
     rows.push(...d.filter(r=>r[1]!=null)); start+=d.length; if(d.length<100) break; }
-  IDX=rows; try{ localStorage.setItem(key, JSON.stringify({from,fetched:today,rows})); }catch(e){}
+  IDX=rows; try{ store.set(key, JSON.stringify({from,fetched:today,rows})); }catch(e){}
 }
 function idxAt(d){ if(!IDX||!IDX.length) return NaN; let v=NaN; for(const r of IDX){ if(r[0]<=d) v=r[1]; else break; } return isFinite(v)?v:IDX[0][1]; }
 function idxRet(d0,d1){ const a=idxAt(d0), b=idxAt(d1); return (b/a-1)*100; }
@@ -335,7 +344,7 @@ function build(){
   const last=P.contrib.filter(c=>!c.init).slice(-1)[0];
   const warn=[]; if(!last || (Date.now()-D(last.d))/864e5>45) warn.push(`В листе «Пополнения» последнее пополнение — ${last?ruDate(last.d):'нет'}. Пока лист не дополнен, «внесено», прибыль, XIRR и доходность по периодам считаются неверно.`);
   if(P.logGlitches.length) warn.push(`В листе Portfolio Log пропущены точки со сбоем: ${P.logGlitches.map(ruDate).join(', ')}.`);
-  msg(warn.join('<br>'));
+  msg(CLUB?'':warn.join('<br>'));
   render(); renderPost();
   const from=P.contrib.length?P.contrib[0].d:'2024-01-01';
   const yb=new Date(); yb.setFullYear(yb.getFullYear()-1); yb.setDate(yb.getDate()-10);
@@ -424,10 +433,10 @@ function renderClosed(){
 
 /* ===== конструктор поста ===== */
 const STORE_KEY=LS('post');
-let S=JSON.parse(localStorage.getItem(STORE_KEY)||'null')||{};
+let S=JSON.parse(store.get(STORE_KEY)||'null')||{};
 S=Object.assign({mode:'rebal', reason:'', sells:[], buys:[], msells:[], mbuys:[], divs:[], contrib:20000, leftover:'', leftoverNote:'ребалансировки, покупка LQDT', mcomment:'', getcourse:'', ov:{}}, S);
-const DESC=JSON.parse(localStorage.getItem(LS('desc'))||'{}');
-function save(){ localStorage.setItem(STORE_KEY, JSON.stringify(S)); localStorage.setItem(LS('desc'), JSON.stringify(DESC)); }
+const DESC=JSON.parse(store.get(LS('desc'))||'{}');
+function save(){ store.set(STORE_KEY, JSON.stringify(S)); store.set(LS('desc'), JSON.stringify(DESC)); }
 function priceRange(s){ const m=String(s||'').replace(/\s/g,'').replace(/,/g,'.').split(/[-–—]/).map(parseFloat).filter(isFinite); return m; }
 function maxP(s){ const r=priceRange(s); return r.length?Math.max(...r):NaN; }
 function priceTxt(s){ return String(s||'').replace(/\./g,',').replace(/\s*[-–—]\s*/,'-'); }
@@ -564,11 +573,14 @@ document.querySelectorAll('#mode button').forEach(b=>b.onclick=()=>{ S.mode=b.da
 $('#copy').onclick=async()=>{ await navigator.clipboard.writeText($('#out').textContent); $('#copy').textContent='Скопировано ✓'; setTimeout(()=>$('#copy').textContent='Скопировать',1500); };
 $('#txQ').oninput=()=>P&&renderTx(); $('#clQ').oninput=()=>P&&renderClosed(); $('#clNoLq').onchange=()=>P&&renderClosed();
 $('#btnReload').onclick=()=>load(true);
-function openSettings(){ const c=cfg(); $('#sUrl').value=c.url; $('#sTok').value=c.tok; $('#settings').classList.remove('hide'); }
+function clubCode(){ const c=cfg(); if(!c.url||!c.tok) return ''; const u=location.origin+location.pathname+'?club=1&u='+encodeURIComponent(c.url)+'&k='+encodeURIComponent(c.tok);
+  return `<iframe src="${u}" style="width:100%;height:1700px;border:0" loading="lazy"></iframe>`; }
+function openSettings(){ const c=cfg(); $('#sUrl').value=c.url; $('#sTok').value=c.tok; $('#gcCode').value=clubCode(); $('#settings').classList.remove('hide'); }
+$('#gcCopy').onclick=async()=>{ await navigator.clipboard.writeText($('#gcCode').value); $('#gcCopy').textContent='Скопировано ✓'; setTimeout(()=>$('#gcCopy').textContent='Скопировать код',1500); };
 $('#btnSettings').onclick=openSettings; $('#sCancel').onclick=()=>$('#settings').classList.add('hide');
-$('#sSave').onclick=()=>{ localStorage.setItem(LS('url'),$('#sUrl').value.trim()); localStorage.setItem(LS('tok'),$('#sTok').value.trim()); localStorage.removeItem(LS('cache')); $('#settings').classList.add('hide'); load(true); };
-if(location.hash){ const b=document.querySelector(`#tabs button[data-t="${location.hash.slice(1)}"]`); if(b) setTimeout(()=>b.click(),0); }
-load(false);
+$('#sSave').onclick=()=>{ store.set(LS('url'),$('#sUrl').value.trim()); store.set(LS('tok'),$('#sTok').value.trim()); store.del(LS('cache')); $('#settings').classList.add('hide'); load(true); };
+if(location.hash&&!(CLUB&&location.hash==='#post')){ const b=document.querySelector(`#tabs button[data-t="${location.hash.slice(1)}"]`); if(b) setTimeout(()=>b.click(),0); }
+load(CLUB);
 </script>
 </body>
 </html>
