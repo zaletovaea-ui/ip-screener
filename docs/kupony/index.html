@@ -138,8 +138,8 @@ td .sub{display:block;font-size:11px;color:var(--muted);line-height:14px}
   </section>
 
   <section id="t-positions" class="hide">
-    <div class="card"><h3>Облигации</h3><div class="tw" id="bondTable" style="max-height:none"></div>
-      <div class="fn">* Цена, НКД, доходность и дюрация — данные Московской биржи на момент открытия страницы. Доходность эффективная: к оферте, если она есть, иначе к погашению.<br>* <span class="tag fl">плавающий купон</span> — купон привязан к ключевой ставке или RUONIA; доходность с биржи рассчитана исходя из текущего купона.<br>* Изменение цены — от средней цены покупки, без учёта купонов. Полная доходность учитывает полученные купоны (Snowball).</div>
+    <div class="card"><h3>Облигации</h3><div class="muted" style="font-size:13px;margin:-4px 0 12px">Доходность — актуальная эффективная доходность по текущей цене на Московской бирже: если покупать облигацию сейчас, а не по нашей цене покупки. Считается к оферте, если она есть, иначе к погашению. Обновляется при каждом открытии страницы; в выходные — по цене закрытия последних торгов.</div><div class="tw" id="bondTable" style="max-height:none"></div>
+      <div class="fn">* Цена, НКД, доходность и дюрация — данные Московской биржи на момент открытия страницы. Доходность эффективная: к оферте, если она есть, иначе к погашению.<br>* <span class="tag fl">плавающий купон</span> — купон привязан к ключевой ставке или RUONIA; доходность рассчитана исходя из текущего купона и изменится вместе со ставкой.<br>* Изменение цены — от средней цены покупки, без учёта купонов. Полная доходность учитывает полученные купоны (Snowball).</div>
     </div>
     <div class="card" style="margin-top:14px"><h3>Акции</h3><div class="tw" id="stockTable" style="max-height:none"></div>
       <div class="fn">* Цена — котировка Московской биржи на момент открытия страницы. Дивидендная доходность, полная доходность с учётом дивидендов и дивидендный рейтинг (0–100, выше — надёжнее) — данные Snowball.</div>
@@ -469,7 +469,7 @@ function monthsAhead(){ const r=[]; const d=new Date(); d.setDate(1); for(let i=
 function renderPositions(){
   const bonds=P.pos.filter(x=>x.kind==='bond').map(x=>Object.assign(x,{_ret:x.sb.ret,_got:x.sb.got,_rate:rating(x.sb.rating),_date:x.offer||x.mat}));
   sortable($('#bondTable'),[
-    {k:'name',h:'Облигация',l:1,f:o=>`<b>${esc(o.name)}</b><span class="sub">${esc(o.t)} · ${esc(o.cat)}</span>${isFloat(o)?'<span class="tag fl" style="margin:3px 0 0">плавающий купон · доходность с биржи</span>':''}`},
+    {k:'name',h:'Облигация',l:1,f:o=>`<b>${esc(o.name)}</b><span class="sub">${esc(o.t)} · ${esc(o.cat)}</span>${isFloat(o)?'<span class="tag fl" style="margin:3px 0 0">плавающий купон</span>':''}`},
     {k:'q',h:'Шт',f:o=>fmt(o.q)},
     {k:'avg',h:'Ср. цена, %',f:o=>fmt(o.avg,2)},
     {k:'pricePct',h:'Цена, %',f:o=>fmt(o.pricePct,2)},
