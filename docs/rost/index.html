@@ -99,7 +99,7 @@ pre.post{white-space:pre-wrap;background:#F1F5F9;border:1px solid var(--border);
   <section id="t-overview">
     <div class="grid k4" id="kpis"></div>
     <div class="grid k2" style="margin-top:14px">
-      <div class="card"><h3>Результаты против индекса MCFTR (индекс Мосбиржи полной доходности)</h3><div id="perf"></div><div class="muted" style="font-size:12px;margin-top:8px">XIRR — среднегодовая доходность с учётом дат взносов.<br>* Расчёт ориентировочный: возможны отклонения ±1–2% в большую или меньшую сторону.</div></div>
+      <div class="card"><h3>Результаты против индекса MCFTR (индекс Мосбиржи полной доходности)</h3><div id="perf"></div><div class="muted" style="font-size:12px;margin-top:8px">XIRR — среднегодовая доходность с учётом дат взносов.<br>* Расчёт ориентировочный: возможны отклонения ±1–2% в большую или меньшую сторону.</div><div id="top5"></div></div>
       <div class="card"><h3>Структура портфеля</h3><div style="height:230px"><canvas id="chStruct"></canvas></div></div>
     </div>
     <div class="card" style="margin-top:14px"><h3>Стоимость портфеля и внесённые средства</h3><div style="height:320px"><canvas id="chLog"></canvas></div></div>
@@ -321,6 +321,15 @@ function renderOverview(){
    <div class="card kpi"><div class="l">Среднегодовая доходность (XIRR)</div><div class="v ${cls(m.xirr)}">${fmtP(m.xirr)}</div><div class="s">акции ${fmt(m.eq,0)}% · деньги ${fmt(m.rub+m.yuan,0)}%</div></div>`;
   $('#perf').innerHTML=`<table><tr><th class="l">Период</th><th>Портфель</th><th>MCFTR</th><th>Альфа</th></tr>`+
     m.periods.map(p=>`<tr><td class="l">${p.label}<div class="muted" style="font-size:11px">с ${ruDate(p.d0r)}</div></td><td>${badge(p.port,fmtP(p.port))}</td><td>${IDX?fmtP(p.idx):'<span class="muted">загрузка…</span>'}</td><td>${IDX?badge(p.alpha,fmtP(p.alpha)):'—'}</td></tr>`).join('')+'</table>';
+  // топ-5 прибыльных закрытых сделок за последние 12 месяцев (без фондов рублёвой ликвидности)
+  const yAgo=new Date(D(m.today)); yAgo.setFullYear(yAgo.getFullYear()-1); const y0=iso(yAgo);
+  const grp={};
+  P.closed.filter(x=>x.d2&&x.d2>=y0&&kindOf(x.t)!=='rub'&&isFinite(x.pl)&&x.q>0&&x.buy>0).forEach(x=>{
+    const k=x.t+'|'+x.d2; const g=grp[k]||(grp[k]={t:x.t,d2:x.d2,d1:x.d1,pl:0,cost:0,dayCost:0});
+    const c=x.q*x.buy; g.pl+=x.pl; g.cost+=c; if(x.d1){ g.dayCost+=c*(D(x.d2)-D(x.d1))/864e5; if(x.d1<g.d1) g.d1=x.d1; } });
+  const top=Object.values(grp).map(g=>({...g,ret:g.pl/g.cost*100,days:g.dayCost/g.cost})).filter(g=>g.pl>0).sort((a,b)=>b.ret-a.ret).slice(0,5);
+  $('#top5').innerHTML = top.length ? `<h3 style="margin-top:20px">Топ-${top.length} лучших сделок за год</h3><table><tr><th class="l">Компания</th><th>Доходность</th><th>Дней в сделке</th></tr>`+
+    top.map(x=>{ const days=Math.round(x.days); return `<tr><td class="l"><b>${esc(nameOf(x.t))}</b> <span class="muted">${x.t}</span><div class="muted" style="font-size:11px">${ruDate(x.d1)} → ${ruDate(x.d2)}</div></td><td>${badge(x.ret,fmtP(x.ret,1))}</td><td>${isFinite(days)?fmt(days):'—'}</td></tr>`; }).join('')+'</table>' : '';
   const parts=[['Акции и фонды акций',m.eq],['Рублёвая ликвидность',m.rub],['Юаневая ликвидность',m.yuan],['Золото',m.gold]].filter(x=>x[1]>0.05);
   chart('chStruct',{type:'doughnut',data:{labels:parts.map(x=>x[0]),datasets:[{data:parts.map(x=>+x[1].toFixed(1)),backgroundColor:['#1F5CFF','#0F2042','#B6F03A','#94A3B8'],borderColor:'#fff'}]},
     options:{maintainAspectRatio:false,plugins:{legend:{position:'right'},tooltip:{callbacks:{label:c=>`${c.label}: ${fmt(c.raw,1)}%`}}}}});
