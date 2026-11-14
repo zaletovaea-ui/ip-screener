@@ -121,8 +121,6 @@ body.club #btnFull{display:inline-block}
  .krate .kv{font-size:18px}
  .kpi .v{font-size:22px}
  th,td{padding:6px 6px;font-size:12px}
- .tw table th:first-child,.tw table td:first-child{position:sticky;left:0;background:var(--surface);z-index:1;box-shadow:1px 0 0 var(--border)}
- .tw table th:first-child{z-index:2}
  button{padding:7px 10px}
 }
 </style>
@@ -685,7 +683,7 @@ $('#txQ').oninput=()=>P&&renderTx();
 $('#btnReload').onclick=()=>load(true);
 function clubCode(){ const c=cfg(); if(!c.url||!c.tok) return ''; const u=location.origin+location.pathname+'?club=1&u='+encodeURIComponent(c.url)+'&k='+encodeURIComponent(c.tok);
   const id='ip-'+FRAME_KEY;
-  return `<iframe id="${id}" src="${u}" style="width:100%;height:1900px;border:0;display:block" allow="fullscreen" allowfullscreen loading="lazy"></iframe>\n<script>(function(){var f=document.getElementById('${id}');function fit(){f.style.width='100%';var r=f.getBoundingClientRect();var w=document.documentElement.clientWidth-r.left-24;if(w>r.width+40){f.style.width=Math.min(w,1700)+'px';}}fit();window.addEventListener('resize',fit);window.addEventListener('message',function(e){var d=e.data;if(d&&d.ipFrame==='${FRAME_KEY}'&&d.h){f.style.height=(d.h+8)+'px';}});})();<\/script>`; }
+  return `<iframe id="${id}" src="${u}" style="width:100%;height:1900px;border:0;display:block" allow="fullscreen" allowfullscreen loading="lazy"></iframe>\n<script>(function(){var f=document.getElementById('${id}');function fit(){if(typeof fs!=='undefined'&&fs)return;f.style.width='100%';var r=f.getBoundingClientRect();var w=document.documentElement.clientWidth-r.left-24;if(w>r.width+40){f.style.width=Math.min(w,1700)+'px';}}fit();window.addEventListener('resize',fit);var fs=false,lastH=1900;function hello(){try{f.contentWindow.postMessage({ipHost:'${FRAME_KEY}',fs:fs},'*');}catch(e){}}f.addEventListener('load',hello);function setFs(v){fs=v;if(v){f.style.cssText+=';position:fixed;left:0;top:0;width:100vw;height:100vh;max-width:none;z-index:2147483000;background:#F8FAFC';document.documentElement.style.overflow='hidden';}else{f.style.position='';f.style.left='';f.style.top='';f.style.zIndex='';document.documentElement.style.overflow='';f.style.height=lastH+'px';fit();}hello();}document.addEventListener('keydown',function(e){if(e.key==='Escape'&&fs)setFs(false);});window.addEventListener('message',function(e){var d=e.data;if(!d||d.ipFrame!=='${FRAME_KEY}')return;if(typeof d.fs==='boolean'){setFs(d.fs);return;}if(d.h){lastH=d.h+8;if(!fs)f.style.height=lastH+'px';}hello();});})();<\/script>`; }
 function openSettings(){ const c=cfg(); $('#sUrl').value=c.url; $('#sTok').value=c.tok; $('#gcCode').value=clubCode(); $('#settings').classList.remove('hide'); }
 $('#gcCopy').onclick=async()=>{ await navigator.clipboard.writeText($('#gcCode').value); $('#gcCopy').textContent='Скопировано ✓'; setTimeout(()=>$('#gcCopy').textContent='Скопировать код',1500); };
 $('#btnSettings').onclick=openSettings; $('#sCancel').onclick=()=>$('#settings').classList.add('hide');
@@ -694,13 +692,19 @@ if(location.hash){ const b=document.querySelector(`#tabs button[data-t="${locati
 const FRAME_KEY = CFG.key;
 /* ===== полный экран и авто-высота на Геткурсе ===== */
 const IN_FRAME = (()=>{ try{ return window.self!==window.top; }catch(e){ return true; } })();
+let FS=false;
+function setFsLabel(){ $('#btnFull').textContent=FS?'✕ Свернуть':'⛶ На весь экран'; }
 $('#btnFull').onclick=async()=>{
+  // режим «во весь экран» внутри страницы Геткурса: блок раскрывается поверх урока, сайт не открывается отдельно
+  if(IN_FRAME && PARENT_FS){ FS=!FS; try{ parent.postMessage({ipFrame:FRAME_KEY, fs:FS},'*'); }catch(e){} setFsLabel(); return; }
   const el=document.documentElement;
   if(document.fullscreenElement){ try{ await document.exitFullscreen(); }catch(e){} return; }
   try{ if(el.requestFullscreen){ await el.requestFullscreen(); return; } }catch(e){}
-  window.open(location.href,'_blank');
+  $('#btnFull').classList.add('hide');
 };
-document.addEventListener('fullscreenchange',()=>{ $('#btnFull').textContent=document.fullscreenElement?'✕ Свернуть':'⛶ На весь экран'; });
+let PARENT_FS=false;
+window.addEventListener('message',e=>{ const d=e.data||{}; if(d.ipHost===FRAME_KEY){ PARENT_FS=true; if(typeof d.fs==='boolean'){ FS=d.fs; setFsLabel(); } } });
+document.addEventListener('fullscreenchange',()=>{ FS=!!document.fullscreenElement; setFsLabel(); });
 function postHeight(){ if(!IN_FRAME) return; try{ parent.postMessage({ipFrame:FRAME_KEY, h:Math.ceil(document.body.getBoundingClientRect().height)},'*'); }catch(e){} }
 try{ new ResizeObserver(()=>postHeight()).observe(document.body); }catch(e){ setInterval(postHeight,1500); }
 window.addEventListener('load',postHeight);
