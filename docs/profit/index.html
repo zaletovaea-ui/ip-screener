@@ -502,6 +502,7 @@ function stBadge(s){ s=String(s||'').toLowerCase(); return s?`<span class="badge
 function sbLine(){ return P.it.upd?`* Данные Snowball (полная доходность, полученные выплаты, прогноз выплат, рейтинги, доходность за 12 месяцев и с начала года) обновляются раз в 2 дня. Последнее обновление: ${esc(P.it.upd)}.`:''; }
 
 function build(){
+  if(!(RAW.sheets||{})[CFG.sheets.gk]){ msg(CLUB?'Данные портфеля временно недоступны.':`В подключённой таблице нет листа «${CFG.sheets.gk}». Похоже, в настройках ⚙ указан скрипт другой стратегии — для «${CFG.title}» нужен свой скрипт и свой ключ.`); return; }
   P=parse(RAW); M=null;
   $('#upd').textContent='Данные таблицы: '+new Date(P.updated).toLocaleString('ru-RU');
   enrich(); render();
