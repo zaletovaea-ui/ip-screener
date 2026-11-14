@@ -234,8 +234,8 @@ async function load(force){
   let cached=null; try{ cached=store.get(CACHE_KEY); }catch(e){}
   if(cached && !force){ try{ RAW=JSON.parse(cached); build(); }catch(e){} }
   try{
-    msg(RAW?'':'Загружаю данные из таблицы…');
-    const r = await fetch(c.url+(c.url.includes('?')?'&':'?')+'token='+encodeURIComponent(c.tok));
+    msg(RAW?'':(CLUB?'Загружаю данные портфеля, это займёт несколько секунд…':'Загружаю данные из таблицы…'));
+    const r = await fetch(c.url+(c.url.includes('?')?'&':'?')+'token='+encodeURIComponent(c.tok)+(force&&!CLUB?'&fresh=1':''));
     const j = await r.json();
     if(j.error) throw new Error(j.error==='unauthorized'?'Неверный ключ':j.error);
     RAW=j; try{ store.set(CACHE_KEY, JSON.stringify(j)); }catch(e){}
@@ -615,7 +615,7 @@ $('#gcCopy').onclick=async()=>{ await navigator.clipboard.writeText($('#gcCode')
 $('#btnSettings').onclick=openSettings; $('#sCancel').onclick=()=>$('#settings').classList.add('hide');
 $('#sSave').onclick=()=>{ store.set(LS('url'),$('#sUrl').value.trim()); store.set(LS('tok'),$('#sTok').value.trim()); store.del(LS('cache')); $('#settings').classList.add('hide'); load(true); };
 if(location.hash&&!(CLUB&&location.hash==='#post')){ const b=document.querySelector(`#tabs button[data-t="${location.hash.slice(1)}"]`); if(b) setTimeout(()=>b.click(),0); }
-load(CLUB);
+load(false);
 </script>
 </body>
 </html>
