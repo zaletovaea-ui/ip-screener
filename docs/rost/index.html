@@ -74,6 +74,10 @@ pre.post{white-space:pre-wrap;background:#F1F5F9;border:1px solid var(--border);
 .modal .card{width:min(560px,92vw)}
 .fl{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .sec{font-weight:700;margin:16px 0 8px;font-size:13px;color:var(--blue);text-transform:uppercase;letter-spacing:.03em}
+.ans{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px}
+.an{border:1px solid var(--border);border-radius:12px;padding:12px 14px;background:var(--canvas)}
+.an-h{margin-bottom:6px}.an-t{color:var(--sec);font-size:14px;line-height:21px}
+.note{background:var(--navy);color:#fff;border-radius:12px;padding:12px 16px;margin:12px 0 4px;border-left:6px solid var(--lime)}
 @media(max-width:700px){.leg,.leg.buy{grid-template-columns:1fr 1fr}.k2{grid-template-columns:1fr}}
 </style>
 </head>
@@ -107,6 +111,30 @@ pre.post{white-space:pre-wrap;background:#F1F5F9;border:1px solid var(--border);
 
   <section id="t-positions" class="hide">
     <div class="card"><h3>Позиции</h3><div class="muted" style="font-size:12px;margin:-4px 0 12px">* Доходность — текущая, от средней цены покупки по открытой позиции. Без учёта метода ФИФО и ранее закрытых сделок по эмитенту.</div><div class="tw" id="posTable" style="max-height:none"></div>
+    </div>
+  
+    <div class="card" style="margin-top:14px" id="about">
+      <h3>О портфеле</h3>
+      <p class="muted" style="font-size:13px;margin-top:0">* Текущая цена акций в портфеле отражает значение котировок на момент закрытия вчерашней торговой сессии на Московской бирже.</p>
+      <div class="sec">Статусы активов</div>
+      <p style="margin:0 0 6px">Статус всех активов чаще всего будет <span class="badge b-up">покупать</span>. На <span class="badge b-n">держать</span> меняется только в случаях:</p>
+      <ul style="margin:0 0 10px;padding-left:20px;color:var(--sec)">
+        <li>когда до справедливой стоимости менее 5%;</li>
+        <li>когда на рынке происходят мощные потрясения — например, когда за день акции могут падать более чем на 10%;</li>
+        <li>когда по активу вышли новости, влияние которых сложно оценить моментально.</li>
+      </ul>
+      <div class="note">Если вы только присоединяетесь к портфелю и хотите ему следовать, все акции являются актуальными и их можно купить себе в портфель.</div>
+      <div class="sec">Краткая аналитика по эмитентам в портфеле</div>
+      <div class="ans"><div class="an"><div class="an-h"><span class="badge b-blue">#TRNFP</span> <b>Транснефть</b></div><div class="an-t">Компания со стабильным финансовым положением, отрицательным чистым долгом и дивидендами (прогнозные выплаты по итогам 2025 — 180–200 руб., див. доходность ~14,5–16% к текущей цене 1242 руб.) + недорогая мультипликационная оценка.</div></div><div class="an"><div class="an-h"><span class="badge b-blue">#SBER</span> <b>Сбер</b></div><div class="an-t">Прогнозный дивиденд 35–38 руб. (див. доходность ~12% к текущей цене 295 руб.), P/B 0,9. Продолжаем удерживать портфельно.</div></div><div class="an"><div class="an-h"><span class="badge b-blue">#YDEX</span> <b>Яндекс</b></div><div class="an-t">Менеджмент повысил прогнозы по показателям на текущий год. Нельзя сказать, что рисков совсем нет, но компании удаётся сохранять темпы роста, как у растущей, даже в сложное время. При более сильном снижении ставки возможна более быстрая переоценка.</div></div><div class="an"><div class="an-h"><span class="badge b-blue">#MGNT</span> <b>Магнит</b></div><div class="an-t">Магнит менее эффективен конкурентов по сектору и имеет рентабельность ниже, но в акциях сохраняется опцион на выкуп акций после снижения КС.</div></div><div class="an"><div class="an-h"><span class="badge b-blue">#T</span> <b>Т-Технологии</b></div><div class="an-t">Качественный актив с высокой рентабельностью. Ожидаем динамику в долгосрочной перспективе лучше рынка, а также переоценку на цикле снижения ставки. Компания сочетает рост и планирует выплату ежеквартальных дивидендов.</div></div><div class="an"><div class="an-h"><span class="badge b-blue">#SVCB</span> <b>Совкомбанк</b></div><div class="an-t">Ставка на рост финансовых результатов на цикле снижения ставки.</div></div><div class="an"><div class="an-h"><span class="badge b-blue">#GAZP</span> <b>Газпром</b></div><div class="an-t">Спекулятивная сделка под мир, в том числе ожидания его (покупай на слухах, продавай на фактах). С фундаментальной точки зрения поддержка государства в виде отмены НДПИ и рост внутренних цен на газ позволили несколько стабилизировать фин. положение: сократить долг, хоть и незначительно (3%), а также снизить темпы падения опер. и чистой прибыли.</div></div><div class="an"><div class="an-h"><span class="badge b-blue">#RTKM</span> <b>Ростелеком</b></div><div class="an-t">На общерыночном позитиве акции будут также расти вслед за индексом. Однако есть 2 доп. драйвера — снижение ставки (рост ЧП, FCF) и ожидания от возобновления процесса подготовки к IPO дочерних компаний. Уже прогревают к Базису (внучка Ростелекома), и на подходе ещё ряд компаний.</div></div><div class="an"><div class="an-h"><span class="badge b-blue">#CNYM</span> <b>Фонд в юанях</b></div><div class="an-t">БПИФ от УК ВИМ Инвестиции, инструмент денежного рынка, обеспечивает доходность, близкую к ставке RUSFAR CNY.</div></div><div class="an"><div class="an-h"><span class="badge b-blue">#GMKN</span> <b>ГМК Норникель</b></div><div class="an-t">Экспортёр, выигрывающий от роста цен на сырьё и обесценения рубля.</div></div><div class="an"><div class="an-h"><span class="badge b-blue">#OZON</span> <b>Озон</b></div><div class="an-t">Растущий актив, который может расти лучше индекса на позитивных новостях.</div></div><div class="an"><div class="an-h"><span class="badge b-blue">#ETLN</span> <b>Эталон</b></div><div class="an-t">Спекулятивная идея под снижение ставки: строительная отрасль одна из первых начинает восстановление после рецессии.</div></div><div class="an"><div class="an-h"><span class="badge b-blue">#EQMX</span> <b>Фонд на индекс Мосбиржи</b></div><div class="an-t">Делаем ставку на рост/отскок широкого рынка.</div></div><div class="an"><div class="an-h"><span class="badge b-blue">#ROSN</span> <b>Роснефть</b></div><div class="an-t">С учётом всё ещё продолжающегося конфликта на Б. Востоке (длится более 4 мес.) средние цены на нефть, нефтепродукты и маржа переработки остаются на более высоких уровнях, чем за весь 2025 г. Длительный конфликт истощает мировые запасы нефти. При этом стоимость компании на уровнях «ковидного» 2020 г. при сопоставимом размере долга и более дешёвой мультипликаторной оценке, что делает текущие уровни достаточно привлекательными при сохранении текущей ценовой конъюнктуры. Дополнительным спекулятивным драйвером может выступать девальвация нац. валюты и нарастание ожиданий о восстановлении нефтяными компаниями див. выплат.</div></div><div class="an"><div class="an-h"><span class="badge b-blue">#SNGSP</span> <b>Сургутнефтегаз-п</b></div><div class="an-t">Наличие большой денежной подушки, номинированной в валюте, на счетах компании. При более высоком курсе год к году за счёт её переоценки компания получает повышенную прибыль и делится ею через дивиденд с миноритарными акционерами.</div></div></div>
+      <div class="sec">Основные правила стратегии</div>
+      <ol style="margin:0;padding-left:20px;line-height:1.7">
+        <li>Изменения в портфеле проводятся один раз в месяц, с 1 по 6 число, за исключением важных экономических событий.</li>
+        <li>Стратегия подразумевает регулярные пополнения в размере 20 000 руб.</li>
+        <li>Прибыль всегда реинвестируется в акции.</li>
+        <li>Портфель состоит из акций + фонд ликвидности для запаса средств.</li>
+        <li>В расчётах и доходах не учитываются комиссии за покупку и налоги. На брокерском счёте (будут прикладываться скрины) они учитываются.</li>
+        <li>Если ваш капитал меньше заложенного в стратегии, инвестируйте в соответствии с долями, выделенными на отдельные бумаги.</li>
+      </ol>
     </div>
   </section>
 
