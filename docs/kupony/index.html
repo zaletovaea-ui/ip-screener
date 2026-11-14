@@ -95,6 +95,7 @@ body.club #btnSettings,body.club #btnReload{display:none!important}
 .fn{font-size:12px;color:var(--muted);margin-top:8px;line-height:18px}
 .tag{display:inline-block;padding:1px 6px;border-radius:6px;font-size:11px;font-weight:600;background:#E0E8FF;color:var(--blue);margin-left:6px;white-space:nowrap}
 .tag.fl{background:#FEF3C7;color:#92400E}
+td.wrap{white-space:normal;min-width:260px;max-width:440px;font-size:12px;line-height:17px;color:var(--sec)}
 td .sub{display:block;font-size:11px;color:var(--muted);line-height:14px}
 .k4b{grid-template-columns:repeat(4,1fr)}
 @media(max-width:960px){.k4b{grid-template-columns:repeat(2,1fr)}}
@@ -112,6 +113,7 @@ td .sub{display:block;font-size:11px;color:var(--muted);line-height:14px}
 <nav id="tabs">
   <button data-t="overview" class="on">Обзор</button>
   <button data-t="positions">Портфель</button>
+  <button data-t="ref">Справочник облигаций</button>
   <button data-t="calendar">Календарь выплат</button>
   <button data-t="tx">Покупки</button>
 </nav>
@@ -145,6 +147,15 @@ td .sub{display:block;font-size:11px;color:var(--muted);line-height:14px}
       <div class="fn">* Цена — котировка Московской биржи на момент открытия страницы. Дивидендная доходность, полная доходность с учётом дивидендов и дивидендный рейтинг (0–100, выше — надёжнее) — данные Snowball.</div>
     </div>
     <div class="fn" id="sbNote2" style="margin-top:14px"></div>
+  </section>
+
+  <section id="t-ref" class="hide">
+    <div class="card"><h3>Справочник облигаций</h3>
+      <div class="muted" style="font-size:13px;margin:-4px 0 12px">Параметры выпусков из нашего справочника: тип и размер купона, график выплат, оферты, амортизация, особенности. Цена и доходность — актуальные данные Московской биржи на момент открытия страницы.</div>
+      <div class="fl" style="margin-bottom:10px"><input id="refQ" placeholder="Поиск: название, ISIN…" style="max-width:280px"><label style="margin:0"><input type="checkbox" id="refHeld" style="width:auto"> только бумаги в портфеле</label><label style="margin:0"><input type="checkbox" id="refAct" style="width:auto" checked> скрыть погашенные</label></div>
+      <div class="tw" id="refTable" style="max-height:none"></div>
+      <div class="fn">Источник: лист «Справочник по облигациям». КС — ключевая ставка ЦБ; RUONIA — ставка межбанковского кредитования «овернайт»; ПК — постоянный (фиксированный) купон; флоатер — плавающий купон.</div>
+    </div>
   </section>
 
   <section id="t-calendar" class="hide">
@@ -275,10 +286,21 @@ function parse(raw){
       if(t) cur={t, name:String(r[iN]||'').trim(), kind:/облиг/i.test(String(r[iK]||''))?'bond':'stock'};
       const q=num(r[iQ]); if(!cur||!(q>0)) continue;
       p.tx.push({...cur, q, price:num(r[iP]), sum:num(r[iS]), d:normDate(r[iD])}); } }
+  // справочник облигаций
+  const Rf=S['Справочник по облигациям']||[]; const rm=new Map();
+  if(Rf.length){ const h=Rf[0]; const ix=k=>hdrIdx(h,k);
+    const I={n:ix('Облигация'),t:ix('Тикер'),ct:ix('Тип купона'),mat:ix('Дата погашения'),off:ix('Оферта'),am:ix('Амортизация'),cp:ix('Купон'),pay:ix('Выплаты'),per:ix('Купонный период'),ft:ix('Особенности'),q:ix('Квал'),rt:ix('Рейтинг')};
+    const yes=v=>/✅|да|true/i.test(String(v||''));
+    for(const r of Rf.slice(1)){ const t=String(r[I.t]||'').replace(/\s+/g,''); if(!/^(RU|SU)/.test(t)) continue;
+      const o={t, name:String(r[I.n]||'').trim(), ctype:String(r[I.ct]||'').trim(), mat:normDate(r[I.mat]), offer:yes(r[I.off]), amort:yes(r[I.am]), cpn:String(r[I.cp]??'').trim(),
+        pay:String(r[I.pay]||'').trim(), per:num(r[I.per]), feat:String(r[I.ft]||'').trim(), qual:yes(r[I.q]), rating:String(r[I.rt]||'').trim()};
+      if(typeof r[I.cp]==='number') o.cpn=fmt(r[I.cp]<1?r[I.cp]*100:r[I.cp],2).replace(/,00$/,'')+'%';
+      const prev=rm.get(t); if(!prev || (o.feat+o.rating).length>(prev.feat+prev.rating).length) rm.set(t,o); } }
+  p.ref=[...rm.values()]; p.refMap=Object.fromEntries(p.ref.map(x=>[x.t,x]));
   return p;
 }
 function bondCat(x){ if(/^SU\d/.test(x.t)) return 'ОФЗ'; if(/област|обл\.|край|республ|минфин|москва|санкт/i.test(x.name+' '+(x.sb.name||''))) return 'Субфедеральные'; return 'Корпоративные'; }
-const isFloat = x => x.kind==='bond' && /плава/.test(x.sb.ctype||'');
+function isFloat(x){ if(x.kind!=='bond') return false; const r=P.refMap&&P.refMap[x.t]; if(r&&r.ctype) return /флоат|плава/i.test(r.ctype); return /плава/.test(x.sb.ctype||''); }
 
 /* ===== Московская биржа ===== */
 function issRows(block){ if(!block||!block.columns) return []; const c=block.columns; return block.data.map(r=>{ const o={}; c.forEach((k,i)=>o[k]=r[i]); return o; }); }
@@ -288,7 +310,8 @@ const okDate = s => s && s!=='0000-00-00' ? String(s).slice(0,10) : null;
 const fin = (...a) => { for(const v of a){ if(v==null||v==='') continue; const n=typeof v==='number'?v:parseFloat(v); if(isFinite(n)&&n!==0) return n; } return NaN; };
 async function issJson(u){ const r=await fetch(u); if(!r.ok) throw new Error('ISS '+r.status); return r.json(); }
 async function loadMarket(){
-  const bonds=P.pos.filter(x=>x.kind==='bond').map(x=>x.t), stocks=P.pos.filter(x=>x.kind==='stock').map(x=>x.t);
+  const today0=iso(new Date());
+  const bonds=[...new Set(P.pos.filter(x=>x.kind==='bond').map(x=>x.t).concat(P.ref.filter(r=>!r.mat||r.mat>=today0).map(r=>r.t)))], stocks=P.pos.filter(x=>x.kind==='stock').map(x=>x.t);
   const out={};
   const chunks=(a,n)=>{ const r=[]; for(let i=0;i<a.length;i+=n) r.push(a.slice(i,i+n)); return r; };
   for(const ch of chunks(bonds,10)){
@@ -411,7 +434,7 @@ function sortable(el, cols, rows, def){
   function draw(){
     const r=[...rows].sort((a,b)=>{ const x=a[key],y=b[key]; return (typeof x==='string'?String(x).localeCompare(y,'ru'):((isFinite(x)?x:-1e18)-(isFinite(y)?y:-1e18)))*dir; });
     el.innerHTML='<table><thead><tr>'+cols.map(c=>`<th class="${c.l?'l':''}" data-k="${c.k}">${c.h}${key===c.k?(dir>0?' ▲':' ▼'):''}</th>`).join('')+'</tr></thead><tbody>'+
-      r.map(o=>'<tr>'+cols.map(c=>`<td class="${c.l?'l':''}">${c.f?c.f(o):esc(o[c.k])}</td>`).join('')+'</tr>').join('')+'</tbody></table>';
+      r.map(o=>'<tr>'+cols.map(c=>`<td class="${c.l?'l':''} ${c.c||''}">${c.f?c.f(o):esc(o[c.k])}</td>`).join('')+'</tr>').join('')+'</tbody></table>';
     el.querySelectorAll('th').forEach(th=>th.onclick=()=>{ const k=th.dataset.k; if(k===key) dir=-dir; else {key=k;dir=-1;} draw(); });
   }
   draw();
@@ -428,7 +451,7 @@ function build(){
   const yb=new Date(); yb.setFullYear(yb.getFullYear()-1); yb.setDate(yb.getDate()-10);
   loadIdx(START<iso(yb)?START:iso(yb)).then(()=>render()).catch(()=>{ IDX=null; render(); });
 }
-function render(){ if(!P) return; M=metrics(); for(const f of [renderKey,renderOverview,renderPositions,renderCalendar,renderTx]){ try{ f(); }catch(e){ console.error(f.name,e); if(!CLUB) msg('Ошибка в блоке «'+f.name+'»: '+esc(e.message)); } } }
+function render(){ if(!P) return; M=metrics(); for(const f of [renderKey,renderOverview,renderPositions,renderRef,renderCalendar,renderTx]){ try{ f(); }catch(e){ console.error(f.name,e); if(!CLUB) msg('Ошибка в блоке «'+f.name+'»: '+esc(e.message)); } } }
 function renderKey(){ const it=P.it;
   $('#krate').innerHTML = isFinite(it.key)?`<span class="kl">Текущая ключевая ставка ЦБ</span><span class="kv">${fmt(it.key,2)}%</span>`+
     `<span class="kl">${it.keyDate?'решение от '+ruDate(it.keyDate):''}${it.keyNext?' · следующее заседание '+ruDate(it.keyNext):''}</span>`:'';
@@ -500,6 +523,28 @@ function renderPositions(){
   ], st, {k:'share',d:-1});
   $('#sbNote2').textContent=sbLine();
 }
+function renderRef(){
+  const today=iso(new Date()); const held=new Set(P.pos.map(x=>x.t));
+  const q=($('#refQ').value||'').toLowerCase(), onlyHeld=$('#refHeld').checked, act=$('#refAct').checked;
+  const rows=P.ref.map(r=>{ const m=(MKT||{})[r.t]||{}; const pos=P.pos.find(x=>x.t===r.t);
+    return Object.assign({},r,{_held:held.has(r.t), _matured:!!(r.mat&&r.mat<today), _price:m.price, _y:m.y, _toOff:m.yType?/OFFER|BUYBACK/i.test(m.yType):!!m.offer, _offDate:m.offer, _status:pos?pos.status:'', _fl:/флоат|плава/i.test(r.ctype)}); })
+    .filter(r=>(!onlyHeld||r._held)&&(!act||!r._matured)&&(!q||(r.name+' '+r.t).toLowerCase().includes(q)));
+  sortable($('#refTable'),[
+    {k:'name',h:'Облигация',l:1,f:o=>`<b>${esc(o.name)}</b><span class="sub">${esc(o.t)}</span>`+
+      (o._held?'<span class="tag" style="margin:3px 4px 0 0">в портфеле</span>':'')+(o._fl?'<span class="tag fl" style="margin:3px 4px 0 0">плавающий купон</span>':'')+
+      (o.qual?'<span class="tag" style="margin:3px 4px 0 0;background:#EEF2F7;color:#475569">для квалов</span>':'')+(o._matured?'<span class="tag" style="margin:3px 0 0;background:#EEF2F7;color:#64748B">погашена</span>':'')},
+    {k:'_status',h:'Статус',l:1,f:o=>stBadge(o._status)},
+    {k:'cpn',h:'Купон',l:1,f:o=>`<b>${esc(o.cpn)}</b><span class="sub">${esc(o._fl?'флоатер':(o.ctype||''))}</span>`},
+    {k:'pay',h:'Выплаты',l:1,f:o=>`${esc(o.pay)}${isFinite(o.per)?`<span class="sub">период ${fmt(o.per)} дн.</span>`:''}`},
+    {k:'mat',h:'Погашение',f:o=>ruDate(o.mat)},
+    {k:'offer',h:'Оферта',f:o=>o.offer?(o._offDate?ruDate(o._offDate):'есть'):'—'},
+    {k:'amort',h:'Амортизация',f:o=>o.amort?'есть':'—'},
+    {k:'rating',h:'Рейтинг',l:1,f:o=>esc(o.rating||'—')},
+    {k:'_price',h:'Цена, %',f:o=>fmt(o._price,2)},
+    {k:'_y',h:'Доходность',f:o=>isFinite(o._y)?`<b>${fmt(o._y,2)}%</b><span class="sub">${o._toOff?'к оферте':'к погашению'}</span>`:'—'},
+    {k:'feat',h:'Особенности',l:1,c:'wrap',f:o=>esc(o.feat||'—')}
+  ], rows, {k:'_held',d:-1});
+}
 function renderCalendar(){
   const ev=couponPlan(); const cp=ev.filter(e=>e.kind==='coupon');
   const in30=iso(new Date(Date.now()+30*864e5));
@@ -551,6 +596,7 @@ function renderTx(){
 document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{ document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));
   document.querySelectorAll('main>section').forEach(s=>s.classList.toggle('hide',s.id!=='t-'+b.dataset.t)); location.hash=b.dataset.t; });
 $('#txQ').oninput=()=>P&&renderTx();
+['#refQ','#refHeld','#refAct'].forEach(id=>{ $(id).oninput=()=>P&&renderRef(); $(id).onchange=()=>P&&renderRef(); });
 $('#btnReload').onclick=()=>load(true);
 function clubCode(){ const c=cfg(); if(!c.url||!c.tok) return ''; const u=location.origin+location.pathname+'?club=1&u='+encodeURIComponent(c.url)+'&k='+encodeURIComponent(c.tok);
   return `<iframe src="${u}" style="width:100%;height:1900px;border:0" loading="lazy"></iframe>`; }
