@@ -346,7 +346,9 @@ function renderOverview(){
   const sec={}; P.pos.forEach(x=>{ const s=x.kind==='eq'?(x.sector||'—'):({rub:'Рублёвая ликвидность',yuan:'Юаневая ликвидность',gold:'Золото'}[x.kind]); sec[s]=(sec[s]||0)+x.share; });
   const se=Object.entries(sec).sort((a,b)=>b[1]-a[1]);
   chart('chSect',{type:'bar',data:{labels:se.map(x=>x[0]),datasets:[{data:se.map(x=>+x[1].toFixed(1)),backgroundColor:'#1F5CFF',borderRadius:4}]},
-    options:{indexAxis:'y',maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>fmt(c.raw,1)+'%'}}},scales:{x:{ticks:{callback:v=>v+'%'},grid:{color:'#E2E8F0'}},y:{grid:{display:false}}}}});
+    options:{indexAxis:'y',maintainAspectRatio:false,layout:{padding:{right:56}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>fmt(c.raw,1)+'%'}}},scales:{x:{ticks:{callback:v=>v+'%'},grid:{color:'#E2E8F0'}},y:{grid:{display:false}}}},
+    plugins:[{id:'barLabels',afterDatasetsDraw(ch){ const c=ch.ctx; c.save(); c.font='600 13px Inter, system-ui, sans-serif'; c.fillStyle='#0F2042'; c.textBaseline='middle';
+      ch.getDatasetMeta(0).data.forEach((bar,i)=>c.fillText(fmt(ch.data.datasets[0].data[i],1)+'%', bar.x+6, bar.y)); c.restore(); }}]});
 }
 let M=null;
 
