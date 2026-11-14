@@ -461,7 +461,7 @@ function renderOverview(){ const m=M, it=P.it;
     chart('chHist',{type:'line',data:{labels:P.hist.map(x=>ruDate(x.d)),datasets:[{label:'Стоимость портфеля',data:P.hist.map(x=>Math.round(x.v)),borderColor:'#1F5CFF',backgroundColor:'rgba(31,92,255,.08)',fill:true,tension:.2,pointRadius:0},
       {label:'Внесено',data:P.hist.map(x=>Math.round(x.inv)),borderColor:'#0F2042',borderDash:[5,4],pointRadius:0}]},
       options:{maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${fmt(c.raw)} ₽`}}},scales:{y:{ticks:{callback:v=>fmt(v)}}}}});
-    $('#histNote').textContent='Точки добавляются при каждом обновлении из Snowball (раз в 2 дня).';
+    $('#histNote').textContent='Источник: Snowball. До 14.11.2026 — стоимость на 1-е число каждого месяца, дальше точки добавляются раз в 2 дня.';
   } else { $('#histBox').classList.add('hide'); $('#histNote').textContent='График начнёт строиться со следующих обновлений: точки добавляются раз в 2 дня, начиная с 14.11.2026.'; }
   $('#sbNote1').textContent=sbLine();
 }
